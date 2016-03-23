@@ -51,9 +51,23 @@ public:
 	bool IsWall(int w, int h) const; 
 	int GetDirtLevel(unsigned int w, unsigned int h) const
 	{
+
 		char a = floor(w,h);
 		return int(floor(w,h)-'0');
 	}
+	bool IsHouseClean() const;
 };
+
+bool House::IsHouseClean() const
+{
+	int h=0, int w=0;
+	for(;h<height;++h){
+		for(;w<width;++w){
+			if(GetDirtLevel(w,h) > 0)
+				return false;
+		}
+		return true;
+	}
+}
 
 #endif //__ABSTRACT_HOUSE__H_

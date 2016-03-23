@@ -27,4 +27,10 @@ public:
     virtual void aboutToFinish(int stepsTillFinishing) = 0; 
 };
 
+void AbstractAlgorithm::setSensor(const AbstractSensor& sensor)
+{
+	int a =0;
+	return;
+}
+
 #endif //__ABSTRACT_ALGORITHM__H_
