@@ -8,6 +8,7 @@ using namespace std;
 
 class AbstractAlgorithm 
 { 
+	// comment try
 public: 
 	virtual ~AbstractAlgorithm() {}
 	
