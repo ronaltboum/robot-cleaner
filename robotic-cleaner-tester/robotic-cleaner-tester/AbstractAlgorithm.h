@@ -25,6 +25,13 @@ public:
     // when steps == MaxSteps - MaxStepsAfterWinner 
     // parameter stepsTillFinishing == MaxStepsAfterWinner 
     virtual void aboutToFinish(int stepsTillFinishing) = 0; 
+
 };
+
+void AbstractAlgorithm::setSensor(const AbstractSensor& sensor)
+{
+	int a = 1;
+	return;
+}
 
 #endif //__ABSTRACT_ALGORITHM__H_
