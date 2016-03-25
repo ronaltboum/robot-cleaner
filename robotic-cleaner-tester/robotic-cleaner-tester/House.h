@@ -34,6 +34,7 @@ private:
 
 
 public:
+	House(int width, int height, Matrix<char>& floor);   //ron added
 	virtual ~House() {}
     void initialize();
 
