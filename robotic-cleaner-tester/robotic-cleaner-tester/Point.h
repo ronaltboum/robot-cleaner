@@ -1,65 +1,58 @@
 #ifndef Point_h__
 #define Point_h__
 
-namespace (ns_robotic_cleaner) 
+#include "stdafx.h"
+
+namespace ns_robotic_cleaner
 {
 
 
 class Point
 {
 private:
-	int _x;
-	int _y;
+	unsigned int _x;
+	unsigned int _y;
 	
 public:
-	Point();
-	Point(int x, int y);
-	~Point();
+	Point(unsigned int x, unsigned int y);
+	virtual ~Point() {};
 	Point(Point& other);
-	int GetX() const;
-	void SetX(int x);
-	int GetY() const;
-	void SetY(int y);
+	unsigned int GetX() const;
+	void SetX(unsigned int x);
+	unsigned int GetY() const;
+	void SetY(unsigned int y);
 };
 	
 // ~~~~~~~~~~~~~~~~~~~ inline functions ~~~~~~~~~~~~~~~~~~~
-	
-Point::Point() : _x(0.0), _y(0.0)
+
+inline Point::Point(unsigned int x = 0, unsigned int y = 0) : _x(x), _y(y)
 {
 }
-	
-Point::Point(int x, int y) : _x(x), _y(y)
+
+inline Point::Point(Point& other) : _x(other._x), _y(other._y)
 {
 }
-	
-Point::Point(Point& other) : _x(other._x), _y(other._y)
-{
-}
-	
-Point::~Point()
-{
-}
-	
-int Point::GetX() const
+
+
+inline unsigned int Point::GetX() const
 {
 	return _x;
 }
-	
-void Point::SetX(int x)
+
+inline void Point::SetX(unsigned int x)
 {
 	_x = x;
 }
-	
-int Point::GetY() const
+
+inline unsigned int Point::GetY() const
 {
 	return _y;
 }
-	
-void Point::SetY(int y)
+
+inline void Point::SetY(unsigned int y)
 {
 	_y = y;
 }
-
 
 } // end of namespace ns_robotic_cleaner
 

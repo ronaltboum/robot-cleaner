@@ -1,46 +1,51 @@
+#include "stdafx.h"
 #include "House.h"
-#include <iostream>       //ron added
-using namespace std;      //ron added
 
 namespace ns_robotic_cleaner
 {
-	House::House(const int houseWidth, const int houseHeight)
+	House::House(const unsigned int houseWidth, const unsigned int houseHeight)
 	{
-		houseFloor = Matrix(houseWidth, houseHeight);
+		floor = Matrix<char>(houseWidth, houseHeight);
 	}
 
 	//************************************
 	// Brief:		Gets a location and returns the dirt level in it
-	// Gets:	 	const Point & location
 	// Returns:   	int 0-9
-	// Access:    	public 
-	// Pre:			-
-	// Post:		-
+	// Pre:			IspositionValid(position)
 	//************************************
-	int House::GetDirtLevel(const Point & location) const
+	unsigned int House::GetDirtLevel(const Point & location) const
 	{
-		char tileContent = houseFloor(location);
+		char tileContent = floor(location);
 		if(IsRegularTile(tileContent))
 			return CharToNum(tileContent);
 		return 0;
 	}
 
+	// Brief:		Check if all the tiles in the house are clean
 	bool House::IsHouseClean() const
 	{
-		int h=0, int w=0;
+		unsigned int hIterator=0, wIterator=0;
+		unsigned int height = GetHeight(), width = GetWidth();
 		char tileContent;
-		for(;h<height;++h){
-			for(;w<width;++w){
-				tileContent = houseFloor(w,h);
+		for(;hIterator<height;++hIterator){
+			for(;wIterator<width;++wIterator){
+				tileContent = floor(wIterator,hIterator);
 				if (IsDirty(tileContent))
 				{
 					return false;
 				}
 			}
 		}
-
 		return true;
 	}
+
+	//int _tmain(int argc, _TCHAR* argv[])
+	//{
+	//	
+	//	std::cout << "main method";
+	//	getchar();
+	//	return 0;
+	//}
 
 } // end of namespace ns_robotic_cleaner
 
