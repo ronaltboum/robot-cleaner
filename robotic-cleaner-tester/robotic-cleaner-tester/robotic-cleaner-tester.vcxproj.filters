@@ -39,6 +39,12 @@
     <ClInclude Include="SensorInformation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Point.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -50,5 +56,10 @@
     <ClCompile Include="House.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\..\Dropbox\אוניברסיטה\2017\AP\2016\robotic-cleaner-tester HLD (high level design).docx">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
