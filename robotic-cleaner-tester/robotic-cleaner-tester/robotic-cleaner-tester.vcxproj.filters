@@ -47,5 +47,8 @@
     <ClCompile Include="robotic-cleaner-tester.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="House.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
