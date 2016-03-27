@@ -11,7 +11,7 @@ namespace ns_robotic_cleaner
 	//************************************
 	// Brief:		Gets a location and returns the dirt level in it
 	// Returns:   	int 0-9
-	// Pre:			IspositionValid(position)
+	// Pre:			IsPositionValid(position)
 	//************************************
 	unsigned int House::GetDirtLevel(const Point & location) const
 	{
