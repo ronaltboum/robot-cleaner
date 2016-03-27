@@ -91,19 +91,20 @@ inline bool Point::Move(Direction d)
 		_x++;
 		return true;
 	case Direction::South :
-		if (_x > 0){
-			_x--;
-			return true;
-		}
-		break;
-	case Direction::West :
 		if (_y > 0){
 			_y--;
 			return true;
 		}
 		break;
+	case Direction::West :
+		if (_x > 0){
+			_x--;
+			return true;
+		}
+		break;
 	}
-	return false;
+	return false;  //we get here if direction is stay, or in case we are trying to move to negative
+	//coordinates of the matrix.  
 }
 
 } // end of namespace ns_robotic_cleaner
