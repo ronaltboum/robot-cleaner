@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Battery.h"
 
-namespace ns_robotic_cleaner
+namespace ns_robotic_cleaner_simulator
 {
 
 	bool Battery::Consume() //eats the battery _consumption_rate at each time unit the robot isn't in

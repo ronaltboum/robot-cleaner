@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "RandomRobotAlgorithm.h"
 
-namespace ns_robotic_cleaner
+namespace ns_robotic_cleaner_simulator
 {
 
 	vector< Point > RandomRobotAlgorithm::getPossibleDirections( const Point& currentLocation) 

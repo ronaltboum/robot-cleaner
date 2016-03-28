@@ -6,7 +6,7 @@
 #include "Point.h"
 #include "Direction.h"
 #include "SensorInformation.h"
-namespace ns_robotic_cleaner
+namespace ns_robotic_cleaner_simulator
 {
 
 
@@ -25,7 +25,7 @@ private:
 public:
 	Sensor(void);
 	Sensor( const House * housePtr, const Point * pointPtr);
-	virtual ~Sensor(void) {}
+	~Sensor(void) override{} 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	SensorInformation Sense(); //: returns SensorInformation about the current location of the robot

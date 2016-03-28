@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "Simulator.h"
 
-using namespace ns_robotic_cleaner;
+using namespace ns_robotic_cleaner_simulator;
 
 int _tmain(int argc, _TCHAR* argv[])
 {

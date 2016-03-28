@@ -2,7 +2,7 @@
 #include "Simulator.h"
 
 
-namespace ns_robotic_cleaner
+namespace ns_robotic_cleaner_simulator
 {
 	Simulator::Simulator(void)
 	{

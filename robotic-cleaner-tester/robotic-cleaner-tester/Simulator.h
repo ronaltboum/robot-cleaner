@@ -7,7 +7,7 @@
 #include "House.h"
 
 
-namespace ns_robotic_cleaner
+namespace ns_robotic_cleaner_simulator
 {
 
 class Simulator
