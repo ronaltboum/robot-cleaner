@@ -81,17 +81,21 @@
   <ItemGroup>
     <ClInclude Include="AbstractAlgorithm.h" />
     <ClInclude Include="AbstractSensor.h" />
+    <ClInclude Include="Battery.h" />
     <ClInclude Include="Direction.h" />
     <ClInclude Include="House.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="RandomRobotAlgorithm.h" />
     <ClInclude Include="Sensor.h" />
     <ClInclude Include="SensorInformation.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Battery.cpp" />
     <ClCompile Include="House.cpp" />
+    <ClCompile Include="RandomRobotAlgorithm.cpp" />
     <ClCompile Include="robotic-cleaner-tester.cpp" />
     <ClCompile Include="Sensor.cpp" />
     <ClCompile Include="stdafx.cpp">

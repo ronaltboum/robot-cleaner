@@ -1,7 +1,7 @@
 #ifndef Sensor_h__
 #define Sensor_h__
 
-#include "abstractsensor.h"
+#include "abstractsensor.h"  //shouldn't it be #include "AbstractSensor.h"   ?
 #include "House.h"
 #include "Point.h"
 #include "Direction.h"
