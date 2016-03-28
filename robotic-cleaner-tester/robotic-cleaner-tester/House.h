@@ -126,6 +126,6 @@ inline int House::Clean(const Point & position)
 	return amountCleaned;
 }
 
-} // end of namespace ns_robotic_cleaner
+} // end of namespace ns_robotic_cleaner_simulator
 
 #endif //__HOUSE__H_

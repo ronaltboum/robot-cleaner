@@ -15,8 +15,16 @@ namespace ns_robotic_cleaner_simulator
 			//the simulator when the algorithm is initialized
 			map<string,int> configs;
 			const Battery& robotBattery;
+
+			////dummy - added for compilation of other 
+			//RandomRobotAlgorithm(){}
+			//~RandomRobotAlgorithm() override{}
+			//void setSensor(const AbstractSensor& sensor) override {}
+			//void setConfiguration(map<string, int> config) override{} 
+			//Direction step() override{return Direction::East;} 
+			//void aboutToFinish(int stepsTillFinishing) override{}
 	};
-} // end of namespace ns_robotic_cleaner
+} // end of namespace ns_robotic_cleaner_simulator
 
 //Class RandomRobotAlgorithm		 implements algorithm – includes random step()
 //	members (private):

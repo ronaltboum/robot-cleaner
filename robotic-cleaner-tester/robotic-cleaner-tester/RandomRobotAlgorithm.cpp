@@ -6,4 +6,4 @@ namespace ns_robotic_cleaner_simulator
 	
 
 
-} // end of namespace ns_robotic_cleaner
+} // end of namespace ns_robotic_cleaner_simulator_simulator

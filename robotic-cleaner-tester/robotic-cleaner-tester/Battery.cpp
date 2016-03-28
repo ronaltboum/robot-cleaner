@@ -24,4 +24,4 @@ namespace ns_robotic_cleaner_simulator
 	{
 		_battery_level = _battery_level + _recharge_rate;
 	}
-} // end of namespace ns_robotic_cleaner
+} // end of namespace ns_robotic_cleaner_simulator

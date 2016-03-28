@@ -28,12 +28,6 @@ namespace ns_robotic_cleaner_simulator
 	
 	};
 	
-	//
-	void AbstractAlgorithm::setSensor(const AbstractSensor& sensor)
-	{
-		int a = 1;
-		return;
-	}
 }
 
 #endif //__ABSTRACT_ALGORITHM__H_

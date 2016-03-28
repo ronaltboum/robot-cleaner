@@ -117,6 +117,6 @@ inline bool Point::Move(Direction d)
 }
 
 
-} // end of namespace ns_robotic_cleaner
+} // end of namespace ns_robotic_cleaner_simulator
 
 #endif // Point_h__

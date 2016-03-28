@@ -32,6 +32,6 @@ public:
 };
 
 
-} // end of namespace ns_robotic_cleaner
+} // end of namespace ns_robotic_cleaner_simulator
 
 #endif // Sensor_h__

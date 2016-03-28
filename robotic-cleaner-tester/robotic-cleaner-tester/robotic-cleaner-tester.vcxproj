@@ -81,6 +81,7 @@
   <ItemGroup>
     <ClInclude Include="AbstractAlgorithm.h" />
     <ClInclude Include="AbstractSensor.h" />
+    <ClInclude Include="AlgorithmSingleRun.h" />
     <ClInclude Include="Battery.h" />
     <ClInclude Include="Direction.h" />
     <ClInclude Include="House.h" />
@@ -94,6 +95,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AlgorithmSingleRun.cpp" />
     <ClCompile Include="Battery.cpp" />
     <ClCompile Include="House.cpp" />
     <ClCompile Include="RandomRobotAlgorithm.cpp" />
