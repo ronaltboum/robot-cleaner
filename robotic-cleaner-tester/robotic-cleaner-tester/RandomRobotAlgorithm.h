@@ -3,6 +3,10 @@
 
 #include "AbstractAlgorithm.h"
 #include "Battery.h"
+//#include "Direction.h"
+#include "Point.h"
+//#include "Sensor.h"
+#include <vector>
 
 namespace ns_robotic_cleaner_simulator
 {
@@ -16,15 +20,15 @@ namespace ns_robotic_cleaner_simulator
 			map<string,int> configs;
 			const Battery& robotBattery;
 
-			////dummy - added for compilation of other 
-			//RandomRobotAlgorithm(){}
-			//~RandomRobotAlgorithm() override{}
-			//void setSensor(const AbstractSensor& sensor) override {}
-			//void setConfiguration(map<string, int> config) override{} 
-			//Direction step() override{return Direction::East;} 
-			//void aboutToFinish(int stepsTillFinishing) override{}
+		public:
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			Direction step();
+			vector< Point > getPossibleDirections( const Point& currentLocation);  //returns the legal
+			//points we can go to, i.e. points which aren't walls or outside the house
+
+
 	};
-} // end of namespace ns_robotic_cleaner_simulator
+} // end of namespace ns_robotic_cleaner
 
 //Class RandomRobotAlgorithm		 implements algorithm – includes random step()
 //	members (private):
@@ -33,7 +37,9 @@ namespace ns_robotic_cleaner_simulator
 //const battery & robotBattery;
 //functions:
 //void SetSensor(const AbstractSensor & sensor)
-//	void SetConfiguration(map<string,int> configs)
+//void SetConfiguration(map<string,int> configs) Notice:  we don't implement since function
+	//ReadCongFromFile in class Simulator does the job instead
+
 //	Direction step()
 //	void AboutToFinish(StepTillFinishing)
 

@@ -28,7 +28,10 @@ public:
 	~Sensor(void) override{} 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	SensorInformation sense() const override; //: returns SensorInformation about the current location of the robot
+	SensorInformation Sense(); //: returns SensorInformation about the current location of the robot
+	unsigned int GetCurrentRow(); //returns row number of _currentPosition
+	unsigned int GetCurrrentCol();  //returns column number of _currentPosition
+
 };
 
 

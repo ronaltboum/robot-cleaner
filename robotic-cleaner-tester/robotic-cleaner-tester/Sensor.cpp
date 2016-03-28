@@ -31,4 +31,17 @@ namespace ns_robotic_cleaner_simulator
 		return returnedInfo;
 	}
 
+
+	unsigned int Sensor::GetCurrentRow()
+	{
+		unsigned int currentRow =  _currentPosition->GetRow();
+		return currentRow;
+	}
+
+	unsigned int Sensor::GetCurrrentCol()
+	{
+		unsigned int currentCol =  _currentPosition->GetCol();
+		return currentCol;
+	}
+
 }
