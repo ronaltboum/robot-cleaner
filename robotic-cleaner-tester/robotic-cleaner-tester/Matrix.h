@@ -21,56 +21,66 @@ namespace ns_robotic_cleaner
 	private:
 		
 		vector<T> inner_;
-		unsigned int dimx_, dimy_;
+		unsigned int cols, rows;
 
 	public:
 
-		Matrix (unsigned int dimx = 0, unsigned int dimy = 0)
-			: dimx_ (dimx), dimy_ (dimy)
+		Matrix (unsigned int rows = 0, unsigned int cols = 0)
+			: cols (cols), rows (rows)
 		{
-			inner_ = vector<char>(dimx_*dimy_);
+			inner_ = vector<char>(cols*rows);
 		}
 
 		~Matrix()
 		{
 		}
 
-		bool IsInsideMatrix(unsigned int x, unsigned int y) const
+		bool IsInsideMatrix(unsigned int row, unsigned int col) const
 		{
-			return (x < dimx_ && y < dimy_);
+			return (col < cols && row < rows);
 		}
 
 		bool IsInsideMatrix(const Point& location) const
 		{
-			return (location.GetX() < dimx_ && location.GetY() < dimy_);
+			return IsInsideMatrix(location.GetRow(), location.GetCol());
 		}
 
 		T& operator()(const Point& location)
 		{
 			assert( IsInsideMatrix(location) );
-			return inner_[dimx_*location.GetY() + location.GetX()];
+			int col = location.GetCol();
+			int row = location.GetRow();
+			return inner_[row*cols+col];
 		}
 
 		const T& operator()(const Point& location) const
 		{
 			assert( IsInsideMatrix(location) );
-			return inner_[dimx_*location.GetY() + location.GetX()];
+			int col = location.GetCol();
+			int row = location.GetRow();
+			return inner_[row*cols+col];
 		}
 
-		const T& operator()(unsigned int x, unsigned int y) const
+		T& operator()(unsigned int row, unsigned int col)
 		{
-			assert( IsInsideMatrix(x,y) );
-			return inner_[dimx_*y + x];
+			assert( IsInsideMatrix(row, col) );
+			return inner_[row*cols+col];
+		}
+
+		const T& operator()(unsigned int row, unsigned int col) const
+		{
+			assert( IsInsideMatrix(row, col) );
+			return inner_[row*cols+col];
 		}
 
 		unsigned int getWidth() const
 		{
-			return dimx_;
+			return cols;
 		}
 
 		unsigned int getHeight() const
 		{
-			return dimy_;
+			return rows;
 		}
 
 	};

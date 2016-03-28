@@ -15,21 +15,21 @@ class Point
 {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 private:
-	unsigned int _x;
-	unsigned int _y;
+	unsigned int _row;
+	unsigned int _col;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
-	Point(unsigned int x, unsigned int y);
+	Point(unsigned int row, unsigned int col);
 	Point(const Point& other);
 	virtual ~Point() {};
 	void operator=(const Point &other );
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Getters/Setters ~~~~~~~~~~~~~~~~~~~~~~~~~~
-	unsigned int GetX() const;
-	void SetX(unsigned int x);
-	unsigned int GetY() const;
-	void SetY(unsigned int y);
+	unsigned int GetRow() const;
+	void SetRow(unsigned int row);
+	unsigned int GetCol() const;
+	void SetCol(unsigned int col);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	bool Move(Direction d); //Gets a direction and move the point in this direction (not getting to minus numbers)
@@ -37,39 +37,39 @@ public:
 	
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ inline functions ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-inline Point::Point(unsigned int x = 0, unsigned int y = 0) : _x(x), _y(y)
+inline Point::Point(unsigned int row = 0, unsigned int col = 0) : _row(row), _col(col)
 {
 }
 
-inline Point::Point(const Point& other) : _x(other._x), _y(other._y)
+inline Point::Point(const Point& other) : _row(other._row), _col(other._col)
 {
 }
 
 inline void Point::operator=(const Point &other )
 { 
-	_x = other._x;
-	_y = other._y;
+	_row = other._row;
+	_col = other._col;
 }
 
 
-inline unsigned int Point::GetX() const
+inline unsigned int Point::GetRow() const
 {
-	return _x;
+	return _row;
 }
 
-inline void Point::SetX(unsigned int x)
+inline void Point::SetRow(unsigned int row)
 {
-	_x = x;
+	_row = row;
 }
 
-inline unsigned int Point::GetY() const
+inline unsigned int Point::GetCol() const
 {
-	return _y;
+	return _col;
 }
 
-inline void Point::SetY(unsigned int y)
+inline void Point::SetCol(unsigned int col)
 {
-	_y = y;
+	_col = col;
 }
 
 //************************************
@@ -85,20 +85,20 @@ inline bool Point::Move(Direction d)
 	switch (d)
 	{
 	case Direction::North :
-		_y++;
-		return true;
-	case Direction::East :
-		_x++;
-		return true;
-	case Direction::South :
-		if (_y > 0){
-			_y--;
+		if (_row > 0){
+			_row--;
 			return true;
 		}
 		break;
+	case Direction::South :
+		_row++;
+		return true;
+	case Direction::East :
+		_col++;
+		return true;
 	case Direction::West :
-		if (_x > 0){
-			_x--;
+		if (_col > 0){
+			_col--;
 			return true;
 		}
 		break;
