@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "AbstractAlgorithm.h"
 
-namespace ns_robotic_cleaner
+namespace ns_robotic_cleaner_simulator
 {
 	
 

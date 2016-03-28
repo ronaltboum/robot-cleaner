@@ -4,8 +4,9 @@
 #include "stdafx.h"
 #include "Point.h"
 #include "Matrix.h"
+#include <string>
 
-namespace ns_robotic_cleaner
+namespace ns_robotic_cleaner_simulator
 {
 
 	
@@ -19,10 +20,15 @@ class House
 //~~~~~~~~~~~~~~~~~~~~` defines ~~~~~~~~~~~~~~~~~~~~~~~~~`
 #define d_cWallLetter 'W'
 #define d_cDockingLetter 'D'
-#define IsRegularTile(tile) ((('0' <= tile) &&(tile <= '9')))
-#define IsDirty(tile) (!(('0' < tile) &&(tile <= '9')))
+#define	d_cSpaceLetter ' '
+#define IsDirtTile(tile) (('1' <= tile) && (tile <= '9'))
+#define IsSpaceTile(tile) ((tile == ' '))
+#define IsWallTile(tile) ((tile == d_cWallLetter))
+#define IsDockingTile(tile) ((tile == d_cDockingLetter))
+#define IsRegularTile(tile) (IsDirtTile(tile) || IsSpaceTile(tile))
 #define CharToNum(c) ((unsigned int)((c)-'0'))
-#define d_sAllowedCharacters std::string("DW0123456789")
+#define d_sAllowedCharacters string("DW 123456789")
+#define IsValidTile(tile) ((d_sAllowedCharacters.find(tile) != string::npos))
 
 //~~~~~~~~~~~~~~~~~~~~` members ~~~~~~~~~~~~~~~~~~~~~~~~~`
 	
@@ -41,14 +47,19 @@ public:
 	//~~~~~~~~~~~~~~~~~`functions~~~~~~~~~~~~~~~~
 	bool IsPositionValid(const Point & position) const; //: Gets a position and check if it's inside the house
 	bool IsWall(const Point & position) const;			//: Gets a valid position and check if it's a wall
+	bool IsDockingStation(const Point & position) const;			//: Gets a valid position and check if it's a docking station
+	bool IsClean() const; //: Check if all the tiles in the house are clean
 	unsigned int GetDirtLevel(const Point & position) const;		//: Gets a point and returns dirt level in it
+	Point * GetDockingStation() const;
 	void SetTile(const Point & position, char charToSetTo); //: Gets a valid position and change the tile in it to be charToSetTo
 	int Clean(const Point & position); //: Gets a valid position and if it's dirty set its dirt level to be current level -1
-	bool IsHouseClean() const; //: Check if all the tiles in the house are clean
 	void Print() const;
+	unsigned int SumOfDirtInTheHouse() const; //: Sums how much dirt there is in the house
+	
 
 private:
-	void PrintRow(int row) const;
+	void PrintRow(unsigned int row) const;
+	void ValidateWallsAndCharacters();
 };
 
 inline unsigned int House::GetHeight() const
@@ -73,7 +84,17 @@ inline bool House::IsPositionValid(const Point& position) const
 //************************************
 inline bool House::IsWall(const Point& position) const
 {
-	return floor(position) == d_cWallLetter;
+	return IsWallTile(floor(position));
+}
+
+//************************************
+// Brief:		Gets a valid position and check if it's a docking station
+// Access:    	public 
+// Pre:			IsPositionValid(position)
+//************************************
+inline bool House::IsDockingStation(const Point & position) const
+{
+	return IsDockingTile(floor(position));
 }
 
 //************************************
@@ -97,7 +118,7 @@ inline void House::SetTile(const Point & position, char charToSetTo)
 inline int House::Clean(const Point & position) 
 {
 	int amountCleaned = 0;
-	if(IsDirty(floor(position)))
+	if(IsDirtTile(floor(position)))
 	{
 		floor(position)--;
 		amountCleaned = 1;

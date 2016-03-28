@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Sensor.h"
 #include <array>
-namespace ns_robotic_cleaner
+namespace ns_robotic_cleaner_simulator
 {
 
 
@@ -14,7 +14,7 @@ namespace ns_robotic_cleaner
 		: _currentHouse(housePtr), _currentPosition(pointPtr){ }
 
 	// Brief: returns SensorInformation about the current location of the robot
-	SensorInformation Sensor::Sense()
+	SensorInformation Sensor::sense() const
 	{
 		assert(_currentPosition != NULL && _currentHouse != NULL); 
 		array<Direction, 4> Directions = {Direction(0),Direction(1), Direction(2), Direction(3)};

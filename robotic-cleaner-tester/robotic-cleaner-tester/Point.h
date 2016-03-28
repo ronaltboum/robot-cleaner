@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "Direction.h"
 
-namespace ns_robotic_cleaner
+namespace ns_robotic_cleaner_simulator
 {
 
 /*!
@@ -23,7 +23,11 @@ public:
 	Point(unsigned int row, unsigned int col);
 	Point(const Point& other);
 	virtual ~Point() {};
-	void operator=(const Point &other );
+	void operator=(const Point &other )
+	{
+		_row = other._row;
+		_col = other._col;
+	}
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Getters/Setters ~~~~~~~~~~~~~~~~~~~~~~~~~~
 	unsigned int GetRow() const;
@@ -33,9 +37,20 @@ public:
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	bool Move(Direction d); //Gets a direction and move the point in this direction (not getting to minus numbers)
+	bool operator ==(const Point& other)
+	{
+		return (_col == other._col && _row == other._row);
+	}
+
+	bool operator !=(const Point& other)
+	{
+		return !(*this == other);
+	}
+
 };
 	
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ inline functions ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 inline Point::Point(unsigned int row = 0, unsigned int col = 0) : _row(row), _col(col)
 {
@@ -43,12 +58,6 @@ inline Point::Point(unsigned int row = 0, unsigned int col = 0) : _row(row), _co
 
 inline Point::Point(const Point& other) : _row(other._row), _col(other._col)
 {
-}
-
-inline void Point::operator=(const Point &other )
-{ 
-	_row = other._row;
-	_col = other._col;
 }
 
 
@@ -106,6 +115,7 @@ inline bool Point::Move(Direction d)
 	return false;  //we get here if direction is stay, or in case we are trying to move to negative
 	//coordinates of the matrix.  
 }
+
 
 } // end of namespace ns_robotic_cleaner
 

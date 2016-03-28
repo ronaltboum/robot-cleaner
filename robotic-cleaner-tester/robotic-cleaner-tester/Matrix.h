@@ -8,7 +8,7 @@
 
 using namespace std;
 
-namespace ns_robotic_cleaner
+namespace ns_robotic_cleaner_simulator
 {
 
 	template <typename T> class Matrix
