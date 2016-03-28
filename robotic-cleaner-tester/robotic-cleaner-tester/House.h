@@ -31,6 +31,7 @@ private:
 	
 public:
 	House(const unsigned int houseWidth, const unsigned int houseHeight);
+	House(); // :Default C'tor using hardcoded house
 	virtual ~House() {}
 	
 	//~~~~~~~~~~~~~~~~~`getters~~~~~~~~~~~~~~~~`
@@ -44,6 +45,10 @@ public:
 	void SetTile(const Point & position, char charToSetTo); //: Gets a valid position and change the tile in it to be charToSetTo
 	int Clean(const Point & position); //: Gets a valid position and if it's dirty set its dirt level to be current level -1
 	bool IsHouseClean() const; //: Check if all the tiles in the house are clean
+	void Print() const;
+
+private:
+	void PrintRow(int row) const;
 };
 
 inline unsigned int House::GetHeight() const

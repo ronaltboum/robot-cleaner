@@ -48,18 +48,12 @@
     <ClInclude Include="Sensor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Battery.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RandomRobotAlgorithm.h">
+    <ClInclude Include="Simulator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="robotic-cleaner-tester.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="House.cpp">
@@ -68,10 +62,10 @@
     <ClCompile Include="Sensor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Battery.cpp">
+    <ClCompile Include="Simulator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RandomRobotAlgorithm.cpp">
+    <ClCompile Include="robotic-cleaner-tester.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -79,5 +73,6 @@
     <None Include="..\..\..\..\..\Dropbox\אוניברסיטה\2017\AP\2016\robotic-cleaner-tester HLD (high level design).docx">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Simulator" />
   </ItemGroup>
 </Project>
