@@ -26,29 +26,13 @@ private:
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
 	RandomRobotAlgorithm(void);
-	RandomRobotAlgorithm(AbstractSensor& sensor, map<string, int> config)
-		: robotSensor(sensor)
-	{
-		setSensor(sensor);
-		setConfiguration(config);
-	}
+	RandomRobotAlgorithm(AbstractSensor& sensor, map<string, int> config);
 	~RandomRobotAlgorithm(void){}
 
 public:
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-	Direction step()
-	{
-		SensorInformation info = robotSensor.sense();
-		vector<Direction> possibleDirections;
-		for(int i=0;i<4;++i){
-			if(info.isWall[i])
-				possibleDirections.push_back(Direction(i));
-		}
-		possibleDirections.push_back(Direction::Stay);
-		int chosenDirectionIndex = rand() % possibleDirections.size();
-		return possibleDirections.at(chosenDirectionIndex);
-	}
+	Direction step();
 
 	void setSensor(const AbstractSensor& sensor) override
 	{

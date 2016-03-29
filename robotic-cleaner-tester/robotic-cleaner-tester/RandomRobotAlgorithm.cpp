@@ -4,6 +4,29 @@
 namespace ns_robotic_cleaner_simulator
 {
 
+	RandomRobotAlgorithm::RandomRobotAlgorithm(AbstractSensor& sensor, map<string, int> config)
+		: robotSensor(sensor)
+	{
+		{
+			setSensor(sensor);
+			setConfiguration(config);
+		}
+	}
+
+	RandomRobotAlgorithm::Direction step()
+	{
+		SensorInformation info = robotSensor.sense();
+		vector<Direction> possibleDirections;
+		for(int i=0;i<4;++i){
+			if(info.isWall[i])
+				possibleDirections.push_back(Direction(i));
+		}
+		possibleDirections.push_back(Direction::Stay);
+		int chosenDirectionIndex = rand() % possibleDirections.size();
+		return possibleDirections.at(chosenDirectionIndex);
+	}
+
+
 
 
 

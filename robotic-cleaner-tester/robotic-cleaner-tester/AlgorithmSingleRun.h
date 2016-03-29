@@ -14,7 +14,7 @@ class AlgorithmSingleRun
 {
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 private:
-	int _simulationSteps; // steps commited in the run
+	int _simulationSteps; // steps committed in the run
 	//AbstractAlgorithm &_currentAlgorithm;
 	Battery _robotBattery;
 	House &_currentHouse;
