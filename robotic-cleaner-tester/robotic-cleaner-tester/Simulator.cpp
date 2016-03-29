@@ -15,7 +15,7 @@ namespace ns_robotic_cleaner_simulator
 		_houses.push_back(new House());
 	}
 
-	Simulator::Simulator(_TCHAR * configFilePath)
+	Simulator::Simulator(char * configFilePath)
 	{
 		ReadConfigFromFile(configFilePath);
 		_defaultBattery = new Battery(_configs);
@@ -25,11 +25,11 @@ namespace ns_robotic_cleaner_simulator
 	//************************************
 	// Brief:		Gets a folder with house files and loads them to memory.
 	//				not implemented yet - just load hardcoded house
-	// Gets:	 	_TCHAR * houseFolder - string of the folder path
+	// Gets:	 	char * houseFolder - string of the folder path
 	// Returns:   	int - the number of houses loaded successfully
 	// Post:		_houses
 	//************************************
-	int Simulator::LoadHouses( _TCHAR * houseFolder)
+	int Simulator::LoadHouses( char * houseFolder)
 	{
 		House * h = new House();
 		if(h->isValid()){
@@ -69,16 +69,20 @@ namespace ns_robotic_cleaner_simulator
 			delete *j;
 		}
 		_algorithms.clear();
+		delete _defaultBattery;
 	}
 
-	void Simulator::SimulateAll()
+	void Simulator::RunAll()
 	{
-
-		_houses.at(0)->Print();
+		int runNum = _runs.size();
+		for( int runIndex = 0 ; runIndex < runNum; ++runIndex)
+		{
+			_runs[runIndex]->Run();
+		}
 	}
 
 	//TODO: Add space removes and also handle problemtic values - check that the parameter name is correct
-	void Simulator::ReadConfigFromFile(_TCHAR * configFilePath)
+	void Simulator::ReadConfigFromFile(char * configFilePath)
 	{
 		string line;
 		ifstream myfile(configFilePath);
@@ -105,6 +109,7 @@ namespace ns_robotic_cleaner_simulator
 		for( int houseIndex = 0 ; houseIndex < houseNum; ++houseIndex){
 			for( int algorithmIndex = 0 ; algorithmIndex < algorithmNum; ++algorithmIndex){
 				AlgorithmSingleRun * asr = new AlgorithmSingleRun(_configs, _algorithms[algorithmIndex],*_defaultBattery,_houses[houseIndex]);	
+				_runs.push_back(asr);
 			}
 		}
 	}

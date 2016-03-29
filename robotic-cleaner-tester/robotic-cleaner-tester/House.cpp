@@ -111,16 +111,29 @@ namespace ns_robotic_cleaner_simulator
 		return 0;
 	}
 
+	//************************************
+	// Brief:		Gets _ and returns
+	// Gets:	 	const Point & location
+	// Returns:   	bool
+	// Access:    	public 
+	// Pre:			-
+	// Post:		-
+	//************************************
+	bool House::IsDirty(const Point & location) const
+	{
+		return (GetDirtLevel(location) > 0);
+	}
+
 	// Brief:		Check if all the tiles in the house are clean
 	bool House::IsClean() const
 	{
-		unsigned int hIterator=0, wIterator=0;
-		unsigned int height = GetHeight(), width = GetWidth();
-		char tileContent;
-		for(;hIterator<height;++hIterator){
-			for(;wIterator<width;++wIterator){
-				tileContent = floor(wIterator,hIterator);
-				if (IsDirtTile(tileContent))
+		unsigned int lastColIndex = GetWidth() - 2; //not including \0 col in the end
+		unsigned int lastRowIndex = GetHeight() - 1;
+		for(unsigned int row = 0; row <= lastRowIndex; ++row) 
+		{
+			for(unsigned int col = 0; col <= lastColIndex; ++col) 
+			{
+				if(IsDirtTile(floor(row,col) ))
 				{
 					return false;
 				}

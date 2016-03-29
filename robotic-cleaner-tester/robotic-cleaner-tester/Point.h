@@ -1,7 +1,6 @@
 #ifndef Point_h__
 #define Point_h__
 
-#include "stdafx.h"
 #include "Direction.h"
 
 namespace ns_robotic_cleaner_simulator

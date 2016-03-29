@@ -1,7 +1,6 @@
 #ifndef __MATRIX__H_
 #define __MATRIX__H_
 
-#include "stdafx.h"
 #include "Point.h"
 #include <vector>
 #include <assert.h>

@@ -19,7 +19,9 @@ private:
 	Battery * _robotBattery;
 	House * _currentHouse;
 	Point * _currentPosition;
-	bool _valid;
+	int _numberOfStepsCommited;
+	AbstractSensor * _algorithmSensor;
+	bool _canStillRun; // boolean which is false after made illegal move, when battery is empty, or when members are uninitiallized
 	int _dirtCollected;
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,6 +34,7 @@ public:
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
 	void Run();
+	void HandleNewMove();
 };
 
 } //end of namespace ns_robotic_cleaner_simulator

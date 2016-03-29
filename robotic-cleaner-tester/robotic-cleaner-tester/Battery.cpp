@@ -47,6 +47,8 @@ namespace ns_robotic_cleaner_simulator
 	void Battery::Recharge()
 	{
 		_battery_level = _battery_level + _recharge_rate;
+		if(_battery_level > _battery_capacity)
+			_battery_level = _battery_capacity;
 	}
 
 	void Battery::initialize()

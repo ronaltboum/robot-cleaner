@@ -25,13 +25,13 @@ private:
 
 public:
 	Simulator(void);
-	Simulator(_TCHAR * configFilePath);
+	Simulator(char * configFilePath);
 	~Simulator(void);
 
-	void SimulateAll(void);
-	void ReadConfigFromFile(_TCHAR * configFilePath);
+	void RunAll(void);
+	void ReadConfigFromFile(char * configFilePath);
 	void InitializeRuns();
-	int LoadHouses( _TCHAR * houseFolder);
+	int LoadHouses( char * houseFolder);
 	int LoadAlgorithms();
 };
 

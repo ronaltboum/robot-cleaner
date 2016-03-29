@@ -1,7 +1,6 @@
 #ifndef __HOUSE__H_
 #define __HOUSE__H_
 
-#include "stdafx.h"
 #include "Point.h"
 #include "Matrix.h"
 #include <string>
@@ -50,6 +49,7 @@ public:
 	bool IsPositionValid(const Point & position) const; //: Gets a position and check if it's inside the house
 	bool IsWall(const Point & position) const;			//: Gets a valid position and check if it's a wall
 	bool IsDockingStation(const Point & position) const;			//: Gets a valid position and check if it's a docking station
+	bool IsDirty(const Point & location) const;
 	bool IsClean() const; //: Check if all the tiles in the house are clean
 	unsigned int GetDirtLevel(const Point & position) const;		//: Gets a point and returns dirt level in it
 	Point * GetDockingStation() const;
@@ -59,7 +59,7 @@ public:
 	void Print(const Point & currentPosition) const; //prints the house while the current position marked with '*'
 	unsigned int SumOfDirtInTheHouse() const; //: Sums how much dirt there is in the house
 	bool isValid() const; // check that the house is valid
-
+	
 private:
 	void PrintRow(unsigned int row) const;
 	void ValidateWallsAndCharacters();

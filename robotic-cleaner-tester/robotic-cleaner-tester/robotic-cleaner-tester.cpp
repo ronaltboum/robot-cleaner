@@ -1,36 +1,35 @@
  //robotic-cleaner-tester.cpp : Defines the entry point for the console application.
 #include "stdafx.h"
 #include "Simulator.h"
-#include <winnt.rh>
 #include "AbstractAlgorithm.h"
 #include "RandomRobotAlgorithm.h"
 #include <time.h>
 
 using namespace ns_robotic_cleaner_simulator;
 
-int _tmain(int argc, _TCHAR* argv[])
+int _tmain(int argc, char * argv[])
 {
 	srand(time(NULL));
-	_TCHAR* configFilePath = TEXT("config.ini");
-	_TCHAR* houseFolder = TEXT(".\\");
+	char * configFilePath = "config.ini";
+	char * houseFolder = ".\\";
 	if(argc >= 3) 
 	{
-		if (!_tcscmp(argv[1], _T("–config")))
+		if ( ! strcmp(argv[1], "–config"))
 		{
 			configFilePath = argv[2];
 		}
-		if (!_tcscmp(argv[1], _T("–house_path")))
+		if (! strcmp(argv[1], "–house_path"))
 		{
 			houseFolder = argv[2];
 		}
 	}
 	if(argc == 5) 
 	{
-		if (!_tcscmp(argv[3], _T("–config")))
+		if ( ! strcmp(argv[3], "–config"))
 		{
 			configFilePath = argv[4];
 		}
-		if (!_tcscmp(argv[3], _T("–house_path")))
+		if ( ! strcmp(argv[3], "–house_path"))
 		{
 			houseFolder = argv[4];
 		}
@@ -40,7 +39,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	s.LoadAlgorithms();
 	s.InitializeRuns();
 
-	s.SimulateAll();
+	s.RunAll();
 	std::cout << "main method";
 	getchar();
 	return 0;
