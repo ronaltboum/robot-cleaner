@@ -6,6 +6,7 @@
 #include <iostream>
 #include "House.h"
 #include <map>
+#include "AlgorithmSingleRun.h"
 
 
 namespace ns_robotic_cleaner_simulator
@@ -17,9 +18,9 @@ private:
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	//Battery  startingBattery;
 	vector<House *> houses;
-	//vector<AbstractAlgorithm *> algorithms;
+	vector<AbstractAlgorithm *> algorithms;
 	map<string, int> configs;
-	//vector< AlgorithmSingleRun> runs;
+	vector< AlgorithmSingleRun> runs;
 
 public:
 	Simulator(void);

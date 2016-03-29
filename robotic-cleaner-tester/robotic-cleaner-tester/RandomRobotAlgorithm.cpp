@@ -4,24 +4,30 @@
 namespace ns_robotic_cleaner_simulator
 {
 
-	//vector< Point > RandomRobotAlgorithm::getPossibleDirections( const Point& currentLocation) 
-	////returns the legal points we can go to, i.e. points which aren't walls or outside the house
-	//{
-	//	int currentRow = ((Sensor)robotSensor)->GetCurrentRow();
-	//	vector<Point>  possibleDirections;
-	//	SensorInformation info = robotSensor.sense();
-	//	//first we push currentPoint to vector<Point> to represent the stay option
-	//	//Point current = robotSensor._currentPosition;
-	//	 //possibleDirections.push_back(pair<int, int>(iNew, jNew));
-	//	//Point neighborPoint = Point(*_currentPosition);
-	//	for (int i=0; i<4; i++)
-	//	{
-	//		if (info.isWall[i] == false)  //add point to possibleDirections
-	//		{
-	//			//Point nighborPoint = Point()
-	//		}
-	//	}
-	//}
+	RandomRobotAlgorithm::RandomRobotAlgorithm(AbstractSensor& sensor, map<string, int> config)
+		: robotSensor(sensor)
+	{
+		{
+			setSensor(sensor);
+			setConfiguration(config);
+		}
+	}
+
+	RandomRobotAlgorithm::Direction step()
+	{
+		SensorInformation info = robotSensor.sense();
+		vector<Direction> possibleDirections;
+		for(int i=0;i<4;++i){
+			if(info.isWall[i])
+				possibleDirections.push_back(Direction(i));
+		}
+		possibleDirections.push_back(Direction::Stay);
+		int chosenDirectionIndex = rand() % possibleDirections.size();
+		return possibleDirections.at(chosenDirectionIndex);
+	}
+
+
+
 
 
 } // end of namespace ns_robotic_cleaner_simulator_simulator

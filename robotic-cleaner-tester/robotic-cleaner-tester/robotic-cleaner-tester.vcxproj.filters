@@ -92,5 +92,8 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Simulator" />
+    <None Include="config.ini">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
