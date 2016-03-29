@@ -3,6 +3,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "AbstractAlgorithm.h"
+#include "RandomRobotAlgorithm.h"
 using namespace std;
 
 
@@ -15,8 +17,13 @@ namespace ns_robotic_cleaner_simulator
 
 	Simulator::Simulator(_TCHAR * configFilePath, _TCHAR * houseFolder)
 	{
-		houses.push_back(new House());
+		House * h = new House();
+		Point * p = h->GetDockingStation();
+		houses.push_back(h);
 		ReadConfigFromFile(configFilePath);
+		Sensor * s = new Sensor(h,p);
+		AbstractAlgorithm * randAlgorithm = new RandomRobotAlgorithm(*s,configs);
+		//TODO: add Algorithm single run
 	}
 
 
@@ -34,6 +41,7 @@ namespace ns_robotic_cleaner_simulator
 		houses.at(0)->Print();
 	}
 
+	//TODO: Add space removes and also handle problemtic values - check that the parameter name is correct
 	void Simulator::ReadConfigFromFile(_TCHAR * configFilePath)
 	{
 		string line;

@@ -1,10 +1,11 @@
+#ifndef AlgorithmSingleRun_h__
+#define AlgorithmSingleRun_h__
+
 #include "AbstractAlgorithm.h"
 #include "Battery.h"
 #include "House.h"
 #include "Point.h"
 #include "RandomRobotAlgorithm.h"
-#ifndef AlgorithmSingleRun_h__
-#define AlgorithmSingleRun_h__
 
 namespace ns_robotic_cleaner_simulator
 {
