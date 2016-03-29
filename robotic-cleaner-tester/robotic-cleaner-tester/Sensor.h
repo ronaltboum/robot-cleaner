@@ -1,10 +1,11 @@
 #ifndef Sensor_h__
 #define Sensor_h__
 
-#include "abstractsensor.h"  //shouldn't it be #include "AbstractSensor.h"   ?
+//#include "abstractsensor.h"  //shouldn't it be #include "AbstractSensor.h"   ?
+#include "AbstractSensor.h"
 #include "House.h"
-#include "Point.h"
-#include "Direction.h"
+//#include "Point.h"   //don't need it because House.h includes Point.h
+//#include "Direction.h"  //don't need it because Point.h includes Direction.h
 #include "SensorInformation.h"
 namespace ns_robotic_cleaner_simulator
 {
