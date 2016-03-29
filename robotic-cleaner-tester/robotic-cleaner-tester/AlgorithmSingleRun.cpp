@@ -2,6 +2,8 @@
 #include "AlgorithmSingleRun.h"
 #include <windows.h>
 
+//comment just to test git
+
 
 namespace ns_robotic_cleaner_simulator
 {
