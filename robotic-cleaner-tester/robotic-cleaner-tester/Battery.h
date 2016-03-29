@@ -2,6 +2,9 @@
 #define __BATTERY__H_
 
 #include "stdafx.h"
+#include <map>
+#include <string>
+using namespace std;
 
 namespace ns_robotic_cleaner_simulator
 {
@@ -18,6 +21,11 @@ namespace ns_robotic_cleaner_simulator
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		public:
 			Battery(unsigned int battery_capacity, unsigned int recharge_rate, unsigned int consumption_rate);
+			Battery(const map<string,int> & configs);
+			Battery(const Battery & other); // copy c'tor
+			~Battery(void) {} // D'tor
+		private: 
+			void initialize(); // a function that is called in the beggining of each C'tor
 	
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Getters/Setters ~~~~~~~~~~~~~~~~~~~~~~~~~~
 		unsigned int GetBattery_capacity() const;
@@ -41,9 +49,12 @@ namespace ns_robotic_cleaner_simulator
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ inline functions ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 		inline Battery::Battery(unsigned int battery_capacity = 0, unsigned int recharge_rate = 0, 
-			unsigned int consumption_rate = 0) : _battery_capacity(battery_capacity),
-			_recharge_rate(recharge_rate), _consumption_rate(consumption_rate)
+			unsigned int consumption_rate = 0) 
 		{
+			initialize();
+			_battery_capacity = battery_capacity;
+			_recharge_rate = recharge_rate;
+			_consumption_rate = consumption_rate;
 			_battery_level = _battery_capacity;
 		}
 

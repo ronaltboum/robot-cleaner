@@ -13,7 +13,7 @@ namespace ns_robotic_cleaner_simulator
 		}
 	}
 
-	RandomRobotAlgorithm::Direction step()
+	Direction RandomRobotAlgorithm::step()
 	{
 		SensorInformation info = robotSensor.sense();
 		vector<Direction> possibleDirections;

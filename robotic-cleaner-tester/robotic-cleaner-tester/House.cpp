@@ -132,7 +132,6 @@ namespace ns_robotic_cleaner_simulator
 	void House::PrintRow(unsigned int row) const
 	{
 		assert(row < GetHeight() && row >= 0);
-		unsigned int rows = GetHeight();
 		unsigned int cols = GetWidth();
 		for(unsigned int col = 0; col < cols; ++col) {
 			cout << floor(row,col);
@@ -142,11 +141,26 @@ namespace ns_robotic_cleaner_simulator
 	void House::Print() const
 	{
 		unsigned int rows = GetHeight();
-		unsigned int cols = GetWidth();
 		for(unsigned int row = 0; row < rows; ++row) {
 			PrintRow(row);
 			cout << endl;
 		}
+	}
+
+	void House::Print(const Point & currentPosition) const
+	{
+		unsigned int rows = GetHeight();
+		unsigned int cols = GetWidth();
+		for(unsigned int row = 0; row < rows; ++row) {
+			for(unsigned int col = 0; col < cols; ++col) {
+				if(currentPosition == Point(row,col))
+					cout << '*';
+				else
+					cout << floor(row,col);
+			}
+			cout << endl;
+		}
+
 	}
 
 	unsigned int House::SumOfDirtInTheHouse() const
@@ -167,6 +181,37 @@ namespace ns_robotic_cleaner_simulator
 			}
 		}
 		return sum;
+	}
+
+	bool House::isValid() const /* check that the house is valid */ 
+	{
+		bool dockingStationExists = false;
+		unsigned int lastColIndex = GetWidth() - 2; //not including \0 col in the end
+		unsigned int lastRowIndex = GetHeight() - 1;
+		if((lastColIndex < 2) || (lastRowIndex < 2)) //at least 3x3 in order to be surrounded by walls
+		{
+			return false;
+		}
+		for(unsigned int row = 0; row <= lastRowIndex; ++row) 
+		{
+			for(unsigned int col = 0; col <= lastColIndex; ++col) 
+			{
+				if( ! IsValidTile( floor(row,col) ) )
+					return false;
+				if((col == lastColIndex) || (col == 0) || (row == lastRowIndex) || (row == 0))
+				{
+					if( ! IsWallTile(floor(row,col)) )
+						return false;
+				}
+				else if( IsDockingTile(floor(row,col)) )
+				{
+					if(dockingStationExists)
+						return false; //two docking stations
+					dockingStationExists = true;
+				}
+			}
+		}
+		return dockingStationExists;
 	}
 
 

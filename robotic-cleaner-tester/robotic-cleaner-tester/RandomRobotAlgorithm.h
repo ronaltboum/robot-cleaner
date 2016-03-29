@@ -25,13 +25,11 @@ private:
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
-	RandomRobotAlgorithm(void);
 	RandomRobotAlgorithm(AbstractSensor& sensor, map<string, int> config);
 	~RandomRobotAlgorithm(void){}
 
 public:
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 	Direction step();
 
 	void setSensor(const AbstractSensor& sensor) override
@@ -45,9 +43,6 @@ public:
 	}
 
 	void aboutToFinish(int stepsTillFinishing) override{}
-
-	//points we can go to, i.e. points which aren't walls or outside the house
-
 
 };
 

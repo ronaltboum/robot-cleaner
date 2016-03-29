@@ -37,12 +37,12 @@ public:
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	bool Move(Direction d); //Gets a direction and move the point in this direction (not getting to minus numbers)
-	bool operator ==(const Point& other)
+	bool operator ==(const Point& other) const
 	{
 		return (_col == other._col && _row == other._row);
 	}
 
-	bool operator !=(const Point& other)
+	bool operator !=(const Point& other) const
 	{
 		return !(*this == other);
 	}

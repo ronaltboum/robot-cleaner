@@ -29,6 +29,8 @@ class House
 #define CharToNum(c) ((unsigned int)((c)-'0'))
 #define d_sAllowedCharacters string("DW 123456789")
 #define IsValidTile(tile) ((d_sAllowedCharacters.find(tile) != string::npos))
+//for underlining the docking point
+#define underline "\33[4m"
 
 //~~~~~~~~~~~~~~~~~~~~` members ~~~~~~~~~~~~~~~~~~~~~~~~~`
 	
@@ -54,8 +56,9 @@ public:
 	void SetTile(const Point & position, char charToSetTo); //: Gets a valid position and change the tile in it to be charToSetTo
 	int Clean(const Point & position); //: Gets a valid position and if it's dirty set its dirt level to be current level -1
 	void Print() const;
+	void Print(const Point & currentPosition) const; //prints the house while the current position marked with '*'
 	unsigned int SumOfDirtInTheHouse() const; //: Sums how much dirt there is in the house
-	
+	bool isValid() const; // check that the house is valid
 
 private:
 	void PrintRow(unsigned int row) const;

@@ -12,33 +12,69 @@ namespace ns_robotic_cleaner_simulator
 {
 	Simulator::Simulator(void)
 	{
-		houses.push_back(new House());
+		_houses.push_back(new House());
 	}
 
-	Simulator::Simulator(_TCHAR * configFilePath, _TCHAR * houseFolder)
+	Simulator::Simulator(_TCHAR * configFilePath)
+	{
+		ReadConfigFromFile(configFilePath);
+		_defaultBattery = new Battery(_configs);
+	}
+
+
+	//************************************
+	// Brief:		Gets a folder with house files and loads them to memory.
+	//				not implemented yet - just load hardcoded house
+	// Gets:	 	_TCHAR * houseFolder - string of the folder path
+	// Returns:   	int - the number of houses loaded successfully
+	// Post:		_houses
+	//************************************
+	int Simulator::LoadHouses( _TCHAR * houseFolder)
 	{
 		House * h = new House();
-		Point * p = h->GetDockingStation();
-		houses.push_back(h);
-		ReadConfigFromFile(configFilePath);
-		Sensor * s = new Sensor(h,p);
-		AbstractAlgorithm * randAlgorithm = new RandomRobotAlgorithm(*s,configs);
-		//TODO: add Algorithm single run
+		if(h->isValid()){
+			_houses.push_back(h);
+			//h->Print();
+			return 1;
+		}
+		h->Print();
+		return 0;
 	}
+
+	//************************************
+	// Brief:		Load algorithms from libraries
+	//				not implemented yet - just load random-move algorithm
+	// Returns:   	int - the number of algorithm loaded successfully
+	// Post:		_algorithms
+	//************************************
+	int Simulator::LoadAlgorithms()
+	{
+		Sensor dummySensor = Sensor();
+		AbstractAlgorithm * randAlgorithm = new RandomRobotAlgorithm(dummySensor,_configs);
+		_algorithms.push_back(randAlgorithm);
+		return 1;
+	}
+
+	
 
 
 	
 	Simulator::~Simulator(void)
 	{
-		for (auto i = houses.begin(); i != houses.end(); ++i) {
+		for (auto i = _houses.begin(); i != _houses.end(); ++i) {
 			delete *i;
 		}
-		houses.clear();
+		_houses.clear();
+		for (auto j = _algorithms.begin(); j != _algorithms.end(); ++j) {
+			delete *j;
+		}
+		_algorithms.clear();
 	}
 
 	void Simulator::SimulateAll()
 	{
-		houses.at(0)->Print();
+
+		_houses.at(0)->Print();
 	}
 
 	//TODO: Add space removes and also handle problemtic values - check that the parameter name is correct
@@ -54,12 +90,23 @@ namespace ns_robotic_cleaner_simulator
 				string parmaterName = line.substr(0,equalPosition);
 				string paramaterValueString = line.substr (equalPosition+1);     // get from "=" + 1 to the end
 				int parameterValue = stoi(paramaterValueString);
-				configs.insert(pair<string,int>(parmaterName,parameterValue));
+				_configs.insert(pair<string,int>(parmaterName,parameterValue));
 			}
 			myfile.close();
 		}
 
 		else cout << "Unable to open file"; 
+	}
+
+	void Simulator::InitializeRuns()
+	{
+		int houseNum = _houses.size();
+		int algorithmNum = _algorithms.size();
+		for( int houseIndex = 0 ; houseIndex < houseNum; ++houseIndex){
+			for( int algorithmIndex = 0 ; algorithmIndex < algorithmNum; ++algorithmIndex){
+				AlgorithmSingleRun * asr = new AlgorithmSingleRun(_configs, _algorithms[algorithmIndex],*_defaultBattery,_houses[houseIndex]);	
+			}
+		}
 	}
 
 } //end of namespace ns_robotic_cleaner_simulator

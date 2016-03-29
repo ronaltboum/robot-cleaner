@@ -17,18 +17,22 @@ class Simulator
 private:
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	//Battery  startingBattery;
-	vector<House *> houses;
-	vector<AbstractAlgorithm *> algorithms;
-	map<string, int> configs;
-	vector< AlgorithmSingleRun> runs;
+	vector<House *> _houses;
+	vector<AbstractAlgorithm *> _algorithms;
+	map<string, int> _configs;
+	vector< AlgorithmSingleRun *> _runs;
+	Battery * _defaultBattery;
 
 public:
 	Simulator(void);
-	Simulator(_TCHAR * configFilePath, _TCHAR * houseFolder);
+	Simulator(_TCHAR * configFilePath);
 	~Simulator(void);
 
 	void SimulateAll(void);
 	void ReadConfigFromFile(_TCHAR * configFilePath);
+	void InitializeRuns();
+	int LoadHouses( _TCHAR * houseFolder);
+	int LoadAlgorithms();
 };
 
 } // end of namespace ns_robotic_cleaner_simulator

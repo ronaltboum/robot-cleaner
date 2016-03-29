@@ -35,7 +35,11 @@ int _tmain(int argc, _TCHAR* argv[])
 			houseFolder = argv[4];
 		}
 	}
-	Simulator s = Simulator(configFilePath, houseFolder);
+	Simulator s = Simulator(configFilePath);
+	s.LoadHouses(houseFolder);
+	s.LoadAlgorithms();
+	s.InitializeRuns();
+
 	s.SimulateAll();
 	std::cout << "main method";
 	getchar();

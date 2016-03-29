@@ -14,17 +14,24 @@ class AlgorithmSingleRun
 {
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 private:
-	int _simulationSteps; // steps committed in the run
-	//AbstractAlgorithm &_currentAlgorithm;
-	Battery _robotBattery;
-	House &_currentHouse;
-	Point _currentPosition;
+	const map<string, int> & _configs;
+	AbstractAlgorithm * _currentAlgorithm;
+	Battery * _robotBattery;
+	House * _currentHouse;
+	Point * _currentPosition;
 	bool _valid;
 	int _dirtCollected;
 
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
+	AlgorithmSingleRun(const map<string, int> & configs, AbstractAlgorithm * currentAlgorithmPointer, Battery robotBattery, House * currentHousePointer);
 	AlgorithmSingleRun(void);
 	~AlgorithmSingleRun(void);
+	void initialize();
+
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+public:
+	void Run();
 };
 
 } //end of namespace ns_robotic_cleaner_simulator
