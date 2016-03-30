@@ -3,7 +3,7 @@
 
 #include "AbstractSensor.h"
 #include "House.h"
-#include <array>
+
 namespace ns_robotic_cleaner_simulator
 {
 
@@ -23,16 +23,15 @@ private:
 public:
 	Sensor(void);
 	Sensor( const House * housePtr, const Point * pointPtr);
-	~Sensor(void) override{} 
+	~Sensor(void) {};
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	SensorInformation sense() const override; //: returns SensorInformation about the current location of the robot
+	SensorInformation sense() const; //: returns SensorInformation about the current location of the robot
 	unsigned int GetCurrentRow(); //returns row number of _currentPosition
 	unsigned int GetCurrrentCol();  //returns column number of _currentPosition
 	const Point * GetCurrentPosition() const {return _currentPosition;}
 
 };
-
 
 } // end of namespace ns_robotic_cleaner_simulator
 

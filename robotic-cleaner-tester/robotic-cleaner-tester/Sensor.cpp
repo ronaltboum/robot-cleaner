@@ -14,10 +14,10 @@ namespace ns_robotic_cleaner_simulator
 	SensorInformation Sensor::sense() const
 	{
 		assert(_currentPosition != NULL && _currentHouse != NULL);
-		array<Point,4> pointsAfterMoving = {*_currentPosition, *_currentPosition, *_currentPosition, *_currentPosition};
+		Point pointsAfterMoving[4] = {*_currentPosition, *_currentPosition, *_currentPosition, *_currentPosition};
 		SensorInformation returnedInfo;
 		returnedInfo.dirtLevel = _currentHouse->GetDirtLevel(*_currentPosition);
-		for(unsigned int i=0; i< pointsAfterMoving.size(); i++)
+		for(unsigned int i=0; i< 4; i++)
 		{
 			bool canMove = pointsAfterMoving[i].Move(Direction(i));
 			if( ! canMove)

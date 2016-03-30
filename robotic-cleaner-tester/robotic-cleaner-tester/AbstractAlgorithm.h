@@ -2,6 +2,7 @@
 #define __ABSTRACT_ALGORITHM__H_
 
 #include <map>
+#include <string> //added in order to solve makefile conflicts
 using namespace std;
 
 #include "AbstractSensor.h"

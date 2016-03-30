@@ -1,5 +1,7 @@
 //#include "stdafx.h"
 #include "Simulator.h"
+#include <string>
+using namespace std;
 
 namespace ns_robotic_cleaner_simulator
 {
@@ -133,7 +135,7 @@ namespace ns_robotic_cleaner_simulator
 	}
 
 	//TODO: Add space removes and also handle problematic values - check that the parameter name is correct
-	void Simulator::ReadConfigFromFile(char * configFilePath)
+	void Simulator::ReadConfigFromFile(char const * configFilePath)
 	{
 		string line;
 		ifstream myfile(configFilePath);
@@ -144,7 +146,8 @@ namespace ns_robotic_cleaner_simulator
 				size_t equalPosition = line.find("=");      // position of "=" in str
 				string parmaterName = line.substr(0,equalPosition);
 				string paramaterValueString = line.substr (equalPosition+1);     // get from "=" + 1 to the end
-				int parameterValue = stoi(paramaterValueString);
+				int parameterValue;
+				if ( ! (istringstream(paramaterValueString) >> parameterValue) ) parameterValue = 0;
 				_configs.insert(pair<string,int>(parmaterName,parameterValue));
 			}
 			myfile.close();

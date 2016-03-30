@@ -1,6 +1,5 @@
 CC      = g++
 CC_FLAGS = -std=c++11 -g -Wall -O2 -pedantic -pthread
-LD_FLAGS = -lm
 
 all: simulator
 
@@ -8,12 +7,12 @@ clean:
 	-rm Battery.o House.o Sensor.o RandomRobotAlgorithm.o AlgorithmSingleRun.o Simulator.o robotic-cleaner-tester.o Simulator
 
 simulator: robotic-cleaner-tester.o Simulator.o AlgorithmSingleRun.o RandomRobotAlgorithm.o Sensor.o House.o Battery.o
-	$(CC) -o $@ $^ $(LDFLAGS)
+	$(CC) -o $@ $^
 	
-robotic-cleaner-tester.o: robotic-cleaner-tester.cpp Simulator.h Direction.h
+robotic-cleaner-tester.o: robotic-cleaner-tester.cpp Direction.h
 	$(CC) -c $(CFLAGS) $<
 
-Simulator.o: Simulator.cpp Simulator.h AlgorithmSingleRun.h Direction.h
+Simulator.o: Simulator.cpp Simulator.h Direction.h
 	$(CC) -c $(CFLAGS) $<	
 
 AlgorithmSingleRun.o: AlgorithmSingleRun.cpp AlgorithmSingleRun.h AbstractSensor.h Direction.h

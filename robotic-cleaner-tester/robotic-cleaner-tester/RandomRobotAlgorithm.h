@@ -3,6 +3,8 @@
 
 #include "AbstractAlgorithm.h"
 #include "Sensor.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 namespace ns_robotic_cleaner_simulator
 {
@@ -26,17 +28,17 @@ public:
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	Direction step();
 
-	void setSensor(const AbstractSensor& sensor) override
+	void setSensor(const AbstractSensor& sensor) 
 	{
 		robotSensor = sensor;
 	}
 
-	void setConfiguration(map<string, int> config) override
+	void setConfiguration(map<string, int> config)
 	{
 		configs = map<string,int>(config);
 	}
 
-	void aboutToFinish(int stepsTillFinishing) override{}
+	void aboutToFinish(int stepsTillFinishing){}
 
 };
 

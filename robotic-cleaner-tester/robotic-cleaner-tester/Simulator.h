@@ -2,7 +2,15 @@
 #define Simulator_h__
 
 #include <fstream>
+#include <string>
 #include "AlgorithmSingleRun.h"
+#include "RandomRobotAlgorithm.h"
+#include "Sensor.h"
+#include "House.h"
+#include "Battery.h"
+//#include ""
+#include <sstream> 
+using namespace std;
 
 namespace ns_robotic_cleaner_simulator
 {
@@ -26,7 +34,7 @@ public:
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
 	void RunAll(void);
-	void ReadConfigFromFile(char * configFilePath);
+	void ReadConfigFromFile(char const * configFilePath);
 	int LoadHouses( char * houseFolder);
 	int LoadAlgorithmsAndRuns();
 	void printScores(int winner_num_steps);
