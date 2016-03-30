@@ -1,4 +1,3 @@
-1.	Make a make file
-2.	fix space problem in ini
 3.  print error messages http://moodle.tau.ac.il/mod/page/view.php?id=375915
 4.  run valgrind
+5.  check argc argv functionality
