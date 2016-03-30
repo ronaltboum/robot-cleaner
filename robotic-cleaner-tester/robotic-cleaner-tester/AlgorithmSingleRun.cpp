@@ -1,6 +1,8 @@
 //#include "stdafx.h"
 #include "AlgorithmSingleRun.h"
 
+//comment just to test git
+
 
 namespace ns_robotic_cleaner_simulator
 {
