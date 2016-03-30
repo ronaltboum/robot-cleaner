@@ -63,6 +63,11 @@ namespace ns_robotic_cleaner_simulator
 			delete *i;
 		}
 		_houses.clear();
+		for (vector<AlgorithmSingleRun *>::iterator j = _runs.begin(); j != _runs.end(); ++j) {
+			delete *j;
+		}
+		_runs.clear();
+
 		delete _defaultBattery;
 	}
 

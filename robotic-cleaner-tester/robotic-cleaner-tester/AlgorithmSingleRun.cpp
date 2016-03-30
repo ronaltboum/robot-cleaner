@@ -22,7 +22,7 @@ namespace ns_robotic_cleaner_simulator
 		: _configs(configs)
 	{
 		initialize();
-		_currentAlgorithm = currentAlgorithmPointer;
+		_currentAlgorithm = currentAlgorithmPointer; 
 		_robotBattery = new Battery(robotBattery);
 		_currentHouse = currentHouse;
 		_currentPosition = startingPoint;
@@ -36,9 +36,9 @@ namespace ns_robotic_cleaner_simulator
 	{
 		//no need to check if not null - delete(NULL) = no_op
 		delete _currentPosition;
-		delete _currentHouse;
+		// delete _currentHouse; //is done by simulator
 		delete _algorithmSensor;
-		delete _currentAlgorithm;
+		delete _currentAlgorithm; //is done by simulator
 		delete _robotBattery;
 	}
 
