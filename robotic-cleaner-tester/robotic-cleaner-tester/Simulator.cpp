@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "Simulator.h"
 
 namespace ns_robotic_cleaner_simulator
