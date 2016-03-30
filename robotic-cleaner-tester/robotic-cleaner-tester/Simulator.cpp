@@ -111,7 +111,8 @@ namespace ns_robotic_cleaner_simulator
 				+ (is_back_in_docking? 50 : -200);
 			score = max(0, score);
 			const string houseName = runIterator->GetCurrentHouse()->GetShortName();
-			cout << houseName << "\t" << score << "\n";
+			cout << score;	//for ex1 only
+			//cout << houseName << "\t" << score << "\n"; for future reference - the correct printing format
 		}
 	}
 

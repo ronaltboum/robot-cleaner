@@ -80,7 +80,7 @@ namespace ns_robotic_cleaner_simulator
 
 	
 	//************************************
-	// Brief:		Moves one step and change the status of members according to the move commited
+	// Brief:		Moves one step and change the status of members according to the move committed
 	// Pre:			-
 	// Post:		-
 	//************************************
@@ -102,8 +102,7 @@ namespace ns_robotic_cleaner_simulator
 		_currentPosition->Move(chosenDirection);
 		if(HasMadeIllegalStep())
 		{
-			cout << _currentHouse->GetShortName() << "\t0\n";
-			cout << "algorithm made an illegal move";
+			cout << "0" << endl << "the algorithm made an illegal move";
 			_canStillRun = false;
 		}
 		if(IsAlgorithmBatteryEmpty())
