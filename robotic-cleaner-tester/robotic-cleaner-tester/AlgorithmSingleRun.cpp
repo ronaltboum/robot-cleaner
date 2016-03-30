@@ -1,14 +1,8 @@
-//#include "stdafx.h"
+#include "stdafx.h"
 #include "AlgorithmSingleRun.h"
 
 namespace ns_robotic_cleaner_simulator
 {
-	
-	AlgorithmSingleRun::AlgorithmSingleRun(void)
-		: _configs(map<string,int>())
-	{
-		initialize();
-	}
 
 	AlgorithmSingleRun::AlgorithmSingleRun(const map<string, int> & configs, AbstractAlgorithm * currentAlgorithmPointer, Battery robotBattery, House * currentHousePointer)
 		: _configs(configs)

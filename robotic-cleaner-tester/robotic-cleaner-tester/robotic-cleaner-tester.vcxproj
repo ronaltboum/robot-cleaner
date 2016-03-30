@@ -112,6 +112,7 @@
   <ItemGroup>
     <None Include="..\..\..\..\..\Dropbox\אוניברסיטה\2017\AP\2016\robotic-cleaner-tester HLD (high level design).docx" />
     <None Include="config.ini" />
+    <None Include="makefile" />
     <None Include="Simulator" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

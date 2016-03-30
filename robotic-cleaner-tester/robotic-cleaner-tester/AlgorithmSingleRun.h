@@ -33,7 +33,6 @@ public:
 		House * currentHouse,
 		AbstractSensor * algoSensor, 
 		Point * startingPoint);	
-	AlgorithmSingleRun(void);
 	~AlgorithmSingleRun(void);
 	void initialize();
 

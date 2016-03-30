@@ -98,5 +98,8 @@
     <None Include="config.ini">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="makefile">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
