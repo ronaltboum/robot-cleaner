@@ -28,7 +28,7 @@ private:
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
 	Simulator(void);
-	Simulator(char * configFilePath);
+	Simulator(const char * configFilePath);
 	~Simulator(void);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

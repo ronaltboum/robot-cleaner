@@ -1,4 +1,4 @@
-//#include "stdafx.h"
+#include "stdafx.h"
 #include "Simulator.h"
 #include <string>
 using namespace std;
@@ -12,7 +12,7 @@ namespace ns_robotic_cleaner_simulator
 		_defaultBattery = new Battery(_configs);
 	}
 
-	Simulator::Simulator(char * configFilePath)
+	Simulator::Simulator(const char * configFilePath)
 	{
 		_winnerAlgorithmExist = false;
 		ReadConfigFromFile(configFilePath);
@@ -32,10 +32,8 @@ namespace ns_robotic_cleaner_simulator
 		House * h = new House();
 		if(h->isValid()){
 			_houses.push_back(h);
-			//h->Print();
 			return 1;
 		}
-		h->Print();
 		return 0;
 	}
 
