@@ -28,8 +28,7 @@ class House
 #define CharToNum(c) ((unsigned int)((c)-'0'))
 #define d_sAllowedCharacters string("DW 123456789")
 #define IsValidTile(tile) ((d_sAllowedCharacters.find(tile) != string::npos))
-//for underlining the docking point
-#define underline "\33[4m"
+#define ARRAY_SIZE(array) (sizeof((array))/sizeof((array[0])))
 
 //~~~~~~~~~~~~~~~~~~~~` members ~~~~~~~~~~~~~~~~~~~~~~~~~`
 	

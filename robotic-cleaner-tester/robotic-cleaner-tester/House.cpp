@@ -5,7 +5,6 @@ namespace ns_robotic_cleaner_simulator
 {
 	House::House(){
 		shortName = new string("House1");
-		floor = Matrix<char>(19,81);
 		char house[19][81] = {
 		//             1         2         3         4         5         6         7        
 		//   01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -29,8 +28,11 @@ namespace ns_robotic_cleaner_simulator
 			"W              W                                                               W", // 17
 			"WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW" // 18
 		};
-		for(unsigned int row = 0; row < 19; ++row) {
-			for(unsigned int col = 0; col < 81; ++col) {
+		int rows = ARRAY_SIZE(house); //19
+		int cols = ARRAY_SIZE(house[0]); //81
+		floor = Matrix<char>(rows,cols);
+		for(unsigned int row = 0; row < rows; ++row) {
+			for(unsigned int col = 0; col < cols; ++col) {
 				char c = house[row][col];
 				floor(row,col) = house[row][col];
 			}
