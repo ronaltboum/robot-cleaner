@@ -1,22 +1,18 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "Simulator.h"
-#include <iostream>
-#include <fstream>
-#include <string>
-#include "AbstractAlgorithm.h"
-#include "RandomRobotAlgorithm.h"
-using namespace std;
-
 
 namespace ns_robotic_cleaner_simulator
 {
 	Simulator::Simulator(void)
 	{
-		_houses.push_back(new House());
+		_winnerAlgorithmExist = false;
+		ReadConfigFromFile("config.ini");
+		_defaultBattery = new Battery(_configs);
 	}
 
 	Simulator::Simulator(char * configFilePath)
 	{
+		_winnerAlgorithmExist = false;
 		ReadConfigFromFile(configFilePath);
 		_defaultBattery = new Battery(_configs);
 	}
@@ -47,41 +43,96 @@ namespace ns_robotic_cleaner_simulator
 	// Returns:   	int - the number of algorithm loaded successfully
 	// Post:		_algorithms
 	//************************************
-	int Simulator::LoadAlgorithms()
+	int Simulator::LoadAlgorithmsAndRuns()
 	{
-		Sensor dummySensor = Sensor();
-		AbstractAlgorithm * randAlgorithm = new RandomRobotAlgorithm(dummySensor,_configs);
-		_algorithms.push_back(randAlgorithm);
+		int houseNum = _houses.size();
+		for( int houseIndex = 0 ; houseIndex < houseNum; ++houseIndex)
+		{
+			Point * startingPoint = _houses[houseIndex]->GetDockingStation();
+			Sensor * algoSensor = new Sensor(_houses[houseIndex],startingPoint);
+			AbstractAlgorithm * randAlgorithm = new RandomRobotAlgorithm(*algoSensor,_configs);
+			AlgorithmSingleRun * newRunCreated = new AlgorithmSingleRun(_configs, randAlgorithm, *_defaultBattery, _houses[houseIndex] ,algoSensor, startingPoint);	
+			_runs.push_back(newRunCreated);
+		}
 		return 1;
 	}
-
-	
-
-
 	
 	Simulator::~Simulator(void)
 	{
-		for (auto i = _houses.begin(); i != _houses.end(); ++i) {
+		for (vector<House *>::iterator i = _houses.begin(); i != _houses.end(); ++i) {
 			delete *i;
 		}
 		_houses.clear();
-		for (auto j = _algorithms.begin(); j != _algorithms.end(); ++j) {
-			delete *j;
-		}
-		_algorithms.clear();
 		delete _defaultBattery;
 	}
 
 	void Simulator::RunAll()
 	{
+		int maxSteps = _configs["MaxSteps"];
+		int currentStep = 0;
+		int currentRankAlgorithmsCompetingOn = 1;
+		//run until someone one or sombodywon
+		for(;currentStep < maxSteps && ! _winnerAlgorithmExist; ++currentStep){
+			MoveAllOneStep(currentRankAlgorithmsCompetingOn);
+		}
+		//move all if possible after winning
+		int winnerStepsNumber = currentStep;
+		int maxStepsAfterWinner = _configs["MaxStepsAfterWinner"];
+		for(;currentStep < maxSteps && currentStep < winnerStepsNumber + maxStepsAfterWinner ; ++currentStep){
+			MoveAllOneStep(currentRankAlgorithmsCompetingOn);
+		}
+
+		printScores(winnerStepsNumber);
+	}
+
+	// winner_num_steps == maxSteps if nobody won
+	void Simulator::printScores(int winner_num_steps)
+	{
+		int score;
 		int runNum = _runs.size();
 		for( int runIndex = 0 ; runIndex < runNum; ++runIndex)
 		{
-			_runs[runIndex]->Run();
+			AlgorithmSingleRun * runIterator = _runs[runIndex];
+			if(runIterator->HasMadeIllegalStep())
+				return; //already printed by algorithm single run
+			int actual_position = runIterator->GetActualPosition() ? runIterator->GetActualPosition() : 10;
+			int position_in_copmetition = min(actual_position, 4);
+			int this_num_steps = runIterator->GetNumberOfStepsCommited();
+			int sum_dirt_in_house = runIterator->GetSumOfDirtBeforeCleaning();
+			int dirt_collected = runIterator->GetDirtCollected();
+			bool is_battery_empty = runIterator->IsAlgorithmBatteryEmpty();
+			bool is_back_in_docking = runIterator->IsBackInDocking(); 
+			score = 2000 
+				- (position_in_copmetition - 1) * 50 
+				+ (winner_num_steps - this_num_steps) * 10 
+				- (sum_dirt_in_house - dirt_collected) * 3 
+				+ (is_back_in_docking? 50 : -200);
+			score = max(0, score);
+			const string houseName = runIterator->GetCurrentHouse()->GetShortName();
+			cout << houseName << "\t" << score << "\n";
 		}
 	}
 
-	//TODO: Add space removes and also handle problemtic values - check that the parameter name is correct
+	void Simulator::MoveAllOneStep(int & currentRankAlgorithmsCompetingOn)
+	{
+		int runNum = _runs.size();
+		int numAlgorithmWon = 0; //for this step
+		for( int runIndex = 0 ; runIndex < runNum; ++runIndex)
+		{
+			AlgorithmSingleRun * runIterator = _runs[runIndex];
+			if(runIterator->CanDoStep()){
+				runIterator->DoStep();
+				if(runIterator->HasWon()){
+					runIterator->SetActualPosition(currentRankAlgorithmsCompetingOn);
+					++numAlgorithmWon;
+					_winnerAlgorithmExist = true;
+				}
+			}
+		}
+		currentRankAlgorithmsCompetingOn += numAlgorithmWon;
+	}
+
+	//TODO: Add space removes and also handle problematic values - check that the parameter name is correct
 	void Simulator::ReadConfigFromFile(char * configFilePath)
 	{
 		string line;
@@ -100,18 +151,6 @@ namespace ns_robotic_cleaner_simulator
 		}
 
 		else cout << "Unable to open file"; 
-	}
-
-	void Simulator::InitializeRuns()
-	{
-		int houseNum = _houses.size();
-		int algorithmNum = _algorithms.size();
-		for( int houseIndex = 0 ; houseIndex < houseNum; ++houseIndex){
-			for( int algorithmIndex = 0 ; algorithmIndex < algorithmNum; ++algorithmIndex){
-				AlgorithmSingleRun * asr = new AlgorithmSingleRun(_configs, _algorithms[algorithmIndex],*_defaultBattery,_houses[houseIndex]);	
-				_runs.push_back(asr);
-			}
-		}
 	}
 
 } //end of namespace ns_robotic_cleaner_simulator

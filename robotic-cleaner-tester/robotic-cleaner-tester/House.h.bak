@@ -4,6 +4,7 @@
 #include "Point.h"
 #include "Matrix.h"
 #include <iostream>
+#include <string>
 
 namespace ns_robotic_cleaner_simulator
 {

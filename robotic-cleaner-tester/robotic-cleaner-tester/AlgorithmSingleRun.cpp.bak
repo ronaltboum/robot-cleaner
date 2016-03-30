@@ -1,5 +1,7 @@
-//#include "stdafx.h"
+#include "stdafx.h"
 #include "AlgorithmSingleRun.h"
+//#include <windows.h>
+#include <iostream>
 
 
 namespace ns_robotic_cleaner_simulator

@@ -1,5 +1,5 @@
  //robotic-cleaner-tester.cpp : Defines the entry point for the console application.
-//#include "stdafx.h"
+#include "stdafx.h"
 #include "Simulator.h"
 #include "AbstractAlgorithm.h"
 #include "RandomRobotAlgorithm.h"
@@ -9,7 +9,7 @@ using namespace ns_robotic_cleaner_simulator;
 
 int _tmain(int argc, char * argv[])
 {
-	srand((unsigned int)time(NULL));
+	srand(time(NULL));
 	char * configFilePath = "config.ini";
 	char * houseFolder = ".\\";
 	if(argc >= 3) 

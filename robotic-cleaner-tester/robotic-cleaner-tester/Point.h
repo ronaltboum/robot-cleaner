@@ -92,19 +92,19 @@ inline bool Point::Move(Direction d)
 {
 	switch (d)
 	{
-	case Direction::North :
+	case Direction(3) :
 		if (_row > 0){
 			_row--;
 			return true;
 		}
 		break;
-	case Direction::South :
+	case Direction(2) :
 		_row++;
 		return true;
-	case Direction::East :
+	case Direction(0) :
 		_col++;
 		return true;
-	case Direction::West :
+	case Direction(1) :
 		if (_col > 0){
 			_col--;
 			return true;

@@ -2,7 +2,12 @@
 #define RandomRobotAlgorithm_h__
 
 #include "AbstractAlgorithm.h"
+#include "Battery.h"
+#include "Direction.h"
+#include "Point.h"
 #include "Sensor.h"
+#include <vector>
+#include <stdlib.h>
 
 namespace ns_robotic_cleaner_simulator
 {

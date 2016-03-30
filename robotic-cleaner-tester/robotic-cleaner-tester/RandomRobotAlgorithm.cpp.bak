@@ -21,7 +21,7 @@ namespace ns_robotic_cleaner_simulator
 			if( ! info.isWall[i])
 				possibleDirections.push_back(Direction(i));
 		}
-		possibleDirections.push_back(Direction(4) );                        //just changed
+		possibleDirections.push_back(Direction(4));
 		int chosenDirectionIndex = rand() % possibleDirections.size();
 		return possibleDirections.at(chosenDirectionIndex);
 	}

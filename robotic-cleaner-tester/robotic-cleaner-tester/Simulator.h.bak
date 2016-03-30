@@ -1,8 +1,9 @@
 #ifndef Simulator_h__
 #define Simulator_h__
 
-#include <fstream>
 #include "AlgorithmSingleRun.h"
+#include <fstream>
+
 
 namespace ns_robotic_cleaner_simulator
 {

@@ -16,6 +16,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+    <Text Include="Todo List.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
