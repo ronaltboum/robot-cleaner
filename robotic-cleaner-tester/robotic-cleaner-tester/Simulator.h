@@ -40,6 +40,9 @@ public:
 	void printScores(int winner_num_steps);
 private:
 	void MoveAllOneStep(int & currentRankAlgorithmsCompetingOn);
+	static std::string trim(std::string& str);
+	bool processLine(const string& line);
+	static std::vector<std::string> split(const std::string &s, char delim);
 };
 
 } // end of namespace ns_robotic_cleaner_simulator

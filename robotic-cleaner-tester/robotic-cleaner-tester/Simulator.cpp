@@ -133,21 +133,50 @@ namespace ns_robotic_cleaner_simulator
 		currentRankAlgorithmsCompetingOn += numAlgorithmWon;
 	}
 
-	//TODO: Add space removes and also handle problematic values - check that the parameter name is correct
+	std::vector<std::string> Simulator::split(const std::string &s, char delim) {
+		std::vector<std::string> elems;
+		std::stringstream ss(s);
+		std::string item;
+		while (std::getline(ss, item, delim)) {
+			elems.push_back(item);
+		}
+		return elems;
+	}
+
+	std::string Simulator::trim(std::string& str)
+	{
+		str.erase(0, str.find_first_not_of(' '));       //prefixing spaces
+		str.erase(str.find_last_not_of(' ')+1);         //surfixing spaces
+		return str;
+	}
+
+	bool Simulator::processLine(const string& line)
+	{
+		vector<string> tokens = split(line, '=');
+		if (tokens.size() != 2)
+		{
+			return false;
+		}
+		int parameterValue = 0;
+		if ( ! (istringstream(tokens[1]) >> parameterValue) )
+			return false;
+		_configs[trim(tokens[0])] = parameterValue;
+		return true;
+	}
+
 	void Simulator::ReadConfigFromFile(char const * configFilePath)
 	{
 		string line;
 		ifstream myfile(configFilePath);
+		int lineNumber = 1;
 		if (myfile.is_open())
 		{
 			while ( getline (myfile,line) )
 			{
-				size_t equalPosition = line.find("=");      // position of "=" in str
-				string parmaterName = line.substr(0,equalPosition);
-				string paramaterValueString = line.substr (equalPosition+1);     // get from "=" + 1 to the end
-				int parameterValue;
-				if ( ! (istringstream(paramaterValueString) >> parameterValue) ) parameterValue = 0;
-				_configs.insert(pair<string,int>(parmaterName,parameterValue));
+				if( ! processLine(line))
+				{
+					cout << "Problem parsing line number: " << lineNumber << " in the config file";
+				}
 			}
 			myfile.close();
 		}

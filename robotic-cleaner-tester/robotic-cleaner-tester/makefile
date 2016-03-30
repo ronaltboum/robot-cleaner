@@ -4,7 +4,7 @@ CC_FLAGS = -std=c++11 -g -Wall -O2 -pedantic -pthread
 all: simulator
 
 clean:
-	-rm Battery.o House.o Sensor.o RandomRobotAlgorithm.o AlgorithmSingleRun.o Simulator.o robotic-cleaner-tester.o Simulator
+	-rm Battery.o House.o Sensor.o RandomRobotAlgorithm.o AlgorithmSingleRun.o Simulator.o robotic-cleaner-tester.o simulator
 
 simulator: robotic-cleaner-tester.o Simulator.o AlgorithmSingleRun.o RandomRobotAlgorithm.o Sensor.o House.o Battery.o
 	$(CC) -o $@ $^
