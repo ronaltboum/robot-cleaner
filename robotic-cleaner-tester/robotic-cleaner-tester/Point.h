@@ -6,8 +6,7 @@
 namespace ns_robotic_cleaner_simulator
 {
 
-/*!
- * class Point
+/*
  * class Point is a class for point of two integers.
  */
 class Point
@@ -22,11 +21,7 @@ public:
 	Point(unsigned int row, unsigned int col);
 	Point(const Point& other);
 	virtual ~Point() {};
-	void operator=(const Point &other )
-	{
-		_row = other._row;
-		_col = other._col;
-	}
+	void operator=(const Point &other );
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Getters/Setters ~~~~~~~~~~~~~~~~~~~~~~~~~~
 	unsigned int GetRow() const;
@@ -36,20 +31,29 @@ public:
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	bool Move(Direction d); //Gets a direction and move the point in this direction (not getting to minus numbers)
-	bool operator ==(const Point& other) const
-	{
-		return (_col == other._col && _row == other._row);
-	}
-
-	bool operator !=(const Point& other) const
-	{
-		return !(*this == other);
-	}
+	bool operator ==(const Point& other) const;
+	bool operator !=(const Point& other) const;
 
 };
+
 	
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ inline functions ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+inline bool Point::operator ==(const Point& other) const
+{
+	return (_col == other._col && _row == other._row);
+}
+
+inline bool Point::operator !=(const Point& other) const
+{
+	return !(*this == other);
+}
+
+inline void Point::operator=(const Point &other )
+{
+	_row = other._row;
+	_col = other._col;
+}
 
 inline Point::Point(unsigned int row = 0, unsigned int col = 0) : _row(row), _col(col)
 {
@@ -84,9 +88,6 @@ inline void Point::SetCol(unsigned int col)
 // Brief:		Gets a direction and move the point in this direction (not getting to minus numbers)
 // Gets:	 	Direction d - where to move to 
 // Returns:   	bool - true if the point was changed, false if remained the same (can't move)
-// Access:    	public 
-// Pre:			-
-// Post:		-
 //************************************
 inline bool Point::Move(Direction d)
 {

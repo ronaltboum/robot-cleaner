@@ -86,8 +86,11 @@
     <ClInclude Include="AbstractSensor.h" />
     <ClInclude Include="AlgorithmSingleRun.h" />
     <ClInclude Include="Battery.h" />
+    <ClInclude Include="CommandLineInterpeter.h" />
+    <ClInclude Include="ConfigReader.h" />
     <ClInclude Include="Direction.h" />
     <ClInclude Include="House.h" />
+    <ClInclude Include="HouseFileReader.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="RandomRobotAlgorithm.h" />
@@ -100,6 +103,8 @@
   <ItemGroup>
     <ClCompile Include="AlgorithmSingleRun.cpp" />
     <ClCompile Include="Battery.cpp" />
+    <ClCompile Include="SingletonHouseReader.cpp" />
+    <ClCompile Include="SingletonConfigReader.cpp" />
     <ClCompile Include="House.cpp" />
     <ClCompile Include="RandomRobotAlgorithm.cpp" />
     <ClCompile Include="robotic-cleaner-tester.cpp" />

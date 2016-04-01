@@ -25,7 +25,6 @@ private:
 	
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
-	AlgorithmSingleRun(const map<string, int> & configs, AbstractAlgorithm * currentAlgorithmPointer, Battery robotBattery, House * currentHousePointer);
 	AlgorithmSingleRun (
 		const map<string, int> & configs, 
 		AbstractAlgorithm * currentAlgorithmPointer, 

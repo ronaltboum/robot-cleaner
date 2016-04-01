@@ -8,31 +8,40 @@ using namespace std;
 
 namespace ns_robotic_cleaner_simulator
 {
-
-	template <typename T> class Matrix
-	{
 	/*
 	 * class Matrix
 	 * class Matrix is used for saving generic 2d matrix, 
 	 * with changing height and length
 	 */
+	template <typename T> class Matrix
+	{
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	private:
-		
-		vector<T> inner_;
-		unsigned int cols, rows;
-
+		vector<T> inner_; // vector where the matrix store values
+		unsigned int cols; //: the number of cols in the matrix
+		unsigned int rows; //: the number of rows in the matrix
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	public:
-
 		Matrix (unsigned int rows = 0, unsigned int cols = 0)
 			: cols (cols), rows (rows)
 		{
 			inner_ = vector<char>(cols*rows);
 		}
 
-		~Matrix()
+		~Matrix(){ }
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Getters/Setters ~~~~~~~~~~~~~~~~~~~~~~~~~~
+	public:
+		unsigned int getWidth() const
 		{
+			return cols;
 		}
 
+		unsigned int getHeight() const
+		{
+			return rows;
+		}
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	public:
 		bool IsInsideMatrix(unsigned int row, unsigned int col) const
 		{
 			return (col < cols && row < rows);
@@ -69,16 +78,6 @@ namespace ns_robotic_cleaner_simulator
 		{
 			assert( IsInsideMatrix(row, col) );
 			return inner_[row*cols+col];
-		}
-
-		unsigned int getWidth() const
-		{
-			return cols;
-		}
-
-		unsigned int getHeight() const
-		{
-			return rows;
 		}
 
 	};

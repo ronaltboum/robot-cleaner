@@ -1,27 +1,13 @@
-//#include "stdafx.h"
+#include "stdafx.h"
 #include "AlgorithmSingleRun.h"
 
 namespace ns_robotic_cleaner_simulator
 {
-
-	AlgorithmSingleRun::AlgorithmSingleRun(const map<string, int> & configs, AbstractAlgorithm * currentAlgorithmPointer, Battery robotBattery, House * currentHousePointer)
-		: _configs(configs)
-	{
-		initialize();
-		_currentAlgorithm = currentAlgorithmPointer;
-		_robotBattery = new Battery(robotBattery);
-		_currentHouse = new House(*currentHousePointer);
-		_currentPosition = _currentHouse->GetDockingStation(); // start at docking points
-		_algorithmSensor = new Sensor(_currentHouse,_currentPosition);
-		_currentAlgorithm->setSensor(*_algorithmSensor);
-		_canStillRun = true;
-		_sumOfDirtBeforeCleaning = _currentHouse->SumOfDirtInTheHouse();
-	}
-
 	AlgorithmSingleRun::AlgorithmSingleRun(const map<string, int> & configs, AbstractAlgorithm * currentAlgorithmPointer, const Battery & robotBattery, House * currentHouse, AbstractSensor * algoSensor, Point * startingPoint)
 		: _configs(configs)
 	{
 		initialize();
+		_algorithmSensor = algoSensor;
 		_currentAlgorithm = currentAlgorithmPointer; 
 		_robotBattery = new Battery(robotBattery);
 		_currentHouse = currentHouse;
@@ -38,7 +24,7 @@ namespace ns_robotic_cleaner_simulator
 		delete _currentPosition;
 		// delete _currentHouse; //is done by simulator
 		delete _algorithmSensor;
-		delete _currentAlgorithm; //is done by simulator
+		delete _currentAlgorithm;
 		delete _robotBattery;
 	}
 
@@ -60,12 +46,12 @@ namespace ns_robotic_cleaner_simulator
 	{
 		return (	(_numberOfStepsCommited < _configs.find("MaxSteps")->second) &&
 					(_canStillRun) &&
-					( ! _currentHouse->IsClean()));
+					( ! _currentHouse->IsHouseClean()));
 	}
 
 	bool AlgorithmSingleRun::IsHouseCleaned() const
 	{
-		return _currentHouse->IsClean();
+		return _currentHouse->IsHouseClean();
 	}
 
 	bool AlgorithmSingleRun::IsBackInDocking() const

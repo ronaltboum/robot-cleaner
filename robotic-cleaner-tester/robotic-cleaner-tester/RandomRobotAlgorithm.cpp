@@ -1,11 +1,10 @@
-//#include "stdafx.h"
+#include "stdafx.h"
 #include "RandomRobotAlgorithm.h"
 
 namespace ns_robotic_cleaner_simulator
 {
 
-	RandomRobotAlgorithm::RandomRobotAlgorithm(AbstractSensor& sensor, map<string, int> config)
-		: robotSensor(sensor)
+	RandomRobotAlgorithm::RandomRobotAlgorithm(const AbstractSensor& sensor, map<string, int> config)
 	{
 		{
 			setSensor(sensor);
@@ -15,7 +14,7 @@ namespace ns_robotic_cleaner_simulator
 
 	Direction RandomRobotAlgorithm::step()
 	{
-		SensorInformation info = robotSensor.sense();
+		SensorInformation info = robotSensor->sense();
 		vector<Direction> possibleDirections;
 		for(int i=0;i<4;++i){
 			if( ! info.isWall[i])

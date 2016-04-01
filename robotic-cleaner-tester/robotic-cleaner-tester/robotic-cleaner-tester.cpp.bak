@@ -4,14 +4,15 @@
 #include "AbstractAlgorithm.h"
 #include "RandomRobotAlgorithm.h"
 #include <time.h>
+#include <string.h>
 
 using namespace ns_robotic_cleaner_simulator;
 
-int _tmain(int argc, char * argv[])
+int main(int argc, char * argv[])
 {
-	srand(time(NULL));
-	char * configFilePath = "config.ini";
-	char * houseFolder = ".\\";
+	srand((unsigned int)time(NULL));
+	char * configFilePath = (char *)("config.ini");
+	char * houseFolder = (char *)(".\\");
 	if(argc >= 3) 
 	{
 		if ( ! strcmp(argv[1], "–config"))

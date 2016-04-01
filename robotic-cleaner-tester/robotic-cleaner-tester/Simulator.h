@@ -1,15 +1,16 @@
 #ifndef Simulator_h__
 #define Simulator_h__
 
-#include <fstream>
+
 #include <string>
 #include "AlgorithmSingleRun.h"
 #include "RandomRobotAlgorithm.h"
 #include "Sensor.h"
 #include "House.h"
 #include "Battery.h"
-//#include ""
+#include "SingletonConfigReader.h"
 #include <sstream> 
+#include <fstream>
 using namespace std;
 
 namespace ns_robotic_cleaner_simulator
@@ -28,21 +29,19 @@ private:
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
 	Simulator(void);
-	Simulator(const char * configFilePath);
+	Simulator::Simulator(const string & configFilePath);
 	~Simulator(void);
+	void initiallize();
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
-	void RunAll(void);
-	void ReadConfigFromFile(char const * configFilePath);
-	int LoadHouses( char * houseFolder);
+	void ReadConfigFile(const string & configFilePath);
+	int LoadHouses( string houseFolder);
 	int LoadAlgorithmsAndRuns();
+	void RunAll(void);
 	void printScores(int winner_num_steps);
 private:
 	void MoveAllOneStep(int & currentRankAlgorithmsCompetingOn);
-	static std::string trim(std::string& str);
-	bool processLine(const string& line);
-	static std::vector<std::string> split(const std::string &s, char delim);
 };
 
 } // end of namespace ns_robotic_cleaner_simulator

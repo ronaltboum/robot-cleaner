@@ -1,4 +1,4 @@
-//#include "stdafx.h"
+#include "stdafx.h"
 #include "Simulator.h"
 #include <string>
 using namespace std;
@@ -7,27 +7,55 @@ namespace ns_robotic_cleaner_simulator
 {
 	Simulator::Simulator(void)
 	{
-		_winnerAlgorithmExist = false;
-		ReadConfigFromFile("config.ini");
-		_defaultBattery = new Battery(_configs);
+		initiallize();
 	}
 
-	Simulator::Simulator(const char * configFilePath)
+	Simulator::Simulator(const string & configFilePath)
 	{
+		initiallize();
+		ReadConfigFile(configFilePath);
+	}
+
+	//************************************
+	// Brief:		called in each c'tor to initialize all
+	//************************************
+	void Simulator::initiallize()
+	{
+		_houses = vector<House *>();
+		_configs = map<string, int>();
+		_runs = vector< AlgorithmSingleRun *>();
+		_defaultBattery = NULL;
 		_winnerAlgorithmExist = false;
-		ReadConfigFromFile(configFilePath);
+	}
+
+	Simulator::~Simulator(void)
+	{
+		for (vector<House *>::iterator i = _houses.begin(); i != _houses.end(); ++i) {
+			delete *i;
+		}
+		_houses.clear();
+		for (vector<AlgorithmSingleRun *>::iterator j = _runs.begin(); j != _runs.end(); ++j) {
+			delete *j;
+		}
+		_runs.clear();
+
+		delete _defaultBattery;
+	}
+
+	void Simulator::ReadConfigFile(const string & configFilePath){
+		_configs = SingletonConfigReader::instance(configFilePath)->ReadConfigFromFile();
 		_defaultBattery = new Battery(_configs);
 	}
 
 
 	//************************************
 	// Brief:		Gets a folder with house files and loads them to memory.
-	//				not implemented yet - just load hardcoded house
+	//				not implemented yet - just load hard-coded house
 	// Gets:	 	char * houseFolder - string of the folder path
 	// Returns:   	int - the number of houses loaded successfully
 	// Post:		_houses
 	//************************************
-	int Simulator::LoadHouses( char * houseFolder)
+	int Simulator::LoadHouses( string houseFolder)
 	{
 		House * h = new House();
 		if(h->isValid()){
@@ -48,29 +76,15 @@ namespace ns_robotic_cleaner_simulator
 		int houseNum = _houses.size();
 		for( int houseIndex = 0 ; houseIndex < houseNum; ++houseIndex)
 		{
-			Point * startingPoint = _houses[houseIndex]->GetDockingStation();
-			Sensor * algoSensor = new Sensor(_houses[houseIndex],startingPoint);
-			AbstractAlgorithm * randAlgorithm = new RandomRobotAlgorithm(*algoSensor,_configs);
+			Point * startingPoint = _houses[houseIndex]->GetDockingStation(); //new is deallocated by AlgorithmSingleRun
+			Sensor * algoSensor = new Sensor(_houses[houseIndex],startingPoint); // new is deallocated by AlgorithmSingleRun
+			AbstractAlgorithm * randAlgorithm = new RandomRobotAlgorithm(*algoSensor,_configs); //new is deallocated by AlgorithmSingleRun
 			AlgorithmSingleRun * newRunCreated = new AlgorithmSingleRun(_configs, randAlgorithm, *_defaultBattery, _houses[houseIndex] ,algoSensor, startingPoint);	
 			_runs.push_back(newRunCreated);
 		}
 		return 1;
 	}
 	
-	Simulator::~Simulator(void)
-	{
-		for (vector<House *>::iterator i = _houses.begin(); i != _houses.end(); ++i) {
-			delete *i;
-		}
-		_houses.clear();
-		for (vector<AlgorithmSingleRun *>::iterator j = _runs.begin(); j != _runs.end(); ++j) {
-			delete *j;
-		}
-		_runs.clear();
-
-		delete _defaultBattery;
-	}
-
 	void Simulator::RunAll()
 	{
 		int maxSteps = _configs["MaxSteps"];
@@ -138,55 +152,5 @@ namespace ns_robotic_cleaner_simulator
 		currentRankAlgorithmsCompetingOn += numAlgorithmWon;
 	}
 
-	std::vector<std::string> Simulator::split(const std::string &s, char delim) {
-		std::vector<std::string> elems;
-		std::stringstream ss(s);
-		std::string item;
-		while (std::getline(ss, item, delim)) {
-			elems.push_back(item);
-		}
-		return elems;
-	}
-
-	std::string Simulator::trim(std::string& str)
-	{
-		str.erase(0, str.find_first_not_of(' '));       //prefixing spaces
-		str.erase(str.find_last_not_of(' ')+1);         //surfixing spaces
-		return str;
-	}
-
-	bool Simulator::processLine(const string& line)
-	{
-		vector<string> tokens = split(line, '=');
-		if (tokens.size() != 2)
-		{
-			return false;
-		}
-		int parameterValue = 0;
-		if ( ! (istringstream(tokens[1]) >> parameterValue) )
-			return false;
-		_configs[trim(tokens[0])] = parameterValue;
-		return true;
-	}
-
-	void Simulator::ReadConfigFromFile(char const * configFilePath)
-	{
-		string line;
-		ifstream myfile(configFilePath);
-		int lineNumber = 1;
-		if (myfile.is_open())
-		{
-			while ( getline (myfile,line) )
-			{
-				if( ! processLine(line))
-				{
-					cout << "Problem parsing line number: " << lineNumber << " in the config file";
-				}
-			}
-			myfile.close();
-		}
-
-		else cout << "Unable to open file"; 
-	}
 
 } //end of namespace ns_robotic_cleaner_simulator

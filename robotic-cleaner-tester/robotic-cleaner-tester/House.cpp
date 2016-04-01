@@ -1,10 +1,13 @@
-//#include "stdafx.h"
+#include "stdafx.h"
 #include "House.h"
+#include <string>
 
 namespace ns_robotic_cleaner_simulator
 {
-	House::House(){
-		shortName = new string("House1");
+	House::House()
+	{
+		initiallize();
+		_shortName = string("House1");
 		char house[19][81] = {
 		//             1         2         3         4         5         6         7        
 		//   01234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -28,32 +31,47 @@ namespace ns_robotic_cleaner_simulator
 			"W              W                                                               W", // 17
 			"WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW" // 18
 		};
-		int rows = ARRAY_SIZE(house); //19
-		int cols = ARRAY_SIZE(house[0]); //81
-		floor = Matrix<char>(rows,cols);
+		unsigned int rows = ARRAY_SIZE(house); //19
+		unsigned int cols = ARRAY_SIZE(house[0]); //81
+		_floor = Matrix<char>(rows,cols);
 		for(unsigned int row = 0; row < rows; ++row) {
 			for(unsigned int col = 0; col < cols; ++col) {
 				char c = house[row][col];
-				floor(row,col) = house[row][col];
+				_floor(row,col) = house[row][col];
 			}
 		}
 		ValidateWallsAndCharacters();
-		Point * p = GetDockingStation();
-		bool b = IsDockingStation(*p);
-		int sum = SumOfDirtInTheHouse();
-		delete p;
-		
+		cout << *this;
 	}
 
-	House::House(const unsigned int houseWidth, const unsigned int houseHeight)
+	House::House(unsigned int houseWidth, unsigned int houseHeight)
 	{
-		floor = Matrix<char>(houseWidth, houseHeight);
-		shortName = new string("House1");
+		initiallize();
+		_floor = Matrix<char>(houseWidth, houseHeight);
+		
+	}
+	
+	House::House(unsigned int houseWidth, unsigned int houseHeight, string shortName, string longName)
+	{
+		initiallize();
+		_floor = Matrix<char>(houseWidth, houseHeight);
+		_shortName = shortName;
+		_longName = longName;
+	}
+
+
+	//************************************
+	// Brief:	used to initiallize the house, called first in each c'tor
+	//************************************
+	void House::initiallize()
+	{
+		_floor = Matrix<char>(0, 0);
+		_shortName = "";
+		_longName = "";
 	}
 
 	//************************************
 	// Brief:		Fills all the surrounding with walls, and replace all illegal chars with space
-	//				If no docking station - 
 	//************************************
 	void House::ValidateWallsAndCharacters()
 	{
@@ -69,11 +87,11 @@ namespace ns_robotic_cleaner_simulator
 			{
 				if((col == lastColIndex) || (col == 0) || (row == lastRowIndex) || (row == 0))
 				{
-					floor(row,col) = d_cWallLetter;
+					_floor(row,col) = d_cWallLetter;
 					continue;
 				}
-				if(! IsValidTile( floor(row,col) ) )
-					floor(row,col) = d_cSpaceLetter;
+				if(! IsValidTile( _floor(row,col) ) )
+					_floor(row,col) = d_cSpaceLetter;
 			}
 		}
 	}
@@ -81,7 +99,6 @@ namespace ns_robotic_cleaner_simulator
 	//************************************
 	// Brief:		Returns a pointer to new point containing the Docking Station
 	// Returns:   	Point pointer if found, null if not
-	// Access:    	public 
 	// Post:		Point allocated
 	//************************************
 	Point * House::GetDockingStation() const
@@ -92,7 +109,7 @@ namespace ns_robotic_cleaner_simulator
 		{
 			for(unsigned int col = 0; col <= lastColIndex; ++col) 
 			{
-				if(IsDockingTile(floor(row,col) ))
+				if(IsDockingTile(_floor(row,col) ))
 				{
 					return new Point(row,col);
 				}
@@ -108,27 +125,26 @@ namespace ns_robotic_cleaner_simulator
 	//************************************
 	unsigned int House::GetDirtLevel(const Point & location) const
 	{
-		char tileContent = floor(location);
+		char tileContent = _floor(location);
 		if(IsDirtTile(tileContent))
 			return CharToNum(tileContent);
 		return 0;
 	}
 
 	//************************************
-	// Brief:		Gets _ and returns
-	// Gets:	 	const Point & location
-	// Returns:   	bool
-	// Access:    	public 
-	// Pre:			-
-	// Post:		-
+	// Brief:		Gets a location and checks if it's dirty
+	// Returns:   	int 0-9
+	// Pre:			IsPositionValid(position)
 	//************************************
 	bool House::IsDirty(const Point & location) const
 	{
 		return (GetDirtLevel(location) > 0);
 	}
 
+	//************************************
 	// Brief:		Check if all the tiles in the house are clean
-	bool House::IsClean() const
+	//************************************
+	bool House::IsHouseClean() const
 	{
 		unsigned int lastColIndex = GetWidth() - 2; //not including \0 col in the end
 		unsigned int lastRowIndex = GetHeight() - 1;
@@ -136,7 +152,7 @@ namespace ns_robotic_cleaner_simulator
 		{
 			for(unsigned int col = 0; col <= lastColIndex; ++col) 
 			{
-				if(IsDirtTile(floor(row,col) ))
+				if(IsDirtTile(_floor(row,col) ))
 				{
 					return false;
 				}
@@ -145,12 +161,15 @@ namespace ns_robotic_cleaner_simulator
 		return true;
 	}
 
+	//************************************
+	// Brief:		Print a single row
+	//************************************
 	void House::PrintRow(unsigned int row) const
 	{
 		assert(row < GetHeight() && row >= 0);
 		unsigned int cols = GetWidth();
 		for(unsigned int col = 0; col < cols; ++col) {
-			cout << floor(row,col);
+			cout << _floor(row,col);
 		}
 	}
 
@@ -172,7 +191,7 @@ namespace ns_robotic_cleaner_simulator
 				if(currentPosition == Point(row,col))
 					cout << '*';
 				else
-					cout << floor(row,col);
+					cout << _floor(row,col);
 			}
 			cout << endl;
 		}
@@ -189,9 +208,9 @@ namespace ns_robotic_cleaner_simulator
 		{
 			for(unsigned int col = 0; col <= lastColIndex; ++col) 
 			{
-				if(IsDirtTile(floor(row,col) ))
+				if(IsDirtTile(_floor(row,col) ))
 				{
-					tileContent = floor(row,col);
+					tileContent = _floor(row,col);
 					sum += (CharToNum(tileContent));
 				}
 			}
@@ -212,14 +231,14 @@ namespace ns_robotic_cleaner_simulator
 		{
 			for(unsigned int col = 0; col <= lastColIndex; ++col) 
 			{
-				if( ! IsValidTile( floor(row,col) ) )
+				if( ! IsValidTile( _floor(row,col) ) )
 					return false;
 				if((col == lastColIndex) || (col == 0) || (row == lastRowIndex) || (row == 0))
 				{
-					if( ! IsWallTile(floor(row,col)) )
+					if( ! IsWallTile(_floor(row,col)) )
 						return false;
 				}
-				else if( IsDockingTile(floor(row,col)) )
+				else if( IsDockingTile(_floor(row,col)) )
 				{
 					if(dockingStationExists)
 						return false; //two docking stations
@@ -230,6 +249,20 @@ namespace ns_robotic_cleaner_simulator
 		return dockingStationExists;
 	}
 
+	std::ostream& operator<<(std::ostream& out, const House& houseToPrint)
+	{
+		unsigned int lastColIndex = houseToPrint.GetWidth() - 2; //not including \0 col in the end
+		unsigned int lastRowIndex = houseToPrint.GetHeight() - 1;
+		for(unsigned int row = 0; row <= lastRowIndex; ++row) 
+		{
+			for(unsigned int col = 0; col <= lastColIndex; ++col) 
+			{   
+				out << houseToPrint._floor(row,col);
+			}   
+			cout << endl; 
+		}
+		return out;
+	}
 
 } // end of namespace ns_robotic_cleaner_simulator
 

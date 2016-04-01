@@ -14,14 +14,12 @@ class RandomRobotAlgorithm : public AbstractAlgorithm
 {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 private:
-	//const AbstractSensor robotSensor;  //compiler says error
-	AbstractSensor & robotSensor;   //the sensor is passed to the algorithm by
-	//the simulator when the algorithm is initialized
+	const AbstractSensor* robotSensor;
 	map<string,int> configs;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
-	RandomRobotAlgorithm(AbstractSensor& sensor, map<string, int> config);
+	RandomRobotAlgorithm(const AbstractSensor& sensor, map<string, int> config);
 	~RandomRobotAlgorithm(void){}
 
 public:
@@ -30,7 +28,7 @@ public:
 
 	void setSensor(const AbstractSensor& sensor) 
 	{
-		robotSensor = sensor;
+		robotSensor = &sensor;
 	}
 
 	void setConfiguration(map<string, int> config)
