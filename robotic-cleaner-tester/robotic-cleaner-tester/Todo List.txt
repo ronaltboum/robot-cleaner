@@ -1,3 +1,6 @@
-3.  print error messages http://moodle.tau.ac.il/mod/page/view.php?id=375915
-4.  run valgrind
-5.  check argc argv functionality
+1. print error messages http://moodle.tau.ac.il/mod/page/view.php?id=375915
+2. complete SingletonHouseReader
+3. add documentation + initialize
+4. look for c'tor-d'tor
+5. run checks on empty houses
+6. add HouseAndLocation
