@@ -103,7 +103,7 @@
   <ItemGroup>
     <ClCompile Include="AlgorithmSingleRun.cpp" />
     <ClCompile Include="Battery.cpp" />
-    <ClCompile Include="SingletonHouseReader.cpp" />
+    <ClCompile Include="SingletonHouseIOManager.cpp" />
     <ClCompile Include="SingletonConfigReader.cpp" />
     <ClCompile Include="House.cpp" />
     <ClCompile Include="RandomRobotAlgorithm.cpp" />
@@ -117,6 +117,7 @@
   <ItemGroup>
     <None Include="..\..\..\..\..\Dropbox\אוניברסיטה\2017\AP\2016\robotic-cleaner-tester HLD (high level design).docx" />
     <None Include="config.ini" />
+    <None Include="house1.house" />
     <None Include="makefile" />
     <None Include="Simulator" />
   </ItemGroup>

@@ -7,54 +7,19 @@ namespace ns_robotic_cleaner_simulator
 	House::House()
 	{
 		initiallize();
-		_shortName = string("House1");
-		char house[19][81] = {
-		//             1         2         3         4         5         6         7        
-		//   01234567890123456789012345678901234567890123456789012345678901234567890123456789
-			"W123WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 0
-			"10 79   D              1234321                                                 W", // 1 =  
-			"W  98      WWWWWWW     1234321                     W                       1   W", // 2 =  
-			"W              W                                   W   555                 2   W", // 3 =  
-			"W              W                                   W   555                 3   W", // 4 =  282
-			"W              W           WWWWWWWWWWWWWWWWWWWWWWWWW                       4   W", // 5 =  
-			"W              W                                                           5   W", // 6 =  
-			"W              W                                                           6   W", // 7 =  
-			"W                          WWWWWWWWWWWWWWWWWWWWWW  WWWWWWW                 7   W", // 8 =  24?
-			"W         1         2         3         4         5W 999 W  6         7        W", // 9 =  
-			"W              W           444                     W 999 W                 9   W", // 10 = 
-			"W              W           444                     W 999 W                 8   W", // 11 =
-			"W              W                                   W     W                 7   W", // 12 = 
-			"W              W                                   WW   WW                 6   W", // 13 = 
-			"W              W                                    W   W                  5   W", // 14 = 
-			"W              W                                                           4   W", // 15 = 
-			"W              W                                                           3   W", // 16 = 
-			"W              W                                                               W", // 17
-			"WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW" // 18
-		};
-		unsigned int rows = ARRAY_SIZE(house); //19
-		unsigned int cols = ARRAY_SIZE(house[0]); //81
-		_floor = Matrix<char>(rows,cols);
-		for(unsigned int row = 0; row < rows; ++row) {
-			for(unsigned int col = 0; col < cols; ++col) {
-				char c = house[row][col];
-				_floor(row,col) = house[row][col];
-			}
-		}
-		ValidateWallsAndCharacters();
-		cout << *this;
 	}
 
 	House::House(unsigned int houseWidth, unsigned int houseHeight)
 	{
 		initiallize();
-		_floor = Matrix<char>(houseWidth, houseHeight);
+		_floor = Matrix<char>(houseHeight,houseWidth);
 		
 	}
 	
 	House::House(unsigned int houseWidth, unsigned int houseHeight, string shortName, string longName)
 	{
 		initiallize();
-		_floor = Matrix<char>(houseWidth, houseHeight);
+		_floor = Matrix<char>(houseHeight,houseWidth);
 		_shortName = shortName;
 		_longName = longName;
 	}
@@ -70,31 +35,6 @@ namespace ns_robotic_cleaner_simulator
 		_longName = "";
 	}
 
-	//************************************
-	// Brief:		Fills all the surrounding with walls, and replace all illegal chars with space
-	//************************************
-	void House::ValidateWallsAndCharacters()
-	{
-		unsigned int lastColIndex = GetWidth() - 2; //not including \0 col in the end
-		unsigned int lastRowIndex = GetHeight() - 1;
-		if((lastColIndex < 0) || (lastRowIndex < 0))
-		{
-			return ;
-		}
-		for(unsigned int row = 0; row <= lastRowIndex; ++row) 
-		{
-			for(unsigned int col = 0; col <= lastColIndex; ++col) 
-			{
-				if((col == lastColIndex) || (col == 0) || (row == lastRowIndex) || (row == 0))
-				{
-					_floor(row,col) = d_cWallLetter;
-					continue;
-				}
-				if(! IsValidTile( _floor(row,col) ) )
-					_floor(row,col) = d_cSpaceLetter;
-			}
-		}
-	}
 
 	//************************************
 	// Brief:		Returns a pointer to new point containing the Docking Station
@@ -161,25 +101,10 @@ namespace ns_robotic_cleaner_simulator
 		return true;
 	}
 
-	//************************************
-	// Brief:		Print a single row
-	//************************************
-	void House::PrintRow(unsigned int row) const
-	{
-		assert(row < GetHeight() && row >= 0);
-		unsigned int cols = GetWidth();
-		for(unsigned int col = 0; col < cols; ++col) {
-			cout << _floor(row,col);
-		}
-	}
 
 	void House::Print() const
 	{
-		unsigned int rows = GetHeight();
-		for(unsigned int row = 0; row < rows; ++row) {
-			PrintRow(row);
-			cout << endl;
-		}
+		cout << (*this);
 	}
 
 	void House::Print(const Point & currentPosition) const
@@ -218,22 +143,29 @@ namespace ns_robotic_cleaner_simulator
 		return sum;
 	}
 
-	bool House::isValid() const /* check that the house is valid */ 
+	//************************************
+	// Brief:		Checks that the house is valid:
+	//					1. Walls on the sides
+	//					2. one docking station
+	//					3. no illegal characters
+	// Returns:   	bool
+	//************************************
+	bool House::isValid() const
 	{
 		bool dockingStationExists = false;
-		unsigned int lastColIndex = GetWidth() - 2; //not including \0 col in the end
-		unsigned int lastRowIndex = GetHeight() - 1;
-		if((lastColIndex < 2) || (lastRowIndex < 2)) //at least 3x3 in order to be surrounded by walls
+		unsigned int cols = GetWidth(); //not including \0 col in the end
+		unsigned int rows = GetHeight();
+		if((cols < 3) || (rows < 3)) //at least 3x3 in order to be surrounded by walls
 		{
 			return false;
 		}
-		for(unsigned int row = 0; row <= lastRowIndex; ++row) 
+		for(unsigned int row = 0; row < rows; ++row) 
 		{
-			for(unsigned int col = 0; col <= lastColIndex; ++col) 
+			for(unsigned int col = 0; col < cols; ++col) 
 			{
 				if( ! IsValidTile( _floor(row,col) ) )
 					return false;
-				if((col == lastColIndex) || (col == 0) || (row == lastRowIndex) || (row == 0))
+				if((col == cols-1) || (col == 0) || (row == rows-1) || (row == 0))
 				{
 					if( ! IsWallTile(_floor(row,col)) )
 						return false;
@@ -249,19 +181,50 @@ namespace ns_robotic_cleaner_simulator
 		return dockingStationExists;
 	}
 
+
+	//************************************
+	// Brief:		Sets the house #rowNumber row to be rowAsString
+	// Pre:			rowAsString.length() == GetWidth();
+	//************************************
+	void House::SetRow(const string & rowAsString, unsigned int rowNumber)
+	{
+		int cols = GetWidth();
+		if(rowAsString.length() != cols)
+			return;
+		for(int col = 0; col < cols; ++col)
+		{
+			_floor(rowNumber,col) = rowAsString[col];
+		}
+	}
+
 	std::ostream& operator<<(std::ostream& out, const House& houseToPrint)
 	{
-		unsigned int lastColIndex = houseToPrint.GetWidth() - 2; //not including \0 col in the end
-		unsigned int lastRowIndex = houseToPrint.GetHeight() - 1;
-		for(unsigned int row = 0; row <= lastRowIndex; ++row) 
+		unsigned int cols = houseToPrint.GetWidth();
+		unsigned int rows = houseToPrint.GetHeight();
+		out << houseToPrint._shortName << endl;
+		out << houseToPrint._longName << endl;
+		out << rows << endl;
+		out << cols << endl;
+		for(unsigned int row = 0; row < rows; ++row) 
 		{
-			for(unsigned int col = 0; col <= lastColIndex; ++col) 
+			for(unsigned int col = 0; col < cols; ++col) 
 			{   
 				out << houseToPrint._floor(row,col);
 			}   
-			cout << endl; 
+			out << endl; 
 		}
 		return out;
+	}
+
+	std::istream& operator>>(istream& in, House& h) 
+	{
+		House * houseRead = new House();
+		House * a = SingletonHouseIOManager::instance()->ReadHouseFromFile("house1.house");
+		if(houseRead == NULL)
+			in.setstate(std::ios::failbit);
+		/*else
+			this = (*houseRead);*/
+		return in;
 	}
 
 } // end of namespace ns_robotic_cleaner_simulator

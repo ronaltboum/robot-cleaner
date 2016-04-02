@@ -3,6 +3,7 @@
 
 #include "Point.h"
 #include "Matrix.h"
+#include "SingletonHouseIOManager.h"
 #include <sstream> 
 #include <fstream>
 #include <iostream>
@@ -11,12 +12,13 @@
 namespace ns_robotic_cleaner_simulator
 {
 
+class SingletonHouseIOManager;
 /*
  * class House is representing a house which needs to be cleaned
  */	
 class House 
 { 
-friend class HouseFileReader;
+friend class SingletonHouseIOManager;
 
 //~~~~~~~~~~~~~~~~~~~~` Macros ~~~~~~~~~~~~~~~~~~~~~~~~~`
 #define d_cWallLetter 'W'
@@ -66,29 +68,9 @@ public:
 	unsigned int SumOfDirtInTheHouse() const; //: Sums how much dirt there is in the house
 	bool isValid() const; //: check that the house is valid
 	friend std::ostream& operator << ( std::ostream& out, const House& houseToPrint ); //printing to stream
-	bool ReadConfigFromFile(string houseFileName); // TODO: split folder and move to private
+	friend istream& operator>>(istream& in, House& h); // getting from stream
 private:
-	void PrintRow(unsigned int row) const; //: print one row in the house
-	void ValidateWallsAndCharacters(); //: check that all characters are valid, and change them if not. puts walls in the sides.
-	void processLine(string line, int currentRowNumber);
-	
-		
-	//friend istream& operator>>(istream& in, House& vec) 
-	//{
-	//	for (int row = 0; row < boardSizeRow; row++)
-	//	{
-	//		for (int col = 0; col < boardSizeCol; col++)
-	//		{   
-	//			inputFile >> gameBoard[row][col];
-	//		}   
-	//	}
-	//	// read obj from stream
-
-	//	if( /* no valid object of T found in stream */ )
-	//		in.setstate(std::ios::failbit);
-
-	//	return in;
-	//}
+	void SetRow(const string & line, unsigned int rowNumber); // sets row rowNumber to be equal to line 	
 
 
 };

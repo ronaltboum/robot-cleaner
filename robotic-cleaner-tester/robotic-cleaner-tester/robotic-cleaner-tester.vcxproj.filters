@@ -98,10 +98,10 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SingletonHouseReader.cpp">
+    <ClCompile Include="SingletonConfigReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SingletonConfigReader.cpp">
+    <ClCompile Include="SingletonHouseIOManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -114,6 +114,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="makefile">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="house1.house">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

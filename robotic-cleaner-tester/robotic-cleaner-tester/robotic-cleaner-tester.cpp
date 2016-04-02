@@ -7,12 +7,16 @@
 #include <string.h>
 #include <stdlib.h>
 #include "CommandLineInterpeter.h"
+#include "SingletonHouseIOManager.h"
 
 using namespace ns_robotic_cleaner_simulator;
 
 int main(int argc, char * argv[])
 {
 	srand((unsigned int)time(NULL));
+	House * h = SingletonHouseIOManager::instance()->ReadHouseFromFile("house1.house");
+	cout << (*h);
+	delete h;
 	vector<string> commandLineArguments = CommandLineInterpeter::readCommandLineArguments(argc, argv);
 	string configFile = commandLineArguments[0];
 	string houseFolder = commandLineArguments[1];
