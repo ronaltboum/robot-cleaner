@@ -29,7 +29,7 @@ private:
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
 	Simulator(void);
-	Simulator::Simulator(const string & configFilePath);
+	Simulator(const string & configFilePath);
 	~Simulator(void);
 	void initiallize();
 

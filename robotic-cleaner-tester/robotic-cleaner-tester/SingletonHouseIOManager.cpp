@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "SingletonHouseIOManager.h"
 #include <string>
 #include <sstream>
@@ -71,7 +71,7 @@ namespace ns_robotic_cleaner_simulator
 
 	House * SingletonHouseIOManager::ReadHouseFromFile(string houseFileName)
 	{
-		ifstream myfile(houseFileName);
+		ifstream myfile(houseFileName.c_str());
 
 		if ( ! myfile.is_open()){
 			cout << "Unable to open file" << endl;

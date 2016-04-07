@@ -14,6 +14,7 @@ using namespace std;
 namespace ns_robotic_cleaner_simulator
 {
 
+class House;
 
 class SingletonHouseIOManager
 {
@@ -27,7 +28,6 @@ class SingletonHouseIOManager
 	private:
 		string _houseFolder; // the folder path of the house files
 		static SingletonHouseIOManager * s_instance; // singleton instance
-		int stupid_member;
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	private:
 		SingletonHouseIOManager(const string & houseFolder);

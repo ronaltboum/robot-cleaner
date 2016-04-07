@@ -1,5 +1,5 @@
  //robotic-cleaner-tester.cpp : Defines the entry point for the console application.
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "Simulator.h"
 #include "AbstractAlgorithm.h"
 #include "RandomRobotAlgorithm.h"

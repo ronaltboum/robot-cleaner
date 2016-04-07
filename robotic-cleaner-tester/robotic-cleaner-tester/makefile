@@ -18,9 +18,6 @@ Simulator.o: Simulator.cpp Simulator.h Direction.h
 SingletonConfigReader.o: SingletonConfigReader.cpp SingletonConfigReader.h
 	$(CC) -c $(CFLAGS) $<	
 
-SingletonHouseIOManager.o: SingletonHouseIOManager.cpp SingletonHouseIOManager.h
-	$(CC) -c $(CFLAGS) $<	
-
 AlgorithmSingleRun.o: AlgorithmSingleRun.cpp AlgorithmSingleRun.h AbstractSensor.h Direction.h
 	$(CC) -c $(CFLAGS) $<	
 
@@ -29,8 +26,11 @@ RandomRobotAlgorithm.o: RandomRobotAlgorithm.cpp RandomRobotAlgorithm.h Abstract
 	
 Sensor.o: Sensor.cpp Sensor.h AbstractSensor.h House.h SensorInformation.h
 	$(CC) -c $(CFLAGS) $<
+
+SingletonHouseIOManager.o: SingletonHouseIOManager.cpp SingletonHouseIOManager.h House.h
+	$(CC) -c $(CFLAGS) $<	
 	
-House.o: House.cpp House.h Point.h Direction.h Matrix.h
+House.o: House.cpp SingletonHouseIOManager.h House.h Point.h Direction.h Matrix.h
 	$(CC) -c $(CFLAGS) $<
 
 Battery.o: Battery.cpp Battery.h 
