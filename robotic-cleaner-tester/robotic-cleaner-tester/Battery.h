@@ -46,7 +46,8 @@ public:
 	//it's docking point.  returns false if _battery_level < 0 after consume - game over
 	void Recharge();	//fill the battery with _recharge_rate at each time unit the robot is in
 	//it's docking point
-
+	int GetStepsBeforeRecharge() const; // Get number of steps before needing to recharge
+	bool OneRechargeBeforeFullyRecharged() const; //: returns true if one more recharge will fill the battery
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ inline functions ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -94,6 +95,16 @@ public:
 	inline int Battery::GetBattery_level() const
 	{
 		return _battery_level;
+	}
+
+	inline int Battery::GetStepsBeforeRecharge() const
+	{
+		return (int)(_battery_level / _consumption_rate);
+	}
+
+	inline bool Battery::OneRechargeBeforeFullyRecharged() const
+	{
+		return (_battery_level + _recharge_rate > _battery_capacity);
 	}
 
 

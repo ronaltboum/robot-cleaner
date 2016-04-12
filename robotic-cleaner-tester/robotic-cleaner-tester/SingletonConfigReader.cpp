@@ -1,4 +1,4 @@
-//#include "stdafx.h"
+#include "stdafx.h"
 #include "SingletonConfigReader.h"
 #include <iosfwd>
 #include <sstream> 
@@ -55,20 +55,22 @@ bool SingletonConfigReader::processLine(const string& line, map<string, int> & c
 
 void SingletonConfigReader::CompleteMissingConfigs(map<string, int> & configs)
 {
-	for(auto configNameValuePair : defaultValues)
+	for (StringToIntMap::const_iterator nameValueIterator = defaultValues.begin();
+		nameValueIterator != defaultValues.end();
+		++nameValueIterator) 
 	{
-		if ( configs.find(configNameValuePair.first) == configs.end() ) {
-			cout << "value of " << configNameValuePair.first << " not set, using default";
-			configs.insert(configNameValuePair);
+		if ( configs.find(nameValueIterator->first) == configs.end() ) {
+			cout << "value of " << nameValueIterator->first << " not set, using default";
+			StringIntPair missingConfig = StringIntPair(nameValueIterator->first, nameValueIterator->second);
+			configs.insert(missingConfig);
 		}
 	}
-	
 }
 
 map<string, int> SingletonConfigReader::ReadConfigFromFile()
 {
 	string line;
-	ifstream myfile(_configFilePath);
+	ifstream myfile(_configFilePath.c_str());
 	int lineNumber = 1;
 	map<string, int> configs = map<string,int>();
 	if (myfile.is_open())

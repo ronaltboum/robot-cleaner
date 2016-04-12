@@ -21,6 +21,7 @@ class SingletonConfigReader
 {
 //~~~~~~~~~~~~~~~~~~~~` Macros ~~~~~~~~~~~~~~~~~~~~~~~~~`
 	typedef std::map<string, int> StringToIntMap;
+	typedef std::pair<string, int> StringIntPair;
 	#define configFileName "config.ini"
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

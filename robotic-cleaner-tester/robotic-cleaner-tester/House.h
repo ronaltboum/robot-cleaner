@@ -30,15 +30,13 @@ friend class SingletonHouseIOManager;
 #define IsDockingTile(tile) ((tile == d_cDockingLetter))
 #define IsRegularTile(tile) (IsDirtTile(tile) || IsSpaceTile(tile))
 #define CharToNum(c) ((unsigned int)((c)-'0'))
-#define d_sAllowedCharacters string("DW 123456789")
-#define IsValidTile(tile) ((d_sAllowedCharacters.find(tile) != string::npos))
 #define ARRAY_SIZE(array) (sizeof((array))/sizeof((array[0])))
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-private: 
-	Matrix<char> _floor;		//: the floor of the house
-	string _shortName;		//: the house short name
-	string _longName;		//: the house long name
+protected: 
+	Matrix<char> _floor;			//: the floor of the house
+	string _shortName;				//: the house short name
+	string _longName;				//: the house long name
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
@@ -71,7 +69,9 @@ public:
 	friend istream& operator>>(istream& in, House& h); // getting from stream
 private:
 	void SetRow(const string & line, unsigned int rowNumber); // sets row rowNumber to be equal to line 	
-
+protected:
+	virtual bool IsValidTile(char tile) const; //: check that a tile is valid
+	//virtual bool IsInMargins(Point & p) const; //: check if a point is in the margin of the house
 
 };
 
@@ -142,6 +142,11 @@ inline int House::Clean(const Point & position)
 		amountCleaned = 1;
 	}
 	return amountCleaned;
+}
+
+inline bool House::IsValidTile(char tile) const
+{
+	return ( string("DW 123456789").find(tile) != string::npos); 
 }
 
 } // end of namespace ns_robotic_cleaner_simulator

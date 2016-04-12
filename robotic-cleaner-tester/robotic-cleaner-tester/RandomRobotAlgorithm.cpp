@@ -1,4 +1,4 @@
-//#include "stdafx.h"
+#include "stdafx.h"
 #include "RandomRobotAlgorithm.h"
 
 namespace ns_robotic_cleaner_simulator
@@ -6,10 +6,8 @@ namespace ns_robotic_cleaner_simulator
 
 	RandomRobotAlgorithm::RandomRobotAlgorithm(const AbstractSensor& sensor, map<string, int> config)
 	{
-		{
-			setSensor(sensor);
-			setConfiguration(config);
-		}
+		setSensor(sensor);
+		setConfiguration(config);
 	}
 
 	Direction RandomRobotAlgorithm::step()

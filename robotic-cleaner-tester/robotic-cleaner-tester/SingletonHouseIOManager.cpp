@@ -1,4 +1,4 @@
-//#include "stdafx.h"
+#include "stdafx.h"
 #include "SingletonHouseIOManager.h"
 #include <string>
 #include <sstream>
@@ -23,7 +23,7 @@ namespace ns_robotic_cleaner_simulator
 	//************************************
 	vector<House *> SingletonHouseIOManager::ReadHouses()
 	{
-		throw std::logic_error("The method or operation is not implemented.");
+		//throw std::logic_error("The method or operation is not implemented.");
 		return vector<House *>();
 	}
 
@@ -162,7 +162,7 @@ namespace ns_robotic_cleaner_simulator
 					h._floor(row,col) = d_cWallLetter;
 					continue;
 				}
-				if(! IsValidTile( h._floor(row,col) ) )
+				if(! h.IsValidTile( h._floor(row,col) ) )
 					h._floor(row,col) = d_cSpaceLetter;
 			}
 		}
