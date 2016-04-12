@@ -24,12 +24,13 @@ int main(int argc, char * argv[])
 	string houseFolder = commandLineArguments[1];
 	//string algorithmFolder = commandLineArguments[2];
 
-	//print for debugging.  delete later !!!!!!!!!!!!
+	////print for debugging.  delete later !!!!!!!!!!!!
 	//for(vector<string>::const_iterator i = commandLineArguments.begin(); i != commandLineArguments.end(); ++i) {
  //   // process i
  //   cout << *i << " "; // this will print all the contents of *features*
 	//}
 
+	
 	Simulator s = Simulator();
 	s.ReadConfigFile(configFile);
 	if(s.LoadHouses(houseFolder) == 0){

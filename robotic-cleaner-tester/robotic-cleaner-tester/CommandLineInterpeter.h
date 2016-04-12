@@ -75,8 +75,7 @@ public:
 
 		if(argc == 7)  //case where all arguments were given by the user
 		{
-			//cout << "i'm in argc==7";
-
+			
 			if ( ! strcmp(argv[5], configFlag))
 			{
 				configFilePath = string(argv[6]);
@@ -117,17 +116,8 @@ public:
 
 		vector<string> commandLineArguments = vector<string>();
 		commandLineArguments.push_back(configFilePath);
-
-		//we only push houseFolder and algorithmFolder to commandLineArguments if they
-		//aren't empty strings.
-
-		if(houseFolder != ""){
-			commandLineArguments.push_back(houseFolder);
-		}
-		
-		if(algorithmFolder != ""){
-			commandLineArguments.push_back(algorithmFolder);
-		}
+		commandLineArguments.push_back(houseFolder);
+		commandLineArguments.push_back(algorithmFolder);
 		
 		return commandLineArguments;
 	}
