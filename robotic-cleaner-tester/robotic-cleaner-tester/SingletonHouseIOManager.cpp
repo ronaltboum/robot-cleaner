@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "SingletonHouseIOManager.h"
 #include <string>
 #include <sstream>

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "SingletonConfigReader.h"
 #include <iosfwd>
 #include <sstream> 

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "DynamicHouse.h"
 namespace ns_robotic_cleaner_simulator
 {

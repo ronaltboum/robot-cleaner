@@ -28,7 +28,7 @@ class SingletonConfigReader
 private:
 	string _configFilePath;	// the file path of the configuration file
 	static const StringToIntMap defaultValues; // a static map of config names and their default values
-	static SingletonConfigReader *s_instance; // singleton instance
+	static SingletonConfigReader * s_instance; // singleton instance
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 private:
