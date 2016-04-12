@@ -1,4 +1,4 @@
-//#include "stdafx.h"
+#include "stdafx.h"
 #include "Simulator.h"
 #include <string>
 using namespace std;

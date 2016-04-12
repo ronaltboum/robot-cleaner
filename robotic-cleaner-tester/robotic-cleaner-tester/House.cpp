@@ -4,6 +4,7 @@
 
 namespace ns_robotic_cleaner_simulator
 {
+
 	House::House()
 	{
 		initiallize();
