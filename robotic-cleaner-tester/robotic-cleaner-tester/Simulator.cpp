@@ -25,6 +25,7 @@ namespace ns_robotic_cleaner_simulator
 		_configs = map<string, int>();
 		_runs = vector< AlgorithmSingleRun *>();
 		_defaultBattery = NULL;
+		_algorithmFactory = NULL;
 		_winnerAlgorithmExist = false;
 	}
 
@@ -40,6 +41,7 @@ namespace ns_robotic_cleaner_simulator
 		_runs.clear();
 
 		delete _defaultBattery;
+		delete _algorithmFactory;
 	}
 
 	void Simulator::ReadConfigFile(const string & configFilePath){
@@ -57,12 +59,19 @@ namespace ns_robotic_cleaner_simulator
 	//************************************
 	int Simulator::LoadHouses( string houseFolder)
 	{
-		House * h = new House();
+		House * h = SingletonHouseIOManager::instance()->ReadHouseFromFile("house1.house");
 		if(h->isValid()){
 			_houses.push_back(h);
 			return 1;
 		}
 		return 0;
+	}
+
+	int Simulator::LoadAlgorithms( string algorithmsFolder)
+	{
+		_algorithmFactory =  new AlgorithmFactory();
+		_algorithmFactory->ReadAlgorithms(algorithmsFolder);
+		
 	}
 
 	//************************************
@@ -74,13 +83,25 @@ namespace ns_robotic_cleaner_simulator
 	int Simulator::LoadAlgorithmsAndRuns()
 	{
 		int houseNum = _houses.size();
+		vector<AbstractAlgorithm *> algorithms;
+		vector<AbstractAlgorithm *>::iterator _algoIterator; 
 		for( int houseIndex = 0 ; houseIndex < houseNum; ++houseIndex)
 		{
-			Point * startingPoint = _houses[houseIndex]->GetDockingStation(); //new is deallocated by AlgorithmSingleRun
-			Sensor * algoSensor = new Sensor(_houses[houseIndex],startingPoint); // new is deallocated by AlgorithmSingleRun
-			AbstractAlgorithm * randAlgorithm = new RandomRobotAlgorithm(*algoSensor,_configs); //new is deallocated by AlgorithmSingleRun
-			AlgorithmSingleRun * newRunCreated = new AlgorithmSingleRun(_configs, randAlgorithm, *_defaultBattery, _houses[houseIndex] ,algoSensor, startingPoint);	
-			_runs.push_back(newRunCreated);
+			//creating a set for all existing algorithms per each house
+			//new
+			//algorithms = _algorithmFactory->CreateSetOfAllAlgorithms();
+			for(_algoIterator=algorithms.begin() ; _algoIterator!=algorithms.end() ; _algoIterator++){
+				Point * startingPoint = _houses[houseIndex]->GetDockingStation(); //new is deallocated by AlgorithmSingleRun
+				Sensor * algoSensor = new Sensor(_houses[houseIndex],startingPoint); // new is deallocated by AlgorithmSingleRun
+				//old - just for checking everything alright
+				AbstractAlgorithm * randAlgo = new RandomRobotAlgorithm(*algoSensor,_configs);
+				AlgorithmSingleRun * newRunCreated = new AlgorithmSingleRun(_configs, randAlgo, *_defaultBattery, _houses[houseIndex] ,algoSensor, startingPoint);	
+				//new
+				//(*_algoIterator)->setConfiguration(_configs);
+				//(*_algoIterator)->setSensor(*algoSensor);
+				//AlgorithmSingleRun * newRunCreated = new AlgorithmSingleRun(_configs, (*_algoIterator), *_defaultBattery, _houses[houseIndex] ,algoSensor, startingPoint);	
+				_runs.push_back(newRunCreated);
+			}
 		}
 		return 1;
 	}

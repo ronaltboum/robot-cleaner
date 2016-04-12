@@ -19,6 +19,7 @@ private:
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
+	RandomRobotAlgorithm(){		}
 	RandomRobotAlgorithm(const AbstractSensor& sensor, map<string, int> config);
 	~RandomRobotAlgorithm(void){}
 

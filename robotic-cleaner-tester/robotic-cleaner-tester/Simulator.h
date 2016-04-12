@@ -11,6 +11,7 @@
 #include "SingletonConfigReader.h"
 #include <sstream> 
 #include <fstream>
+#include "AlgorithmFactory.h"
 using namespace std;
 
 namespace ns_robotic_cleaner_simulator
@@ -25,6 +26,7 @@ private:
 	vector< AlgorithmSingleRun *> _runs;
 	Battery * _defaultBattery;
 	bool _winnerAlgorithmExist;
+	AlgorithmFactory * _algorithmFactory;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
@@ -37,11 +39,13 @@ public:
 public:
 	void ReadConfigFile(const string & configFilePath);
 	int LoadHouses( string houseFolder);
+	int LoadAlgorithms( string algorithmsFolder); //: load the dynamic algorithms .so files 
 	int LoadAlgorithmsAndRuns();
 	void RunAll(void);
 	void printScores(int winner_num_steps);
 private:
 	void MoveAllOneStep(int & currentRankAlgorithmsCompetingOn);
+	
 };
 
 } // end of namespace ns_robotic_cleaner_simulator

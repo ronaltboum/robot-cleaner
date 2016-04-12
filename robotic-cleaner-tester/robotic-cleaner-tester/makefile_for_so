@@ -1,0 +1,25 @@
+#g++ -fPIC -Wall -c Battery.cpp -o Battery.o
+#g++ -shared -Wall Battery.o -o Battery.so
+
+CC      = g++
+CC_FLAGS = -std=c++11 -fPIC -g -Wall -O2 -pedantic -pthread
+CC_SHARED_FLAGS = -shared -Wall
+
+all: RandomRobotAlgorithm.so
+clean:
+	-rm *.o *.so
+
+RandomRobotAlgorithm.so: RandomRobotAlgorithm.o Sensor.o House.o Battery.o
+	$(CC) $(CC_SHARED_FLAGS) -Wl,-soname,$@ -o $@ $^
+
+RandomRobotAlgorithm.o: RandomRobotAlgorithm.cpp RandomRobotAlgorithm.h AbstractAlgorithm.h Battery.h Sensor.h
+	$(CC) -c $(CFLAGS) $<
+	
+Sensor.o: Sensor.cpp Sensor.h AbstractSensor.h House.h SensorInformation.h
+	$(CC) -c $(CFLAGS) $<	
+	
+House.o: House.cpp SingletonHouseIOManager.h House.h Point.h Direction.h Matrix.h
+	$(CC) -c $(CFLAGS) $<
+
+Battery.o: Battery.cpp Battery.h 
+	$(CC) -c $(CFLAGS) $<
