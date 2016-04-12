@@ -4,6 +4,8 @@
 namespace ns_robotic_cleaner_simulator
 {
 
+
+
 	RandomRobotAlgorithm::RandomRobotAlgorithm(const AbstractSensor& sensor, map<string, int> config)
 	{
 		setSensor(sensor);
@@ -23,7 +25,17 @@ namespace ns_robotic_cleaner_simulator
 		return possibleDirections.at(chosenDirectionIndex);
 	}
 
-
+	extern "C" {
+		AbstractAlgorithm * maker(){
+			return new RandomRobotAlgorithm;
+		}
+		class proxy { 
+		public:
+			proxy(){
+				// register the maker with the factory 
+				factory["AbstractAlgorithm"] = maker;
+			}
+		};
 
 
 
