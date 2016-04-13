@@ -66,13 +66,16 @@
     <ClInclude Include="CommandLineInterpeter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HouseFileReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DynamicHouse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RobotAlgorithm1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AlgorithmFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SingletonHouseIOManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -113,6 +116,9 @@
     <ClCompile Include="RobotAlgorithm1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AlgorithmFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\..\Dropbox\אוניברסיטה\2017\AP\2016\robotic-cleaner-tester HLD (high level design).docx">
@@ -126,6 +132,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="house1.house">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="makefile_for_so">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

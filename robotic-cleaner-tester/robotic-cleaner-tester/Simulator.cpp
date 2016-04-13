@@ -67,13 +67,6 @@ namespace ns_robotic_cleaner_simulator
 		return 0;
 	}
 
-	int Simulator::LoadAlgorithms( string algorithmsFolder)
-	{
-		_algorithmFactory =  new AlgorithmFactory();
-		_algorithmFactory->ReadAlgorithms(algorithmsFolder);
-		
-	}
-
 	//************************************
 	// Brief:		Load algorithms from libraries
 	//				not implemented yet - just load random-move algorithm
@@ -87,19 +80,20 @@ namespace ns_robotic_cleaner_simulator
 		vector<AbstractAlgorithm *>::iterator _algoIterator; 
 		for( int houseIndex = 0 ; houseIndex < houseNum; ++houseIndex)
 		{
-			//creating a set for all existing algorithms per each house
-			//new
-			//algorithms = _algorithmFactory->CreateSetOfAllAlgorithms();
+			////old
+			//Point * startingPoint = _houses[houseIndex]->GetDockingStation(); //new is deallocated by AlgorithmSingleRun
+			//Sensor * algoSensor = new Sensor(_houses[houseIndex],startingPoint); // new is deallocated by AlgorithmSingleRun
+			//AbstractAlgorithm * randAlgo = new RandomRobotAlgorithm(*algoSensor,_configs);
+			//AlgorithmSingleRun * newRunCreated = new AlgorithmSingleRun(_configs, randAlgo, *_defaultBattery, _houses[houseIndex] ,algoSensor, startingPoint);	
+			//_runs.push_back(newRunCreated);
+
+			algorithms = _algorithmFactory->CreateSetOfAllAlgorithms();
 			for(_algoIterator=algorithms.begin() ; _algoIterator!=algorithms.end() ; _algoIterator++){
 				Point * startingPoint = _houses[houseIndex]->GetDockingStation(); //new is deallocated by AlgorithmSingleRun
 				Sensor * algoSensor = new Sensor(_houses[houseIndex],startingPoint); // new is deallocated by AlgorithmSingleRun
-				//old - just for checking everything alright
-				AbstractAlgorithm * randAlgo = new RandomRobotAlgorithm(*algoSensor,_configs);
-				AlgorithmSingleRun * newRunCreated = new AlgorithmSingleRun(_configs, randAlgo, *_defaultBattery, _houses[houseIndex] ,algoSensor, startingPoint);	
-				//new
-				//(*_algoIterator)->setConfiguration(_configs);
-				//(*_algoIterator)->setSensor(*algoSensor);
-				//AlgorithmSingleRun * newRunCreated = new AlgorithmSingleRun(_configs, (*_algoIterator), *_defaultBattery, _houses[houseIndex] ,algoSensor, startingPoint);	
+				(*_algoIterator)->setConfiguration(_configs);
+				(*_algoIterator)->setSensor(*algoSensor);
+				AlgorithmSingleRun * newRunCreated = new AlgorithmSingleRun(_configs, (*_algoIterator), *_defaultBattery, _houses[houseIndex] ,algoSensor, startingPoint);	
 				_runs.push_back(newRunCreated);
 			}
 		}
@@ -140,7 +134,7 @@ namespace ns_robotic_cleaner_simulator
 			int this_num_steps = runIterator->GetNumberOfStepsCommited();
 			int sum_dirt_in_house = runIterator->GetSumOfDirtBeforeCleaning();
 			int dirt_collected = runIterator->GetDirtCollected();
-			bool is_battery_empty = runIterator->IsAlgorithmBatteryEmpty();
+			//bool is_battery_empty = runIterator->IsAlgorithmBatteryEmpty();
 			bool is_back_in_docking = runIterator->IsBackInDocking(); 
 			score = 2000 
 				- (position_in_copmetition - 1) * 50 

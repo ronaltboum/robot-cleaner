@@ -36,7 +36,5 @@ namespace ns_robotic_cleaner_simulator
 				factory["AbstractAlgorithm"] = maker;
 			}
 		};
-
-
-
+	}
 } // end of namespace ns_robotic_cleaner_simulator_simulator

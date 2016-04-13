@@ -116,7 +116,7 @@ namespace ns_robotic_cleaner_simulator
 			rowReadFromFile[rowReadFromFile.length() - 1] = d_cSpaceLetter;
 		}
 		rowReadFromFile += string(width - rowReadFromFile.length(), d_cSpaceLetter);
-		int newLength = rowReadFromFile.length();
+		//int newLength = rowReadFromFile.length();
 		rowReadFromFile[0] = d_cWallLetter;
 		rowReadFromFile[width - 1] = d_cWallLetter;
 	}

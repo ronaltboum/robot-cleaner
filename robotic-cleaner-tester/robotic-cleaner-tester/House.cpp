@@ -189,7 +189,7 @@ namespace ns_robotic_cleaner_simulator
 	//************************************
 	void House::SetRow(const string & rowAsString, unsigned int rowNumber)
 	{
-		int cols = GetWidth();
+		unsigned int cols = GetWidth();
 		if(rowAsString.length() != cols)
 			return;
 		for(int col = 0; col < cols; ++col)
@@ -219,12 +219,12 @@ namespace ns_robotic_cleaner_simulator
 
 	std::istream& operator>>(istream& in, House& h) 
 	{
-		House * houseRead = new House();
-		House * a = SingletonHouseIOManager::instance()->ReadHouseFromFile("house1.house");
+		House * houseRead = SingletonHouseIOManager::instance()->ReadHouseFromFile(in);
 		if(houseRead == NULL)
 			in.setstate(std::ios::failbit);
-		/*else
-			this = (*houseRead);*/
+		else
+			h = House(*houseRead);
+		delete houseRead ;
 		return in;
 	}
 

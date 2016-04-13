@@ -39,7 +39,6 @@ public:
 public:
 	void ReadConfigFile(const string & configFilePath);
 	int LoadHouses( string houseFolder);
-	int LoadAlgorithms( string algorithmsFolder); //: load the dynamic algorithms .so files 
 	int LoadAlgorithmsAndRuns();
 	void RunAll(void);
 	void printScores(int winner_num_steps);

@@ -28,4 +28,8 @@ public:
     virtual void aboutToFinish(int stepsTillFinishing) = 0; 
 };
 
+typedef AbstractAlgorithm * maker_t();
+
+extern std::map<std::string, maker_t *, std::less<std::string> > factory;
+
 #endif //__ABSTRACT_ALGORITHM__H_

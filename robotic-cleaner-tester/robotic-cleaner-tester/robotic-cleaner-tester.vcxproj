@@ -84,13 +84,13 @@
   <ItemGroup>
     <ClInclude Include="AbstractAlgorithm.h" />
     <ClInclude Include="AbstractSensor.h" />
+    <ClInclude Include="AlgorithmFactory.h" />
     <ClInclude Include="AlgorithmSingleRun.h" />
     <ClInclude Include="Battery.h" />
     <ClInclude Include="CommandLineInterpeter.h" />
     <ClInclude Include="Direction.h" />
     <ClInclude Include="DynamicHouse.h" />
     <ClInclude Include="House.h" />
-    <ClInclude Include="HouseFileReader.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="RandomRobotAlgorithm.h" />
@@ -98,10 +98,12 @@
     <ClInclude Include="Sensor.h" />
     <ClInclude Include="SensorInformation.h" />
     <ClInclude Include="Simulator.h" />
+    <ClInclude Include="SingletonHouseIOManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AlgorithmFactory.cpp" />
     <ClCompile Include="AlgorithmSingleRun.cpp" />
     <ClCompile Include="Battery.cpp" />
     <ClCompile Include="DynamicHouse.cpp" />
@@ -122,6 +124,7 @@
     <None Include="config.ini" />
     <None Include="house1.house" />
     <None Include="makefile" />
+    <None Include="makefile_for_so" />
     <None Include="Simulator" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
