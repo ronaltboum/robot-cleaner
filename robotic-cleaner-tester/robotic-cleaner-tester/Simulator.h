@@ -39,12 +39,14 @@ public:
 public:
 	void ReadConfigFile(const string & configFilePath);
 	int LoadHouses( string houseFolder);
-	int LoadAlgorithmsAndRuns();
+	int LoadAlgorithms(string algorithmFolder);
+	int LoadRuns();
 	void RunAll(void);
 	void printScores(int winner_num_steps);
 private:
 	void MoveAllOneStep(int & currentRankAlgorithmsCompetingOn);
 	
+
 };
 
 } // end of namespace ns_robotic_cleaner_simulator

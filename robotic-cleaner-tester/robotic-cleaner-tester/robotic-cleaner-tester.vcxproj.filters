@@ -124,7 +124,6 @@
     <None Include="..\..\..\..\..\Dropbox\אוניברסיטה\2017\AP\2016\robotic-cleaner-tester HLD (high level design).docx">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Simulator" />
     <None Include="config.ini">
       <Filter>Resource Files</Filter>
     </None>
@@ -132,9 +131,6 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="house1.house">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="makefile_for_so">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

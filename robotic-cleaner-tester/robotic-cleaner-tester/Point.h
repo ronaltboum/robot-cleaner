@@ -115,6 +115,7 @@ inline bool Point::Move(Direction d)
 	default:
 		return false;
 	}
+	return false;
 }
 
 

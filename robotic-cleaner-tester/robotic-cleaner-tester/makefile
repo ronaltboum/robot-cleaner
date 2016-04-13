@@ -1,11 +1,12 @@
 CC      = g++
 CFLAGS = -std=c++0x -g -Wall -O2 -pedantic -pthread
+CC_SHARED_FLAGS = -shared -Wall
 LIBS = -ldl
 
-all: simulator
+all: simulator RandomRobotAlgorithm.so
 
 clean:
-	-rm *.o *.so
+	-rm *.o *.so simulator
 	
 #making the simulator 
 
@@ -38,3 +39,20 @@ House.o: House.cpp SingletonHouseIOManager.h House.h Point.h Direction.h Matrix.
 
 Battery.o: Battery.cpp Battery.h 
 	$(CC) -c $(CFLAGS) $<
+
+# making random algorithm
+
+RandomRobotAlgorithm.so: RandomRobotAlgorithm.o Sensor1.o House1.o Battery1.o
+	$(CC) $(CC_SHARED_FLAGS) -Wl,-soname,$@ -o $@ $^
+
+RandomRobotAlgorithm.o: RandomRobotAlgorithm.cpp RandomRobotAlgorithm.h AbstractAlgorithm.h Battery.h Sensor.h
+	$(CC) -c -fPIC $(CFLAGS) $<
+	
+Sensor1.o: Sensor.cpp Sensor.h AbstractSensor.h House.h SensorInformation.h
+	$(CC) -c -fPIC $(CFLAGS) $<	-o $@
+	
+House1.o: House.cpp SingletonHouseIOManager.h House.h Point.h Direction.h Matrix.h
+	$(CC) -c -fPIC $(CFLAGS) $< -o $@
+
+Battery1.o: Battery.cpp Battery.h 
+	$(CC) -c -fPIC $(CFLAGS) $< -o $@

@@ -15,14 +15,11 @@ using namespace ns_robotic_cleaner_simulator;
 int main(int argc, char * argv[])
 {
 	srand((unsigned int)time(NULL));
-	//DynamicHouse h1 = DynamicHouse();
-	//House * h = SingletonHouseIOManager::instance()->ReadHouseFromFile("house1.house");
-	//cout << (*h);
-	//delete h;
 	vector<string> commandLineArguments = CommandLineInterpeter::readCommandLineArguments(argc, argv);
 	string configFile = commandLineArguments[0];
 	string houseFolder = commandLineArguments[1];
-	//string algorithmFolder = commandLineArguments[2];
+	string algorithmFolder = (commandLineArguments.size() == 3) ? commandLineArguments[2] : "./";
+	//algorithmFolder = commandLineArguments[2];
 
 	////print for debugging.  delete later !!!!!!!!!!!!
 	//for(vector<string>::const_iterator i = commandLineArguments.begin(); i != commandLineArguments.end(); ++i) {
@@ -37,8 +34,8 @@ int main(int argc, char * argv[])
 		cout << "Cannot load house properly. exiting";
 		return EXIT_FAILURE;
 	}
-
-	s.LoadAlgorithmsAndRuns();
+	s.LoadAlgorithms(algorithmFolder);
+	s.LoadRuns();
 	s.RunAll();
 	getchar();
 	return EXIT_SUCCESS;

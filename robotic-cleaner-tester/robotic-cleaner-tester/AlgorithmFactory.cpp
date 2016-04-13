@@ -1,5 +1,4 @@
-#include "stdafx.h"
-#include "AlgorithmFactory.h"
+//#include "stdafx.h"
 #include "AlgorithmFactory.h"
 #include <list>
 #include <vector>

@@ -192,7 +192,7 @@ namespace ns_robotic_cleaner_simulator
 		unsigned int cols = GetWidth();
 		if(rowAsString.length() != cols)
 			return;
-		for(int col = 0; col < cols; ++col)
+		for(unsigned int col = 0; col < cols; ++col)
 		{
 			_floor(rowNumber,col) = rowAsString[col];
 		}

@@ -67,13 +67,18 @@ namespace ns_robotic_cleaner_simulator
 		return 0;
 	}
 
+	int Simulator::LoadAlgorithms(string algorithmFolder)
+	{
+		_algorithmFactory->ReadAlgorithms(algorithmFolder);
+	}
+
 	//************************************
 	// Brief:		Load algorithms from libraries
 	//				not implemented yet - just load random-move algorithm
 	// Returns:   	int - the number of algorithm loaded successfully
 	// Post:		_algorithms
 	//************************************
-	int Simulator::LoadAlgorithmsAndRuns()
+	int Simulator::LoadRuns()
 	{
 		int houseNum = _houses.size();
 		vector<AbstractAlgorithm *> algorithms;
