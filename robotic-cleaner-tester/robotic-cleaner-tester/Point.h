@@ -3,9 +3,6 @@
 
 #include "Direction.h"
 
-namespace ns_robotic_cleaner_simulator
-{
-
 /*
  * class Point is a class for point of two integers.
  */
@@ -111,12 +108,12 @@ inline bool Point::Move(Direction d)
 			return true;
 		}
 		break;
+	case Direction(4):
+	default:
+		return false;
 	}
-	return false;  //we get here if direction is stay, or in case we are trying to move to negative
-	//coordinates of the matrix.  
+	return false;
 }
 
-
-} // end of namespace ns_robotic_cleaner_simulator
 
 #endif // Point_h__

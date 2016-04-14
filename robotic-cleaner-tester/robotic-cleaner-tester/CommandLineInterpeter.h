@@ -7,9 +7,6 @@
 
 using namespace std;
 
-namespace ns_robotic_cleaner_simulator
-{
-
 /*
  * class CommandLineInterpeter is a "static" class with one function - 
  *	readCommandLineArguments for handling command line arguments.
@@ -123,7 +120,5 @@ public:
 	}
 
 };
-	
-} //end of namespace ns_robotic_cleaner_simulator
 
 #endif // CommandLineInterpeter_h__

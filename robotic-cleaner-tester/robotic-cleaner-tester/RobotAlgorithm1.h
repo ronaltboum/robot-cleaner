@@ -1,15 +1,15 @@
 #ifndef RobotAlgorithm1_h__
 #define RobotAlgorithm1_h__
 
-#include "abstractalgorithm.h"
+#include "AbstractAlgorithm.h"
 #include <deque>
 #include <stdlib.h>
 #include <stdio.h>
 #include <vector>
+#include <iostream>
 #include "Battery.h"
 
-namespace ns_robotic_cleaner_simulator
-{
+using namespace std;
 
 class RobotAlgorithm1 :	public AbstractAlgorithm
 {
@@ -37,7 +37,7 @@ public:
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
 	virtual Direction step();
-	virtual void aboutToFinish(int stepsTillFinishing) = 0;
+	virtual void aboutToFinish(int stepsTillFinishing) {}
 	virtual void setSensor(const AbstractSensor& sensor);
 	virtual void setConfiguration(map<string, int> config);
 protected:
@@ -65,7 +65,5 @@ inline bool RobotAlgorithm1::IsInDocking() const
 {
 	return (_pathFromDocking.size() == 0);
 }
-	
-} //end of namespace ns_robotic_cleaner_simulator
 
 #endif // RobotAlgorithm1_h__

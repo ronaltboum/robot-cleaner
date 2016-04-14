@@ -11,9 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C9E3324D-FC53-40CB-82AD-979B412F0312}</ProjectGuid>
+    <ProjectGuid>{B64BE6B4-A48E-46AF-B42E-A023C423FE26}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>roboticcleanertester</RootNamespace>
+    <RootNamespace>roboticcleanersimulator</RootNamespace>
+    <ProjectName>robotic-cleaner-tester</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -92,7 +93,6 @@
     <ClInclude Include="House.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Point.h" />
-    <ClInclude Include="RobotAlgorithm1.h" />
     <ClInclude Include="Sensor.h" />
     <ClInclude Include="SensorInformation.h" />
     <ClInclude Include="Simulator.h" />
@@ -102,17 +102,15 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Algorithm1.cpp" />
-    <ClCompile Include="Algorithm2.cpp" />
+    <ClCompile Include="Algorithm1.c" />
+    <ClCompile Include="Algorithm2.c" />
     <ClCompile Include="AlgorithmFactory.cpp" />
     <ClCompile Include="AlgorithmSingleRun.cpp" />
     <ClCompile Include="Battery.cpp" />
     <ClCompile Include="DynamicHouse.cpp" />
-    <ClCompile Include="FileLister.cpp" />
     <ClCompile Include="House.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="RobotAlgorithm1.cpp" />
-    <ClCompile Include="robotic-cleaner-tester.cpp" />
+    <ClCompile Include="robotic-cleaner-simulator.cpp" />
     <ClCompile Include="Sensor.cpp" />
     <ClCompile Include="Simulator.cpp" />
     <ClCompile Include="SingletonConfigReader.cpp" />
@@ -125,7 +123,6 @@
   <ItemGroup>
     <None Include="config.ini" />
     <None Include="house1.house" />
-    <None Include="main" />
     <None Include="makefile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

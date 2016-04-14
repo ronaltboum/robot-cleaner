@@ -9,9 +9,6 @@
 #include <iostream>
 #include <string>
 
-namespace ns_robotic_cleaner_simulator
-{
-
 class SingletonHouseIOManager;
 /*
  * class House is representing a house which needs to be cleaned
@@ -148,7 +145,5 @@ inline bool House::IsValidTile(char tile) const
 {
 	return ( string("DW 123456789").find(tile) != string::npos); 
 }
-
-} // end of namespace ns_robotic_cleaner_simulator
 
 #endif //__HOUSE__H_

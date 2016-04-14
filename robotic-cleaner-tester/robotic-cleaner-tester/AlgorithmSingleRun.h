@@ -2,10 +2,9 @@
 #define AlgorithmSingleRun_h__
 
 #include "Battery.h"
-#include "RandomRobotAlgorithm.h"
-
-namespace ns_robotic_cleaner_simulator
-{
+#include "AbstractAlgorithm.h"
+#include "House.h"
+#include "Point.h"
 
 class AlgorithmSingleRun
 {
@@ -54,8 +53,6 @@ public:
 	bool HasMadeIllegalStep() const;
 	bool IsAlgorithmBatteryEmpty() const;
 };
-
-} //end of namespace ns_robotic_cleaner_simulator
 
 #endif // AlgorithmSingleRun_h__
 

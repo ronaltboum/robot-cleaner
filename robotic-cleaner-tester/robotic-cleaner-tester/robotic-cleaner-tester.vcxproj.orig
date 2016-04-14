@@ -108,7 +108,13 @@
     <ClCompile Include="AlgorithmSingleRun.cpp" />
     <ClCompile Include="Battery.cpp" />
     <ClCompile Include="DynamicHouse.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="FileLister.cpp" />
+    <ClCompile Include="RobotAlgorithm1.cpp" />
+    <ClCompile Include="SingletonHouseIOManager.cpp" />
+    <ClCompile Include="SingletonConfigReader.cpp" />
+=======
+>>>>>>> 990006c14745b732e3aa7ee3cc2ee35b1902f668
     <ClCompile Include="House.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="RobotAlgorithm1.cpp" />
@@ -125,7 +131,11 @@
   <ItemGroup>
     <None Include="config.ini" />
     <None Include="house1.house" />
+<<<<<<< HEAD
+    <None Include="House1Orig.house" />
+=======
     <None Include="main" />
+>>>>>>> 990006c14745b732e3aa7ee3cc2ee35b1902f668
     <None Include="makefile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

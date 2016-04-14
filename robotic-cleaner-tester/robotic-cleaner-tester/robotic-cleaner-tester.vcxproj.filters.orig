@@ -122,10 +122,14 @@
     <ClCompile Include="RobotAlgorithm1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
+    <ClCompile Include="FileLister.cpp">
+=======
     <ClCompile Include="Algorithm1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Algorithm2.cpp">
+>>>>>>> 990006c14745b732e3aa7ee3cc2ee35b1902f668
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

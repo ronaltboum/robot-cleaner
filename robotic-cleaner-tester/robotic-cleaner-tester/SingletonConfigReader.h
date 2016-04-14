@@ -8,9 +8,6 @@
 #include <fstream>
 using namespace std;
 
-namespace ns_robotic_cleaner_simulator
-{
-
 /*
  * class SingletonConfigReader is a singleton class for reading the config file
  * it's main method is ReadConfigFromFile() which 
@@ -87,7 +84,5 @@ inline SingletonConfigReader::StringToIntMap SingletonConfigReader::initDefaultV
 	myMap["BatteryRechargeRate"] = 20;
 	return myMap;
 }
-	
-} //end of namespace ns_robotic_cleaner_simulator
 
 #endif // ConfigReader_h__

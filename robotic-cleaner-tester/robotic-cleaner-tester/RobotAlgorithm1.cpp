@@ -1,8 +1,6 @@
 //#include "stdafx.h"
 #include "RobotAlgorithm1.h"
-
-namespace ns_robotic_cleaner_simulator
-{
+#include <iostream>
 
 RobotAlgorithm1::RobotAlgorithm1(const AbstractSensor& sensor, map<string, int> config)
 {
@@ -36,7 +34,7 @@ RobotAlgorithm1::~RobotAlgorithm1(void)
 //************************************
 Direction RobotAlgorithm1::step()
 {
-	Direction lastStep = _pathFromDocking.back();;
+	Direction lastStep;
 	UpdateState();
 	switch(_robotStatus)
 	{
@@ -45,9 +43,12 @@ Direction RobotAlgorithm1::step()
 	case AlgorithmStatus::ChargingInDocking:
 		 return Direction::Stay;
 	case AlgorithmStatus::Returning:
+		lastStep  = _pathFromDocking.back();
 		_pathFromDocking.pop_back();
 		return OppositeDirection(lastStep);
 	case AlgorithmStatus::Exploring:
+		//set the last step, or stay if no last step found
+		lastStep  = _pathFromDocking.empty() ? Direction(4) : _pathFromDocking.back();
 		vector<Direction> possible_directions = GetPossibleDirections(lastStep); // get all other directions than lastStep
 		if(possible_directions.empty()){
 			_pathFromDocking.pop_back();
@@ -70,14 +71,14 @@ void RobotAlgorithm1::UpdateState()
 	switch(_robotStatus)
 	{
 	case AlgorithmStatus::ChargingInDocking:
-		_battery.Recharge();
 		if(_battery.OneRechargeBeforeFullyRecharged())
 			_robotStatus = AlgorithmStatus::Exploring;
+		_battery.Recharge();
 		break;
 	case AlgorithmStatus::StayingUntilClean:
 	case AlgorithmStatus::Exploring:
 		_battery.Consume();
-		_dirtInCurrentLocation -= _dirtInCurrentLocation ? 1 : 0;
+		_dirtInCurrentLocation -= _dirtInCurrentLocation ? 1 : 0; //clean by one (or stays 0)
 		if(_battery.GetStepsBeforeRecharge() == _pathFromDocking.size())
 			_robotStatus = AlgorithmStatus::Returning;
 		else if(_dirtInCurrentLocation > 0)
@@ -129,6 +130,18 @@ vector<Direction> RobotAlgorithm1::GetPossibleDirections(Direction lastStep) con
 	return possibleDirections;
 }
 
-
-
+extern "C" {
+AbstractAlgorithm *maker(){
+   return new RobotAlgorithm1;
 }
+class proxy { 
+public:
+   proxy(){
+      // register the maker with the factory 
+      factory["RobotAlgorithm1"] = maker;
+   }
+};
+// our one instance of the proxy
+proxy p;
+}
+

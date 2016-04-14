@@ -1,46 +1,43 @@
-#ifndef AlgorithmFactory_h__
-#define AlgorithmFactory_h__
-
-#include "AbstractAlgorithm.h"
-#include <iostream> 
-#include <map> 
-#include <list> 
+#ifndef ALGORITHMFACTORY_H_
+#define ALGORITHMFACTORY_H_
+#include <iostream>
+#include <map>
+#include <list>
 #include <vector>
-#include <string> 
-#include <dlfcn.h> 
-#include <stdio.h> 
-#include <unistd.h> 
+#include <string>
+#include <dlfcn.h>
+#include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#define BUF_SIZE 1024
+#include "AbstractAlgorithm.h"
+#include "Direction.h"
 
-namespace ns_robotic_cleaner_simulator
+using namespace std;
+
+class AlgorithmFactory{
+
+	typedef list<void *>::iterator dl_itr;
+	typedef map<string, maker_t *, less<string> >::iterator f_itr;
+	typedef vector<AbstractAlgorithm *>::iterator algo_itr;
+private:
+	list<void *> dl_list; // list to hold handles for dynamic libs
+	vector<string> algorithmNames;  // vector of shape types used to build menu
+public:
+	AlgorithmFactory(){}
+	~AlgorithmFactory();
+
+	void tryAlgorithms();
+	vector<AbstractAlgorithm *> CreateSetOfAllAlgorithms(); //: Create a set of all the algorithms we have constructors for.
+	int ReadAlgorithms(string algorithmsPath = "./"); //TODO: change so it will use path
+}; //end of class
+
+inline AlgorithmFactory::~AlgorithmFactory()
 {
-	// typedef to make it easier to set up our factory 
-	typedef AbstractAlgorithm *maker_t();
-	// our global factory 
-	extern std::map<std::string, maker_t *, std::less<std::string> > factory;
+	for(dl_itr itr=dl_list.begin(); itr!=dl_list.end(); itr++){
+		dlclose(*itr);
+	}
+	cout << "all deleted" << endl;
+}
 
-	class AlgorithmFactory
-	{
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	private:
-		vector<void *> _dynamicLibs; // list to hold handles for dynamic libs 
-		vector<string> _alogrithmNames;  // vector of AbstractAlgorithm types used to build menu
-
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	public:
-		AlgorithmFactory(void);
-		~AlgorithmFactory(void);
-
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	public:
-		void ReadAlgorithms(string algorithmsPath = "./"); //TODO: change so it will use path
-		vector<AbstractAlgorithm *> CreateSetOfAllAlgorithms(); //: Create a set of all the algorithms we have constructors for.
-	};
-
-
-	
-} //end of namespace ns_robotic_cleaner_simulator
-
-#endif // AlgorithmFactory_h__
+#endif /* ALGORITHMFACTORY_H_ */

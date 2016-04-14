@@ -1,7 +1,5 @@
 //#include "stdafx.h"
 #include "DynamicHouse.h"
-namespace ns_robotic_cleaner_simulator
-{
 
 DynamicHouse::DynamicHouse(void)
 {
@@ -47,5 +45,3 @@ DynamicHouse::~DynamicHouse(void)
 //	
 //
 //}
-
-} //end of namespace ns_robotic_cleaner_simulator

@@ -4,9 +4,6 @@
 #include "AbstractSensor.h"
 #include "House.h"
 
-namespace ns_robotic_cleaner_simulator
-{
-
 
 /*!
 * \class Sensor
@@ -32,7 +29,5 @@ public:
 	const Point * GetCurrentPosition() const {return _currentPosition;}
 
 };
-
-} // end of namespace ns_robotic_cleaner_simulator
 
 #endif // Sensor_h__
