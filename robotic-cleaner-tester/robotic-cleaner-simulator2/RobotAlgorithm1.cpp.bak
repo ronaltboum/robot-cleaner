@@ -71,15 +71,15 @@ void RobotAlgorithm1::UpdateState()
 	switch(_robotStatus)
 	{
 	case AlgorithmStatus::ChargingInDocking:
+		_battery.Recharge();
 		if(_battery.OneRechargeBeforeFullyRecharged())
 			_robotStatus = AlgorithmStatus::Exploring;
-		_battery.Recharge();
 		break;
 	case AlgorithmStatus::StayingUntilClean:
 	case AlgorithmStatus::Exploring:
 		_battery.Consume();
-		_dirtInCurrentLocation -= _dirtInCurrentLocation ? 1 : 0; //clean by one (or stays 0)
-		if(_battery.GetStepsBeforeRecharge() == _pathFromDocking.size())
+		_dirtInCurrentLocation -= _dirtInCurrentLocation ? 1 : 0;
+		if(((unsigned)_battery.GetStepsBeforeRecharge()) == _pathFromDocking.size())
 			_robotStatus = AlgorithmStatus::Returning;
 		else if(_dirtInCurrentLocation > 0)
 			_robotStatus = AlgorithmStatus::StayingUntilClean;
@@ -121,7 +121,9 @@ Direction RobotAlgorithm1::OppositeDirection(Direction d)
 vector<Direction> RobotAlgorithm1::GetPossibleDirections(Direction lastStep) const
 {
 	Direction back = OppositeDirection(lastStep);
+	cout << "direction chosed "  << endl;
 	SensorInformation info = _robotSensor->sense();
+	cout << "got info " << endl;
 	vector<Direction> possibleDirections =  vector<Direction>();
 	for(int i=0;i<4;++i){
 		if( ! info.isWall[i] && Direction(i) != back)

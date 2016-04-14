@@ -1,0 +1,106 @@
+//#include "stdafx.h"
+#include "AlgorithmSingleRun.h"
+
+AlgorithmSingleRun::AlgorithmSingleRun(const map<string, int> & configs, AbstractAlgorithm * currentAlgorithmPointer, const Battery & robotBattery, House * currentHouse, AbstractSensor * algoSensor, Point * startingPoint)
+	: _configs(configs)
+{
+	initialize();
+	_algorithmSensor = algoSensor;
+	_currentAlgorithm = currentAlgorithmPointer; 
+	_robotBattery = new Battery(robotBattery);
+	_currentHouse = currentHouse;
+	_currentPosition = startingPoint;
+	_canStillRun = true;
+	_sumOfDirtBeforeCleaning = _currentHouse->SumOfDirtInTheHouse();
+}
+
+
+
+AlgorithmSingleRun::~AlgorithmSingleRun(void)
+{
+	//no need to check if not null - delete(NULL) = no_op
+	delete _currentPosition;
+	// delete _currentHouse; //is done by simulator
+	delete _algorithmSensor;
+	delete _currentAlgorithm;
+	delete _robotBattery;
+}
+
+void AlgorithmSingleRun::initialize()
+{
+	_algorithmSensor = NULL;
+	_currentAlgorithm = NULL;
+	_currentHouse = NULL;
+	_currentPosition = NULL;
+	_robotBattery = NULL;
+	_canStillRun = false;
+	_dirtCollected = 0;
+	_numberOfStepsCommited = 0;
+	_actual_position_in_copmetition = 0;
+	_sumOfDirtBeforeCleaning = 0;
+}
+
+bool AlgorithmSingleRun::CanDoStep() const
+{
+	return (	(_numberOfStepsCommited < _configs.find("MaxSteps")->second) &&
+				(_canStillRun) &&
+				( ! _currentHouse->IsHouseClean()));
+}
+
+bool AlgorithmSingleRun::IsHouseCleaned() const
+{
+	return _currentHouse->IsHouseClean();
+}
+
+bool AlgorithmSingleRun::IsBackInDocking() const
+{
+	return _currentHouse->IsDockingStation(*_currentPosition);
+} 
+
+bool AlgorithmSingleRun::HasWon() const
+{
+	return IsBackInDocking() && IsHouseCleaned();
+} 
+
+
+//************************************
+// Brief:		Moves one step and change the status of members according to the move committed
+// Pre:			-
+// Post:		-
+//************************************
+void AlgorithmSingleRun::DoStep()
+{
+	// charging and cleaning before the move
+	if(_currentHouse->IsDockingStation(*_currentPosition))
+		_robotBattery->Recharge();
+	else
+		_robotBattery->Consume();
+
+	if( _currentHouse->IsDirty(*_currentPosition) ){
+		_currentHouse->Clean(*_currentPosition);
+		_dirtCollected++;
+	}
+
+	//making the move and updating 
+	Direction chosenDirection = _currentAlgorithm->step();
+	_currentPosition->Move(chosenDirection);
+	if(HasMadeIllegalStep())
+	{
+		cout << "0" << endl << "the algorithm made an illegal move";
+		_canStillRun = false;
+	}
+	if(IsAlgorithmBatteryEmpty())
+		_canStillRun = false;
+	++_numberOfStepsCommited;
+}
+
+bool AlgorithmSingleRun::IsAlgorithmBatteryEmpty() const
+{
+	return (_robotBattery->IsBatteryEmpty() && ! _currentHouse->IsDockingStation(*_currentPosition));
+}
+
+bool AlgorithmSingleRun::HasMadeIllegalStep() const
+{
+	return (! _currentHouse->IsPositionValid(*_currentPosition));
+}
+

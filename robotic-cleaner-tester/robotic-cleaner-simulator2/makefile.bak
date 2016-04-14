@@ -64,4 +64,4 @@ RobotAlgorithm1.o: RobotAlgorithm1.cpp RobotAlgorithm1.h AbstractAlgorithm.h
 all: RobotAlgorithm1.so simulator
 
 clean:
-	rm -f *.so *.o simulator
+	rm -f *.so *.o AlgorithmFactory simulator

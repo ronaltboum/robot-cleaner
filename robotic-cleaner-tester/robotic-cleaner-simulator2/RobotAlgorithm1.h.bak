@@ -51,6 +51,7 @@ protected:
 
 inline void RobotAlgorithm1::setSensor(const AbstractSensor& sensor) 
 {
+	cout << "sensor set" << endl;
 	_robotSensor = &sensor;
 }
 
