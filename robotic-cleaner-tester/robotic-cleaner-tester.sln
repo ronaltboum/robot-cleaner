@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "robotic-cleaner-tester", "robotic-cleaner-tester\robotic-cleaner-tester.vcxproj", "{9599EBAA-51F1-4542-8F5A-8AE3156A2464}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "robotic-cleaner-tester", "robotic-cleaner-tester\robotic-cleaner-tester.vcxproj", "{C9E3324D-FC53-40CB-82AD-979B412F0312}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9599EBAA-51F1-4542-8F5A-8AE3156A2464}.Debug|Win32.ActiveCfg = Debug|Win32
-		{9599EBAA-51F1-4542-8F5A-8AE3156A2464}.Debug|Win32.Build.0 = Debug|Win32
-		{9599EBAA-51F1-4542-8F5A-8AE3156A2464}.Release|Win32.ActiveCfg = Release|Win32
-		{9599EBAA-51F1-4542-8F5A-8AE3156A2464}.Release|Win32.Build.0 = Release|Win32
+		{C9E3324D-FC53-40CB-82AD-979B412F0312}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C9E3324D-FC53-40CB-82AD-979B412F0312}.Debug|Win32.Build.0 = Debug|Win32
+		{C9E3324D-FC53-40CB-82AD-979B412F0312}.Release|Win32.ActiveCfg = Release|Win32
+		{C9E3324D-FC53-40CB-82AD-979B412F0312}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

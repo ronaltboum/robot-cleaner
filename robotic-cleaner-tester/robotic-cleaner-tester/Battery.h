@@ -5,9 +5,6 @@
 #include <string>
 using namespace std;
 
-namespace ns_robotic_cleaner_simulator
-{
-
 class Battery
 {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,62 +49,59 @@ public:
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ inline functions ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-	inline Battery::Battery(unsigned int battery_capacity = 0, unsigned int recharge_rate = 0, 
-		unsigned int consumption_rate = 0) 
-	{
-		initialize();
-		_battery_capacity = battery_capacity;
-		_recharge_rate = recharge_rate;
-		_consumption_rate = consumption_rate;
-		_battery_level = _battery_capacity;
-	}
+inline Battery::Battery(unsigned int battery_capacity = 0, unsigned int recharge_rate = 0, 
+	unsigned int consumption_rate = 0) 
+{
+	initialize();
+	_battery_capacity = battery_capacity;
+	_recharge_rate = recharge_rate;
+	_consumption_rate = consumption_rate;
+	_battery_level = _battery_capacity;
+}
 
-	inline unsigned int Battery::GetBattery_capacity() const
-	{
-		return _battery_capacity;
-	}
+inline unsigned int Battery::GetBattery_capacity() const
+{
+	return _battery_capacity;
+}
 
-	inline void Battery::SetBattery_capacity(unsigned int battery_capacity)
-	{
-		_battery_capacity = battery_capacity;
-	}
+inline void Battery::SetBattery_capacity(unsigned int battery_capacity)
+{
+	_battery_capacity = battery_capacity;
+}
 
-	inline unsigned int Battery::GetRecharge_rate() const
-	{
-		return _recharge_rate;
-	}
+inline unsigned int Battery::GetRecharge_rate() const
+{
+	return _recharge_rate;
+}
 
-	inline void Battery::SetRecharge_rate(unsigned int recharge_rate)
-	{
-		_recharge_rate = recharge_rate;
-	}
+inline void Battery::SetRecharge_rate(unsigned int recharge_rate)
+{
+	_recharge_rate = recharge_rate;
+}
 
-	inline unsigned int Battery::GetConsumption_rate() const
-	{
-		return _consumption_rate;
-	}
+inline unsigned int Battery::GetConsumption_rate() const
+{
+	return _consumption_rate;
+}
 
-	inline void Battery::SetConsumption_rate(unsigned int consumption_rate)
-	{
-		_consumption_rate = consumption_rate;
-	}
+inline void Battery::SetConsumption_rate(unsigned int consumption_rate)
+{
+	_consumption_rate = consumption_rate;
+}
 
-	inline int Battery::GetBattery_level() const
-	{
-		return _battery_level;
-	}
+inline int Battery::GetBattery_level() const
+{
+	return _battery_level;
+}
 
-	inline int Battery::GetStepsBeforeRecharge() const
-	{
-		return (int)(_battery_level / _consumption_rate);
-	}
+inline int Battery::GetStepsBeforeRecharge() const
+{
+	return (int)(_battery_level / _consumption_rate);
+}
 
-	inline bool Battery::OneRechargeBeforeFullyRecharged() const
-	{
-		return (_battery_level + _recharge_rate > _battery_capacity);
-	}
-
-
-} // end of namespace ns_robotic_cleaner_simulator
+inline bool Battery::OneRechargeBeforeFullyRecharged() const
+{
+	return (_battery_level + _recharge_rate > _battery_capacity);
+}
 
 #endif //__BATTERY__H_

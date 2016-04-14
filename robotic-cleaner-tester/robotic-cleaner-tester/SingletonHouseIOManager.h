@@ -11,9 +11,6 @@
 
 using namespace std;
 
-namespace ns_robotic_cleaner_simulator
-{
-
 class House;
 
 class SingletonHouseIOManager
@@ -76,9 +73,6 @@ inline 	SingletonHouseIOManager * SingletonHouseIOManager::instance(const string
 	thisInstance->SetFolder(houseFolder);
 	return thisInstance;
 }
-
-
-} //end of namespace ns_robotic_cleaner_simulator
 
 #endif // HouseFileReader_h__
 

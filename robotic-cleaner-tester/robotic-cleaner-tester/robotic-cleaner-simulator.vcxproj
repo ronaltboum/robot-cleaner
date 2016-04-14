@@ -11,9 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C9E3324D-FC53-40CB-82AD-979B412F0312}</ProjectGuid>
+    <ProjectGuid>{B64BE6B4-A48E-46AF-B42E-A023C423FE26}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>roboticcleanertester</RootNamespace>
+    <RootNamespace>roboticcleanersimulator</RootNamespace>
+    <ProjectName>robotic-cleaner-tester</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -109,7 +110,7 @@
     <ClCompile Include="DynamicHouse.cpp" />
     <ClCompile Include="House.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="robotic-cleaner-tester.cpp" />
+    <ClCompile Include="robotic-cleaner-simulator.cpp" />
     <ClCompile Include="Sensor.cpp" />
     <ClCompile Include="Simulator.cpp" />
     <ClCompile Include="SingletonConfigReader.cpp" />
@@ -122,7 +123,6 @@
   <ItemGroup>
     <None Include="config.ini" />
     <None Include="house1.house" />
-    <None Include="main" />
     <None Include="makefile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

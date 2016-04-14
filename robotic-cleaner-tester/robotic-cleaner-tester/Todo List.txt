@@ -1,6 +1,0 @@
-1. print error messages http://moodle.tau.ac.il/mod/page/view.php?id=375915
-2. complete SingletonHouseReader
-3. add documentation + initialize
-4. look for c'tor-d'tor
-5. run checks on small houses
-6. add HouseAndLocation

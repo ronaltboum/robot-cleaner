@@ -1,5 +1,5 @@
-#ifndef __ABSTRACT_ALGORITHM__H_
-#define __ABSTRACT_ALGORITHM__H_
+#ifndef __ABSTRACT_ALGORITHM_H
+#define __ABSTRACT_ALGORITHM_H
 
 #include <map>
 #include <string>
@@ -7,9 +7,8 @@ using namespace std;
 
 #include "AbstractSensor.h"
 #include "Direction.h"
-
-class AbstractAlgorithm 
-{ 
+// base class for all Algorithms
+class AbstractAlgorithm {
 public: 
 	virtual ~AbstractAlgorithm() {}
 	
@@ -27,9 +26,8 @@ public:
     // parameter stepsTillFinishing == MaxStepsAfterWinner 
     virtual void aboutToFinish(int stepsTillFinishing) = 0; 
 };
-
-typedef AbstractAlgorithm * maker_t();
-
+// typedef to make it easier to set up our factory 
+typedef AbstractAlgorithm *maker_t();
+// our global factory 
 extern std::map<std::string, maker_t *, std::less<std::string> > factory;
-
-#endif //__ABSTRACT_ALGORITHM__H_
+#endif // __ABSTRACT_ALGORITHM_H

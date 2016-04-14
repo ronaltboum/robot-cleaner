@@ -7,8 +7,6 @@
 #include <map>
 using namespace std;
 
-namespace ns_robotic_cleaner_simulator
-{
 SingletonConfigReader *SingletonConfigReader::s_instance = 0;
 const SingletonConfigReader::StringToIntMap SingletonConfigReader::defaultValues = initDefaultValues();
 
@@ -98,5 +96,3 @@ map<string, int> SingletonConfigReader::ReadConfigFromFile()
 	CompleteMissingConfigs(configs);
 	return configs;
 }
-
-} //end of namespace ns_robotic_cleaner_simulator

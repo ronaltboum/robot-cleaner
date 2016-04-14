@@ -3,9 +3,6 @@
 
 #include "Direction.h"
 
-namespace ns_robotic_cleaner_simulator
-{
-
 /*
  * class Point is a class for point of two integers.
  */
@@ -118,7 +115,5 @@ inline bool Point::Move(Direction d)
 	return false;
 }
 
-
-} // end of namespace ns_robotic_cleaner_simulator
 
 #endif // Point_h__

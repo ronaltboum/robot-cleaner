@@ -4,7 +4,6 @@
 
 #include <string>
 #include "AlgorithmSingleRun.h"
-#include "RandomRobotAlgorithm.h"
 #include "Sensor.h"
 #include "House.h"
 #include "Battery.h"
@@ -13,9 +12,6 @@
 #include <fstream>
 #include "AlgorithmFactory.h"
 using namespace std;
-
-namespace ns_robotic_cleaner_simulator
-{
 
 class Simulator
 {
@@ -48,7 +44,5 @@ private:
 	
 
 };
-
-} // end of namespace ns_robotic_cleaner_simulator
 
 #endif // Simulator_h__
