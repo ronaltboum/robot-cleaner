@@ -113,6 +113,9 @@
     <ClCompile Include="RobotAlgorithm1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FileLister.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\..\Dropbox\אוניברסיטה\2017\AP\2016\robotic-cleaner-tester HLD (high level design).docx">
@@ -126,6 +129,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="house1.house">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="House1Orig.house">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
