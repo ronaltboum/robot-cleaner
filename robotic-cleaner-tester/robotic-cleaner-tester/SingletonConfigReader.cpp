@@ -9,6 +9,7 @@ using namespace std;
 
 SingletonConfigReader *SingletonConfigReader::s_instance = 0;
 const SingletonConfigReader::StringToIntMap SingletonConfigReader::defaultValues = initDefaultValues();
+SingletonConfigReader::StringToIntMap SingletonConfigReader::configMap = initConfigMap();
 
 SingletonConfigReader::SingletonConfigReader(const string & configFilePath)
 {
@@ -37,62 +38,146 @@ std::string SingletonConfigReader::trim(std::string& str)
 	return str;
 }
 
-bool SingletonConfigReader::processLine(const string& line, map<string, int> & configMap)
+//bool SingletonConfigReader::processLine(const string& line, map<string, int> & configMap)
+void SingletonConfigReader::processLine(const string& line)
 {
 	vector<string> tokens = split(line, '=');
 	if (tokens.size() != 2)
 	{
-		return false;
+		return;
 	}
 	int parameterValue = 0;
 	if ( ! (istringstream(tokens[1]) >> parameterValue) )
-		return false;
+		return;
+	
 	configMap[trim(tokens[0])] = parameterValue;
-	return true;
 }
 
-void SingletonConfigReader::CompleteMissingConfigs(map<string, int> & configs)
+//vector<string> SingletonConfigReader::CheckMissingParameters(map<string, int> & configs)
+bool SingletonConfigReader::HandleMissingParameters()
 {
+	vector<string> missingParameters = vector<string>();
 	for (StringToIntMap::const_iterator nameValueIterator = defaultValues.begin();
 		nameValueIterator != defaultValues.end();
 		++nameValueIterator) 
 	{
-		if ( configs.find(nameValueIterator->first) == configs.end() ) {
-			cout << "value of " << nameValueIterator->first << " not set, using default";
-			StringIntPair missingConfig = StringIntPair(nameValueIterator->first, nameValueIterator->second);
-			configs.insert(missingConfig);
+		if ( configMap.find(nameValueIterator->first) == configMap.end() ) {
+		      missingParameters.push_back(nameValueIterator->first);
 		}
 	}
+	
+	int numMissing = missingParameters.size();
+	if( numMissing != 0) {  //there are missing parameters
+	    PrintMissingParameters(missingParameters);
+	    return false;
+	}
+	return true;	
 }
 
-map<string, int> SingletonConfigReader::ReadConfigFromFile()
+//map<string, int> SingletonConfigReader::ReadConfigFromFile()
+bool SingletonConfigReader::ReadConfigFromFile()
 {
 	string line;
 	ifstream myfile(_configFilePath.c_str());
-	int lineNumber = 1;
-	map<string, int> configs = map<string,int>();
-	if (myfile.is_open())
+	//int lineNumber = 1;
+	//map<string, int> configs = map<string,int>();
+	myfile.is_open();  //we already know config file exists and is valid for reading
+	
+	while ( getline (myfile,line) )
 	{
-		while ( getline (myfile,line) )
-		{
-			if( ! processLine(line, configs))
-			{
-				cout << "Warning : Problem parsing line number: " << lineNumber << " in the config file";
-			}
-		}
-		myfile.close();
+	    //processLine(line, configs);
+	    processLine(line);
 	}
-	else{
-		cout << "Unable to open file" << endl;
-		if(_configFilePath != configFileName){
-			cout << "trying to find in default folder" << endl;
-			_configFilePath = configFileName;
-			return ReadConfigFromFile();
-		}
-		else{
-			cout << "file doesn't exist in default folder" << endl;
-		}
-	}
-	CompleteMissingConfigs(configs);
-	return configs;
+	myfile.close();
+
+	return HandleMissingParameters();
 }
+	
+
+void SingletonConfigReader::PrintMissingParameters(vector<string> missingParameters)
+{
+  int size = missingParameters.size();
+  cout << "config.ini missing " << size << " parameter(s): ";
+  vector<string>::iterator strIt;
+  strIt = missingParameters.begin();
+  cout << (*strIt);
+  if(size == 1){
+      cout << endl;
+      return;
+  }
+  ++strIt;  //TODO:  should i advance here?
+  for( ; strIt != missingParameters.end();  strIt++) {
+      cout << ", " << (*strIt);
+  }
+  cout << endl;
+}
+
+bool SingletonConfigReader::IsConfigValid ()
+{
+  struct stat buffer;   
+  bool exists =  (stat (_configFilePath.c_str(), &buffer) == 0);
+  if(exists == false) {
+      cout << "Usage: simulator [-config <config path>] [-house_path <house path>] [-algorithm_path <algorithm path>]" << endl;
+      return false;
+  }
+  
+  //cout << "config path = " << _configFilePath << endl;  //delte !!!!!!!!!!!!!!!!!!!!
+  
+  
+  ifstream myfile(_configFilePath.c_str());
+  bool valid = false;
+  if (myfile.is_open()) 
+      valid = true;
+  myfile.close();
+  if(valid == false){
+      string *absolutePath = GetAbsolutePath(_configFilePath);  //returns null on error, or prints in success
+      if(absolutePath == NULL) {  //use relative path
+	  cout << "config.ini exists in '" << _configFilePath << "' but cannot be opened" << endl;
+      }
+      else{
+	  cout << "config.ini exists in '" << (*absolutePath) << "' but cannot be opened" << endl;
+	  delete absolutePath;
+      }
+      
+  }
+  return valid;
+}
+
+
+string* SingletonConfigReader::GetAbsolutePath(string relativePath)
+{
+  
+  char * relative = new char [relativePath.length()+1];
+  std::strcpy (relative, relativePath.c_str());
+  char actualpath [PATH_MAX + 1];
+  char *ptr;
+  ptr = realpath(relative, actualpath); 
+  delete[] relative;
+  std::string* abs = NULL;
+  if(ptr != NULL){
+    abs = new string(actualpath);  //calling function needs to delete abs in case it was allocateds
+  }
+  return abs;
+  
+//   std::string* mValue = NULL;
+// 
+// if (value) {
+//     mValue = new std::string(value);
+// }
+}
+
+//char *realpath(const char *restrict file_name, char *restrict resolved_name);
+
+
+//         char buf[PATH_MAX + 1]; /* not sure about the "+ 1" */
+//     char *res = realpath("this_source.c", buf);  ////  /home/ron2016linux2/Desktop/dir/noConfig/twoDocking.house
+//     char *symlinkpath = "noConfig/twoDocking.house";
+//     char *res = realpath("noConfig/twoDocking.house", buf);
+//     char *res = realpath(symlinkpath, buf);
+//     if (res) {
+//         printf("This source is at %s.\n", buf);
+//     } else {
+//         perror("realpath");
+//         exit(EXIT_FAILURE);
+//     }
+ 

@@ -101,7 +101,8 @@ inline int Battery::GetStepsBeforeRecharge() const
 
 inline bool Battery::OneRechargeBeforeFullyRecharged() const
 {
-	return (_battery_level + _recharge_rate > _battery_capacity);
+	//return (_battery_level + _recharge_rate > _battery_capacity);
+	return (_battery_capacity  <=  _battery_level + _recharge_rate  );
 }
 
 #endif //__BATTERY__H_

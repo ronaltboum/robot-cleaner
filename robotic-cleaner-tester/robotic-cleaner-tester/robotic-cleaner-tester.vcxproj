@@ -77,8 +77,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+    <Text Include="ronToDo.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\..\Ron Docs\TAU\קורסי בחירה מדמח\C++   laptop\hw\hw 2\linux after filter mail april 14 File Lister and current directory\FilesLister.h" />
+    <ClInclude Include="..\..\..\..\..\..\Ron Docs\TAU\קורסי בחירה מדמח\C++   laptop\hw\hw 2\linux after filter mail april 14 File Lister and current directory\FilesListerWithSuffix.h" />
     <ClInclude Include="AbstractAlgorithm.h" />
     <ClInclude Include="AbstractSensor.h" />
     <ClInclude Include="Algorithm1.h" />
@@ -102,13 +105,14 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\..\Ron Docs\TAU\קורסי בחירה מדמח\C++   laptop\hw\hw 2\linux after filter mail april 14 File Lister and current directory\FilesLister.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\Ron Docs\TAU\קורסי בחירה מדמח\C++   laptop\hw\hw 2\linux after filter mail april 14 File Lister and current directory\FilesListerWithSuffix.cpp" />
     <ClCompile Include="Algorithm1.cpp" />
     <ClCompile Include="Algorithm2.cpp" />
     <ClCompile Include="AlgorithmFactory.cpp" />
     <ClCompile Include="AlgorithmSingleRun.cpp" />
     <ClCompile Include="Battery.cpp" />
     <ClCompile Include="DynamicHouse.cpp" />
-    <ClCompile Include="FileLister.cpp" />
     <ClCompile Include="House.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="RobotAlgorithm1.cpp" />

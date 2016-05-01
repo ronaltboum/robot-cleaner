@@ -25,18 +25,47 @@ vector<House *> SingletonHouseIOManager::ReadHouses()
 }
 
 House * SingletonHouseIOManager::ReadHouseFromFile(istream & in){
-	string houseShortName, houseLongName, rowsString, colsString;
+	string houseShortName, houseLongName, rowsString, colsString, maxStepsString;
 	string line;
-	int rows, cols;
+	int rows, cols, maxSteps;
+	
+	std::string errorMessage;
+	std::string errorOutput;
+	std::stringstream sstm;
+	
 	getline (in,houseShortName);
-	getline (in,houseLongName);
+	//getline (in,houseLongName);
+	getline (in,maxStepsString);
+	if ( (! (istringstream(maxStepsString) >> maxSteps)) || (maxSteps <= 0) ) { 
+	 // cout << "i'm in bad translation of maxSteps" << endl;  // delete !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	  //cout << "maxStepsString =  " << maxStepsString << endl; 
+	  errorMessage = "line number 2 in house file shall be a positive number, found: ";
+	  sstm << errorMessage << maxStepsString;
+	  errorOutput = sstm.str(); 
+	  House * h = new House(4,4,houseShortName,houseLongName, 88, errorOutput);  //4,4,88 are dummy values.
+	  return h;  
+	}
+
 	getline (in,rowsString);
-	if ( ! (istringstream(rowsString) >> rows) )
-		return NULL;
+	if ( (! (istringstream(rowsString) >> rows)) || (rows <= 0) ) {
+	  errorMessage = "line number 3 in house file shall be a positive number, found: ";
+	  sstm << errorMessage << rowsString;
+	  errorOutput = sstm.str(); 
+	  House * h = new House(4,4,houseShortName,houseLongName, 88, errorOutput);  //4,4,88 are dummy values.
+	  return h;  
+		
+	}
 	getline (in,colsString);
-	if ( ! (istringstream(colsString) >> cols) )
-		return NULL;
-	House * h = new House(cols,rows,houseShortName,houseLongName);
+	if ( (! (istringstream(colsString) >> cols)) || (cols <= 0) ){
+	  errorMessage = "line number 4 in house file shall be a positive number, found: ";
+	  sstm << errorMessage << colsString;
+	  errorOutput = sstm.str(); 
+	  House * h = new House(4,4,houseShortName,houseLongName, 88, errorOutput);  //4,4,88 are dummy values.
+	  return h; 
+	
+	}
+	
+	House * h = new House(cols,rows,houseShortName,houseLongName, maxSteps, "");
 	bool lessRowsThanExpected = false;
 	int rowNumber;
 	for(rowNumber = 0; rowNumber <rows ; ++rowNumber)
@@ -53,28 +82,20 @@ House * SingletonHouseIOManager::ReadHouseFromFile(istream & in){
 		int rowsToFill = rows - rowNumber;
 		fillLastRows(rowsToFill, *h);
 	}
-	if( getline (in,line) )
-	{
-		cout << "Warning: more rows than expected" << endl;
-	}
-	ValidateWallsAndCharacters(*h);
-	if( ! h->isValid() )
-	{
-		delete h;
-		h = NULL;
-	}
-	return h;
+	ValidateWallsAndCharacters(*h);  
+	return h;  
 }
 
 House * SingletonHouseIOManager::ReadHouseFromFile(string houseFileName)
 {
+	
+	string noSuffix = ExtractHouseName(houseFileName);
 	ifstream myfile(houseFileName.c_str());
-
-	if ( ! myfile.is_open()){
-		cout << "Unable to open file" << endl;
-		return NULL;
+	if ( ! myfile.is_open()){ 
+		return NULL;                     
 	}
 	House * returnedHouse = ReadHouseFromFile(myfile);
+	returnedHouse -> SetHouseFileName(noSuffix);
 	myfile.close();
 	return returnedHouse;
 }
@@ -134,7 +155,7 @@ void SingletonHouseIOManager::fillLastRows(int rowsToFill, House & h)
 	{
 		h.SetRow(emptyWidthLine,row); 
 	}
-	cout << "Warning: less rows than expected, filled " << rowsToFill << " last rows"  << endl;
+	//cout << "Warning: less rows than expected, filled " << rowsToFill << " last rows"  << endl;
 }
 
 //************************************
@@ -165,4 +186,31 @@ void SingletonHouseIOManager::ValidateWallsAndCharacters(House & h)
 	}
 }
 
+vector<string> SingletonHouseIOManager::split(const string &s, char delim) {
+	std::vector<std::string> elems;
+	std::stringstream ss(s);
+	std::string item;
+	while (std::getline(ss, item, delim)) {
+		elems.push_back(item);
+	}
+	return elems;
+}
+
+//returns the house name without the suffix.  for example:  for input dir/simple1.house, returns simple1
+string SingletonHouseIOManager::ExtractHouseName(string houseFileName)
+{
+	char delim = '/';
+	vector<string> nameSplit = split(houseFileName, delim);
+	string houseName = nameSplit.back();
+	delim = '.';
+	vector<string> noSuffixVector = split(houseName, delim);
+	int vecSize = noSuffixVector.size();
+	string noSuffix;
+	if(vecSize == 1) // .house
+	  noSuffix = "";
+	else
+	  noSuffix = noSuffixVector[vecSize - 2];
+	
+	return noSuffix;
+}
 

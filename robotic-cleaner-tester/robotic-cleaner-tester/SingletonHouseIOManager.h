@@ -43,11 +43,14 @@ class SingletonHouseIOManager
 		vector<House *> ReadHouses(const string & houseFolder);
 		static House * ReadHouseFromFile(string houseFileName);
 		static House * ReadHouseFromFile(istream & in);
+		static string ExtractHouseName(string houseFileName); //returns the house name without the suffix.  for example:  for input dir/simple1.house, returns simple1
 private:
 		static void processRowFromFile(string & rowFromFile, int currentRowNumber, House & h);
 		static void fillRow(string & rowReadFromFile, int width);
 		static void fillLastRows(int rowsToFill, House & h);
 		static void ValidateWallsAndCharacters(House & h);  //: check that all characters are valid, and change them if not. puts walls in the sides.
+		static vector<string> split(const string &s, char delim);  //splits a line by delim
+		
 };
 
 inline string SingletonHouseIOManager::GetFolder()

@@ -7,7 +7,7 @@ default:
 	
 #simulator part
 	
-simulator: Battery.o House.o SingletonHouseIOManager.o Sensor.o AlgorithmSingleRun.o SingletonConfigReader.o Simulator.o AlgorithmFactory.o Main.o
+simulator: FilesListerWithSuffix.o FilesLister.o Battery.o House.o SingletonHouseIOManager.o Sensor.o AlgorithmSingleRun.o SubSimulation.o SingletonConfigReader.o Simulator.o AlgorithmFactory.o Main.o
 	$(CC) -rdynamic -o simulator $^ $(LIBS)
 	
 Main.o: Main.cpp
@@ -20,6 +20,9 @@ Simulator.o: Simulator.cpp Simulator.h Direction.h
 	$(CC) -c $(CFLAGS) $<
 
 SingletonConfigReader.o: SingletonConfigReader.cpp SingletonConfigReader.h	
+	$(CC) -c $(CFLAGS) $<
+	
+SubSimulation.o: SubSimulation.cpp SubSimulation.h
 	$(CC) -c $(CFLAGS) $<
 
 AlgorithmSingleRun.o: AlgorithmSingleRun.cpp AlgorithmSingleRun.h AbstractAlgorithm.h AbstractSensor.h Direction.h	House.h Point.h Battery.h
@@ -37,31 +40,36 @@ House.o: House.cpp SingletonHouseIOManager.h House.h Matrix.h Point.h Direction.
 Battery.o: Battery.cpp Battery.h 
 	$(CC) -c $(CFLAGS) $<
 	
+FilesListerWithSuffix.o: FilesListerWithSuffix.cpp FilesListerWithSuffix.h FilesLister.h 
+	$(CC) -c $(CFLAGS) $<
 	
+FilesLister.o: FilesLister.cpp FilesLister.h 
+	$(CC) -c $(CFLAGS) $<	
 	
 #dynamic algorithms part
 
-#libAlgorithm1.so: Algorithm1.o
-#	g++ -shared -Wl,-soname,libAlgorithm1.so -o libAlgorithm1.so Algorithm1.o
 
-#libAlgorithm2.so: Algorithm2.o
-#	g++ -shared -Wl,-soname,libAlgorithm2.so -o libAlgorithm2.so Algorithm2.o
+039563838_A_.so: _039563838_A.o
+	g++ -shared -Wl,-soname,039563838_A_.so -o 039563838_A_.so _039563838_A.o
 
-#Algorithm1.o: Algorithm1.cpp Algorithm1.h AbstractAlgorithm.h
-#	$(CC) -c -fPIC $(CFLAGS) $<
-	
-#Algorithm2.o: Algorithm2.cpp Algorithm2.h AbstractAlgorithm.h
-#	$(CC) -c -fPIC $(CFLAGS) $<
-
-RobotAlgorithm1.so: RobotAlgorithm1.o
-	g++ -shared -Wl,-soname,RobotAlgorithm1.so -o RobotAlgorithm1.so RobotAlgorithm1.o
-
-RobotAlgorithm1.o: RobotAlgorithm1.cpp RobotAlgorithm1.h AbstractAlgorithm.h
+_039563838_A.o: _039563838_A.cpp _039563838_A.h AbstractAlgorithm.h FactoryDefinition.h
 	$(CC) -c -fPIC $(CFLAGS) $<
 	
+039563838_C_.so: _039563838_C.o
+	g++ -shared -Wl,-soname,039563838_C_.so -o 039563838_C_.so _039563838_C.o
 
-#all: simulator libAlgorithm1.so libAlgorithm2.so 
-all: RobotAlgorithm1.so simulator
+_039563838_C.o: _039563838_C.cpp _039563838_C.h AbstractAlgorithm.h FactoryDefinition.h
+	$(CC) -c -fPIC $(CFLAGS) $<
+	
+039563838_B_.so: _039563838_B.o
+	g++ -shared -Wl,-soname,039563838_B_.so -o 039563838_B_.so _039563838_B.o
+
+_039563838_B.o: _039563838_B.cpp _039563838_B.h AbstractAlgorithm.h FactoryDefinition.h
+	$(CC) -c -fPIC $(CFLAGS) $<
+	
+	
+#all: 
+all: 039563838_A_.so 039563838_C_.so 039563838_B_.so  simulator
 
 clean:
 	rm -f *.so *.o simulator

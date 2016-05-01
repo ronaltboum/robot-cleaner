@@ -3,11 +3,13 @@
 
 
 #include <string>
-#include "AlgorithmSingleRun.h"
+//#include "AlgorithmSingleRun.h"    //SubSimulation.h  includes it already
+#include "Direction.h"
 #include "Sensor.h"
 #include "House.h"
 #include "Battery.h"
 #include "SingletonConfigReader.h"
+#include "SubSimulation.h"
 #include <sstream> 
 #include <fstream>
 #include "AlgorithmFactory.h"
@@ -19,10 +21,13 @@ class Simulator
 private:
 	vector<House *> _houses;
 	map<string, int> _configs;
-	vector< AlgorithmSingleRun *> _runs;
 	Battery * _defaultBattery;
-	bool _winnerAlgorithmExist;
+
 	AlgorithmFactory * _algorithmFactory;
+	map<string, string> _badHousesMap;  //entry is of the form: "house1.house", "missing docking station"
+	map<string, map<string, int> > _scoresMap;     //map<algo name, map<house name, int result> >
+	vector< SubSimulation *> _subSimulations;
+	vector<string> _hitWallErrorMessages;   //contains all the error messages of algorithms that hit walls
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
@@ -31,18 +36,42 @@ public:
 	~Simulator(void);
 	void initiallize();
 
+	
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Getters/Setters ~~~~~~~~~~~~~~~~~~~~~~~~~~
+public:
+	map<string, string> GetBadHousesMap() const;
+	
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
-	void ReadConfigFile(const string & configFilePath);
-	int LoadHouses( string houseFolder);
-	int LoadAlgorithms(string algorithmFolder);
+	bool ReadConfigFile(const string & configFilePath);
+	int LoadHouses( vector<std::string> housesVector );
+	int LoadAlgorithms(vector<string> algorithmFiles);
+	void RunAllHouses();
 	int LoadRuns();
-	void RunAll(void);
-	void printScores(int winner_num_steps);
+	void RunAll(int houseIndex);  //Run SubSimulation on house
+	void registerScores(int winner_num_steps, int houseIndex, int simulationSteps);
+	void printScores();
+	void addScore(string algoName, string trimmedHouseName, int score);
+	void printDashes(int numCharsInRow);
+	void printSpaces(int quantity);
+	vector<string> GetValidTrimmedHousesNames();
+	void printFirstRow(int houseNum, vector<string> trimmedValidHouseNames);
+	void printRow(string algoName);
+	vector<int> GetAlgoResults(string algoName);
+	string ConvertFromInt(int res);
+	string CovertFromDouble(double avg);
+	void PrintHouseErrors();
+	void PrintAlgoErrors();
+	string* GetAbsPath(string relativePath);  //returns absolute path or null in case of error
 private:
-	void MoveAllOneStep(int & currentRankAlgorithmsCompetingOn);
-	
+	bool MoveAllOneStep(int & currentRankAlgorithmsCompetingOn, int houseIndex);
 
 };
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ inline functions ~~~~~~~~~~~~~~~~~~~~~~~~~~
+inline map<string, string> Simulator::GetBadHousesMap() const
+{
+	return _badHousesMap;
+}
 
 #endif // Simulator_h__

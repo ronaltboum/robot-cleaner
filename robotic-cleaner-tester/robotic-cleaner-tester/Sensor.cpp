@@ -45,4 +45,3 @@ unsigned int Sensor::GetCurrrentCol()
 	unsigned int currentCol =  _currentPosition->GetCol();
 	return currentCol;
 }
-

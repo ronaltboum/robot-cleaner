@@ -27,6 +27,8 @@ public:
 	unsigned int GetCurrentRow(); //returns row number of _currentPosition
 	unsigned int GetCurrrentCol();  //returns column number of _currentPosition
 	const Point * GetCurrentPosition() const {return _currentPosition;}
+	
+	//void SetSensor(const House * housePtr, const Point * pointPtr);
 
 };
 

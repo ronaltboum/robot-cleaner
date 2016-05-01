@@ -50,7 +50,7 @@ public:
 				cout << "invalid flags. flags are -config and -house_path and -algorithm_path";
 			}
 		}
-		if(argc >= 5)  //case where only 2 out of 3 arguments were given by the user
+		if(argc >= 5)  //case where at least 2 out of 3 arguments were given by the user
 		{
 			if ( ! strcmp(argv[3], configFlag))
 			{
@@ -70,7 +70,7 @@ public:
 			}
 		}
 
-		if(argc == 7)  //case where all arguments were given by the user
+		if(argc >= 7)  //case where all arguments were given by the user
 		{
 			
 			if ( ! strcmp(argv[5], configFlag))
@@ -104,12 +104,17 @@ public:
 				houseFolder.append("/");
 			}
 		}
-
+		else
+		 houseFolder = "./"; 
+		
+		
 		if(algorithmFolder != ""){
 			if( algorithmFolder[algorithmFolder.length() - 1] != '/' ){
 				algorithmFolder.append("/");
 			}
 		}
+		else
+		 algorithmFolder = "./";
 
 		vector<string> commandLineArguments = vector<string>();
 		commandLineArguments.push_back(configFilePath);

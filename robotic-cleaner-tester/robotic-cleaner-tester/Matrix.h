@@ -25,12 +25,14 @@ private:
 public:
 	Matrix (unsigned int rows = 3, unsigned int cols = 3);
 	Matrix (unsigned int rows , unsigned int cols , T newRowsColsValue);
+	Matrix (vector<T> inner, unsigned int rows, unsigned int cols);  //creates a new Matrix with the contents of inner
 	~Matrix(){ }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Getters/Setters ~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
 	unsigned int getWidth() const { return cols; }
 	unsigned int getHeight() const { return rows; }
+	vector<T> GetInner() const {return _inner; }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
 	bool IsInsideMatrix(unsigned int row, unsigned int col) const;
@@ -54,12 +56,23 @@ template <typename T> inline Matrix<T>::Matrix (unsigned int rows /* =3 */, unsi
 	_inner = vector<T>(rows * cols);
 }
 
+
 template <typename T> inline Matrix<T>::Matrix (unsigned int rows , unsigned int cols , T newRowsColsValue)
 	: cols (cols), rows (rows)
 {
 	default_value = newRowsColsValue;
 	_inner.assign(rows * cols, default_value);
 }
+
+template <typename T> inline Matrix<T>::Matrix (vector<T> inner, unsigned int numOfRows, unsigned int numOfCols)
+{
+    
+  rows = numOfRows;
+  cols = numOfCols;
+  _inner = vector<T>(rows * cols);
+      _inner = inner;   //uses copy ctor of vector:  http://www.cplusplus.com/reference/vector/vector/operator=/
+}
+
 
 template <typename T> inline bool Matrix<T>::IsInsideMatrix(unsigned int row, unsigned int col) const
 {
@@ -73,7 +86,7 @@ template <typename T> inline bool Matrix<T>::IsInsideMatrix(const Point& locatio
 
 template <typename T> inline T& Matrix<T>::operator()(const Point& location)
 {
-	assert( IsInsideMatrix(location) );
+	//assert( IsInsideMatrix(location) );
 	int col = location.GetCol();
 	int row = location.GetRow();
 	return _inner[row*cols+col];
@@ -81,7 +94,7 @@ template <typename T> inline T& Matrix<T>::operator()(const Point& location)
 
 template <typename T> inline const T& Matrix<T>::operator()(const Point& location) const
 {
-	assert( IsInsideMatrix(location) );
+	//assert( IsInsideMatrix(location) );
 	int col = location.GetCol();
 	int row = location.GetRow();
 	return _inner[row*cols+col];
@@ -89,13 +102,13 @@ template <typename T> inline const T& Matrix<T>::operator()(const Point& locatio
 
 template <typename T> inline T& Matrix<T>::operator()(unsigned int row, unsigned int col)
 {
-	assert( IsInsideMatrix(row, col) );
+	//assert( IsInsideMatrix(row, col) );
 	return _inner[row*cols+col];
 }
 
 template <typename T> inline const T& Matrix<T>::operator()(unsigned int row, unsigned int col) const
 {
-	assert( IsInsideMatrix(row, col) );
+	//assert( IsInsideMatrix(row, col) );
 	return _inner[row*cols+col];
 }
 

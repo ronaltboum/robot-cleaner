@@ -2,9 +2,12 @@
 #define AlgorithmSingleRun_h__
 
 #include "Battery.h"
+#include "Direction.h"
 #include "AbstractAlgorithm.h"
 #include "House.h"
 #include "Point.h"
+
+using namespace std;
 
 class AlgorithmSingleRun
 {
@@ -18,9 +21,12 @@ private:
 	int _numberOfStepsCommited;
 	AbstractSensor * _algorithmSensor;
 	bool _canStillRun; // boolean which is false after made illegal move, when battery is empty, or when members are uninitiallized
+	bool _hitWall;  //boolean which is true iff algo hit a wall
 	int _dirtCollected;
-	int _actual_position_in_copmetition; // see http://moodle.tau.ac.il/mod/page/view.php?id=374508. if not finished
+	int _actual_position_in_copmetition; // see http://moodle.tau.ac.il/mod/page/view.php?id=374508. 
 	int _sumOfDirtBeforeCleaning;
+	
+	string _algorithmFileName;
 	
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
@@ -30,7 +36,7 @@ public:
 		const Battery & robotBattery, 
 		House * currentHouse,
 		AbstractSensor * algoSensor, 
-		Point * startingPoint);	
+		Point * startingPoint, string algorithmFileName);	
 	~AlgorithmSingleRun(void);
 	void initialize();
 
@@ -42,6 +48,8 @@ public:
 	House * GetCurrentHouse() const { return _currentHouse; }
 	int GetDirtCollected() const { return _dirtCollected; }
 	int GetNumberOfStepsCommited() const { return _numberOfStepsCommited; }
+	
+	string GetAlgorithmFileName() { return _algorithmFileName; }
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:

@@ -34,19 +34,31 @@ protected:
 	Matrix<char> _floor;			//: the floor of the house
 	string _shortName;				//: the house short name
 	string _longName;				//: the house long name
+	int _MaxSteps; 
+	string _errorMessage;                  // "valid",  or "no D in house" etc
+	string _houseFileName;
+	
+	//bool _isWinnerAlgorithmExist;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
 	House(); // :Default C'tor using hardcoded house
-	House(unsigned int houseWidth, unsigned int houseHeight);
-	House(unsigned int houseWidth, unsigned int houseHeight, string shortName, string longName);
+	House( int houseWidth,  int houseHeight);
+	House( int houseWidth,  int houseHeight, string shortName, string longName, int _MaxSteps, string errorMessage);
+	
+	House(int houseWidth,  int houseHeight, vector<char> inner, int maxSteps, string errorMessage, string houseFileName); //constructs a house according to the Matrix represented by inner.
 	virtual ~House() {}
 	void initiallize(); // used to initiallize house in each c'tor
 	
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Getters/Setters ~~~~~~~~~~~~~~~~~~~~~~~~~~
-	unsigned int GetHeight() const;
-	unsigned int GetWidth() const;		
+	Matrix<char> GetFloor() const {return _floor; }
+	int GetHeight() const;
+	int GetWidth() const;		
 	string GetShortName() const { return _shortName; }
+	int GetMaxSteps() const;
+	string GetErrorMessage() const;
+	string GetHouseFileName() { return _houseFileName; }
+	void SetHouseFileName(string name) { _houseFileName = name; }
 	
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	bool IsPositionValid(const Point & position) const; //: Gets a position and check if it's inside the house
@@ -61,7 +73,7 @@ public:
 	void Print() const;
 	void Print(const Point & currentPosition) const; //: prints the house while the current position marked with '*'
 	unsigned int SumOfDirtInTheHouse() const; //: Sums how much dirt there is in the house
-	bool isValid() const; //: check that the house is valid
+	std::string isValid() const; //: check that the house is valid
 	friend std::ostream& operator << ( std::ostream& out, const House& houseToPrint ); //printing to stream
 	friend istream& operator>>(istream& in, House& h); // getting from stream
 private:
@@ -75,15 +87,26 @@ protected:
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ inline functions ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-inline unsigned int House::GetHeight() const
+inline int House::GetHeight() const
 {
 	return _floor.getHeight();
 }
 
-inline unsigned int House::GetWidth() const
+inline int House::GetWidth() const
 {
 	return _floor.getWidth();
 }
+
+inline int House::GetMaxSteps() const
+{
+	return _MaxSteps;
+}
+
+inline string House::GetErrorMessage() const
+{
+  return _errorMessage;
+}
+
 
 //************************************
 // Brief:		Gets a position and checks if it's inside the house

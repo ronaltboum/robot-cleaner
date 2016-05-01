@@ -1,7 +1,7 @@
 //#include "stdafx.h"
 #include "AlgorithmSingleRun.h"
 
-AlgorithmSingleRun::AlgorithmSingleRun(const map<string, int> & configs, AbstractAlgorithm * currentAlgorithmPointer, const Battery & robotBattery, House * currentHouse, AbstractSensor * algoSensor, Point * startingPoint)
+AlgorithmSingleRun::AlgorithmSingleRun(const map<string, int> & configs, AbstractAlgorithm * currentAlgorithmPointer, const Battery & robotBattery, House * currentHouse, AbstractSensor * algoSensor, Point * startingPoint, string algorithmFileName)
 	: _configs(configs)
 {
 	initialize();
@@ -12,15 +12,25 @@ AlgorithmSingleRun::AlgorithmSingleRun(const map<string, int> & configs, Abstrac
 	_currentPosition = startingPoint;
 	_canStillRun = true;
 	_sumOfDirtBeforeCleaning = _currentHouse->SumOfDirtInTheHouse();
+	_algorithmFileName = algorithmFileName;
 }
 
 
 
 AlgorithmSingleRun::~AlgorithmSingleRun(void)
 {
-	//no need to check if not null - delete(NULL) = no_op
+// 	//Tuval:
+//   
+// 	//no need to check if not null - delete(NULL) = no_op
+// 	delete _currentPosition;
+// 	// delete _currentHouse; //is done by simulator
+// 	delete _algorithmSensor;
+// 	delete _currentAlgorithm;
+// 	delete _robotBattery;
+  
+  	//no need to check if not null - delete(NULL) = no_op
 	delete _currentPosition;
-	// delete _currentHouse; //is done by simulator
+	delete _currentHouse; 
 	delete _algorithmSensor;
 	delete _currentAlgorithm;
 	delete _robotBattery;
@@ -34,17 +44,26 @@ void AlgorithmSingleRun::initialize()
 	_currentPosition = NULL;
 	_robotBattery = NULL;
 	_canStillRun = false;
+	_hitWall = false;
 	_dirtCollected = 0;
 	_numberOfStepsCommited = 0;
 	_actual_position_in_copmetition = 0;
 	_sumOfDirtBeforeCleaning = 0;
+	_algorithmFileName = "";
 }
 
 bool AlgorithmSingleRun::CanDoStep() const
 {
-	return (	(_numberOfStepsCommited < _configs.find("MaxSteps")->second) &&
+  //Tuval:
+// 	return (	(_numberOfStepsCommited < _configs.find("MaxSteps")->second) &&
+// 				(_canStillRun) &&
+// 				( ! _currentHouse->IsHouseClean()));
+	
+	
+	return (	(_numberOfStepsCommited <  (_currentHouse -> GetMaxSteps() )  ) &&
 				(_canStillRun) &&
-				( ! _currentHouse->IsHouseClean()));
+				 (! HasWon() ) )  ;
+				//( ! _currentHouse->IsHouseClean()));
 }
 
 bool AlgorithmSingleRun::IsHouseCleaned() const
@@ -84,12 +103,20 @@ void AlgorithmSingleRun::DoStep()
 	//making the move and updating 
 	Direction chosenDirection = _currentAlgorithm->step();
 	_currentPosition->Move(chosenDirection);
+	
+// 	int pRow = _currentPosition -> GetRow();
+// 	int pCol = _currentPosition -> GetCol();
+// 	cout<< "new Point = " << pRow << " , " << pCol << endl;  //delte !!!!!!!!!!!!!!!
+	
 	if(HasMadeIllegalStep())
 	{
-		cout << "0" << endl << "the algorithm made an illegal move";
+		
+		//Algorithm 331332334_E_ when running on House 003 went on a wall in step 7
+		//http://moodle.tau.ac.il/mod/forum/discuss.php?d=57047
 		_canStillRun = false;
+		_hitWall = true;
 	}
-	if(IsAlgorithmBatteryEmpty())
+	if(IsAlgorithmBatteryEmpty())   //in this case we print the score, and we do not print error, as instructed in the link:  http://moodle.tau.ac.il/mod/page/view.php?id=375915
 		_canStillRun = false;
 	++_numberOfStepsCommited;
 }

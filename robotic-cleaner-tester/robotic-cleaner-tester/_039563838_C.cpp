@@ -1,21 +1,21 @@
 //#include "stdafx.h"
-#include "RobotAlgorithm1.h"
+#include "_039563838_C.h"
 #include <iostream>
 
-RobotAlgorithm1::RobotAlgorithm1(const AbstractSensor& sensor, map<string, int> config)
+_039563838_C::_039563838_C(const AbstractSensor& sensor, map<string, int> config)
 {
 	initiallize();
 	setSensor(sensor);
 	setConfiguration(config);
 }
 
-RobotAlgorithm1::RobotAlgorithm1(void)
+_039563838_C::_039563838_C(void)
 {
 	initiallize();
 }
 
 //function called in each c'tor
-void RobotAlgorithm1::initiallize()
+void _039563838_C::initiallize()
 {
 	_dirtInCurrentLocation = 0;
 	_configs = map<string,int>();
@@ -24,7 +24,7 @@ void RobotAlgorithm1::initiallize()
 	_robotStatus = AlgorithmStatus::ChargingInDocking;
 }
 
-RobotAlgorithm1::~RobotAlgorithm1(void)
+_039563838_C::~_039563838_C(void)
 {
 }
 
@@ -32,7 +32,7 @@ RobotAlgorithm1::~RobotAlgorithm1(void)
 // Brief:		choose a step and do it
 // Returns:   	Direction where it went
 //************************************
-Direction RobotAlgorithm1::step()
+Direction _039563838_C::step()
 {
 	Direction lastStep;
 	UpdateState();
@@ -47,18 +47,11 @@ Direction RobotAlgorithm1::step()
 		_pathFromDocking.pop_back();
 		return OppositeDirection(lastStep);
 	case AlgorithmStatus::Exploring:
-		//set the last step, or stay if no last step found
-		lastStep  = _pathFromDocking.empty() ? Direction(4) : _pathFromDocking.back();
-		vector<Direction> possible_directions = GetPossibleDirections(lastStep); // get all other directions than lastStep
-		if(possible_directions.empty()){
-			_pathFromDocking.pop_back();
-			return OppositeDirection(lastStep);
-		}
-		else{
-			Direction chosen = possible_directions[0];
-			_pathFromDocking.push_back(chosen);
-			return chosen;
-		}
+		//preferences:  1.East  2.West  3.South  4.North  5.Stay
+		Direction preferredDirection  = ChooseDirectionByPreference();
+		if(preferredDirection != Direction::Stay)
+		    _pathFromDocking.push_back(preferredDirection);
+		return preferredDirection;
 	}
 	return Direction::Stay;
 }
@@ -66,8 +59,12 @@ Direction RobotAlgorithm1::step()
 //************************************
 // Brief:		change the algorithm state, consume/recharge battery, and clean current location by 1 if not cleaned
 // Returns:   	void
-void RobotAlgorithm1::UpdateState()
+void _039563838_C::UpdateState()
 {
+  
+	SensorInformation info = _robotSensor->sense();
+ 	_dirtInCurrentLocation = info.dirtLevel;
+  
 	switch(_robotStatus)
 	{
 	case AlgorithmStatus::ChargingInDocking:
@@ -79,7 +76,7 @@ void RobotAlgorithm1::UpdateState()
 	case AlgorithmStatus::Exploring:
 		_battery.Consume();
 		_dirtInCurrentLocation -= _dirtInCurrentLocation ? 1 : 0; //clean by one (or stays 0)
-		if(_battery.GetStepsBeforeRecharge() == _pathFromDocking.size())
+		if(_battery.GetStepsBeforeRecharge() ==  (int)_pathFromDocking.size())
 			_robotStatus = AlgorithmStatus::Returning;
 		else if(_dirtInCurrentLocation > 0)
 			_robotStatus = AlgorithmStatus::StayingUntilClean;
@@ -95,8 +92,9 @@ void RobotAlgorithm1::UpdateState()
 
 }
 
+
 // Brief: returns opposite direction
-Direction RobotAlgorithm1::OppositeDirection(Direction d)
+Direction _039563838_C::OppositeDirection(Direction d)
 {
 	switch (d)
 	{
@@ -113,32 +111,31 @@ Direction RobotAlgorithm1::OppositeDirection(Direction d)
 	}
 }
 
+
 //************************************
-// Brief:		Gets the last committed steps and return all possible steps excluding going back and staying
-// Gets:	 	Direction lastStep - the last direction the algorithm moved to
-// Returns:   	vector<Direction> - all possible steps excluding going back and staying. empty if non possiblle
+// Brief: returns Direction according to the following preferences: 1.EAST 2.WEST 3.SOUTH 4.NORTH 5.STAY
 //************************************
-vector<Direction> RobotAlgorithm1::GetPossibleDirections(Direction lastStep) const
+Direction _039563838_C::ChooseDirectionByPreference() const
 {
-	Direction back = OppositeDirection(lastStep);
+	
 	SensorInformation info = _robotSensor->sense();
-	vector<Direction> possibleDirections =  vector<Direction>();
-	for(int i=0;i<4;++i){
-		if( ! info.isWall[i] && Direction(i) != back)
-			possibleDirections.push_back(Direction(i));
+	for(int i=0;i < 4; ++i){
+		if( ! info.isWall[i] )
+			return Direction(i);
 	}
-	return possibleDirections;
+	
+	return Direction::Stay;
 }
 
 extern "C" {
 AbstractAlgorithm *maker(){
-   return new RobotAlgorithm1;
+   return new _039563838_C;
 }
 class proxy { 
 public:
    proxy(){
-      // register the maker with the factory 
-      factory["RobotAlgorithm1"] = maker;
+      // register the maker with the factory using file name 
+      factory["039563838_C_"] = maker;
    }
 };
 // our one instance of the proxy

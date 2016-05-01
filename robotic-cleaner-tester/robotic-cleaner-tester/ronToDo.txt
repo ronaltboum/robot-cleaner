@@ -1,0 +1,24 @@
+-this project version doesn't include FilesLister, FileListersWithSUffix, and
+the main function i wrote in robotic-cleaner-tester.cpp  with try, catch. 
+
+0. change algo names to my id
+
+1. important changes in moodle:
+http://moodle.tau.ac.il/mod/page/view.php?id=375915
+
+1. add: if validHouses ==0, then print usage
+
+1. unite with FilesListers !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+1. in SingletonHouseIOMangaer in function ValidateWallsAndCharacters Tuval replaced all
+illegal characters with space.  Not sure if that's what we need. Asked in forum.
+
+
+1. one guy said he installed eclipse and got errors. i get errors in log.  also 
+try to search eclipse crashes
+
+1. work in windows (without dl).  finish all printings.  then transfer to linux.
+then think whether to add FilesLister...   I will probably need to add 
+FilesLister etc for Houses.  It seems Tuval has already implemented it for the
+algorithm case. 
+

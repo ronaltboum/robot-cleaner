@@ -1,7 +1,9 @@
-#ifndef RobotAlgorithm1_h__
-#define RobotAlgorithm1_h__
+#ifndef _039563838_A_h__
+#define _039563838_A_h__
 
+#include "Direction.h"
 #include "AbstractAlgorithm.h"
+#include "FactoryDefinition.h"  //header file where factory is defined
 #include <deque>
 #include <stdlib.h>
 #include <stdio.h>
@@ -11,7 +13,7 @@
 
 using namespace std;
 
-class RobotAlgorithm1 :	public AbstractAlgorithm
+class _039563838_A :	public AbstractAlgorithm
 {
 //~~~~~~~~~~~~~~~~~~~~` Macros and definitions ~~~~~~~~~~~~~~~~~~~~~~~~~
 enum class AlgorithmStatus {ChargingInDocking,			// the algorithm is charging until battery is full
@@ -29,9 +31,9 @@ protected:
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
-	RobotAlgorithm1(void);
-	RobotAlgorithm1(const AbstractSensor& sensor, map<string, int> config);
-	~RobotAlgorithm1(void);
+	_039563838_A(void);
+	_039563838_A(const AbstractSensor& sensor, map<string, int> config);
+	~_039563838_A(void);
 	void initiallize(); //function called in each c'tor
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,23 +49,23 @@ protected:
 	virtual vector<Direction> GetPossibleDirections(Direction lastStep) const;
 
 
-}; // end of class RobotAlgorithm1
+}; // end of class _039563838_A
 
-inline void RobotAlgorithm1::setSensor(const AbstractSensor& sensor) 
+inline void _039563838_A::setSensor(const AbstractSensor& sensor) 
 {
 	_robotSensor = &sensor;
 }
 
-inline void RobotAlgorithm1::setConfiguration(map<string, int> config)
+inline void _039563838_A::setConfiguration(map<string, int> config)
 {
 	_configs = map<string,int>(config);
 	_battery = Battery(_configs);
 }
 
 //: check if the algorithm is in the docking station
-inline bool RobotAlgorithm1::IsInDocking() const
+inline bool _039563838_A::IsInDocking() const
 {
 	return (_pathFromDocking.size() == 0);
 }
 
-#endif // RobotAlgorithm1_h__
+#endif // _039563838_A_h__

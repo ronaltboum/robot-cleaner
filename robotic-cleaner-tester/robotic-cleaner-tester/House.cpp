@@ -7,21 +7,31 @@ House::House()
 	initiallize();
 }
 
-House::House(unsigned int houseWidth, unsigned int houseHeight)
+House::House( int houseWidth,  int houseHeight)
 {
 	initiallize();
 	_floor = Matrix<char>(houseHeight,houseWidth);
 	
 }
 
-House::House(unsigned int houseWidth, unsigned int houseHeight, string shortName, string longName)
+House::House(int houseWidth,  int houseHeight, string shortName, string longName, int maxSteps, string errorMessage)
 {
 	initiallize();
 	_floor = Matrix<char>(houseHeight,houseWidth);
 	_shortName = shortName;
 	_longName = longName;
+	_MaxSteps = maxSteps;
+	_errorMessage = errorMessage;
 }
 
+//Matrix (vector<T> inner, unsigned int rows, unsigned int cols);
+House::House(int houseWidth,  int houseHeight, vector<char> inner, int maxSteps, string errorMessage, string houseFileName)
+{
+  _floor = Matrix<char> (inner, houseHeight, houseWidth);
+  _MaxSteps = maxSteps;
+  _errorMessage = errorMessage;
+  _houseFileName = houseFileName;
+}
 
 //************************************
 // Brief:	used to initiallize the house, called first in each c'tor
@@ -31,6 +41,11 @@ void House::initiallize()
 	_floor = Matrix<char>(0, 0);
 	_shortName = "";
 	_longName = "";
+	_MaxSteps = 0;
+	_errorMessage = "";
+	_houseFileName = "";
+	
+	//_isWinnerAlgorithmExist = false;
 }
 
 
@@ -146,37 +161,53 @@ unsigned int House::SumOfDirtInTheHouse() const
 //					1. Walls on the sides
 //					2. one docking station
 //					3. no illegal characters
-// Returns:   	bool
+// Returns:   	"valid" or error message 
+// pre:         the function is called AFTER we fixed the house in function SingletonHouseIOManager::ReadHouseFromFile(istream & in)
 //************************************
-bool House::isValid() const
+std::string House::isValid() const
 {
+	std::string errorMessage;
+	std::string errorOutput;
+	std::stringstream sstm;
 	bool dockingStationExists = false;
-	unsigned int cols = GetWidth(); //not including \0 col in the end
-	unsigned int rows = GetHeight();
-	if((cols < 3) || (rows < 3)) //at least 3x3 in order to be surrounded by walls
-	{
-		return false;
+	
+	std::string error_message = GetErrorMessage();
+	if(error_message.compare("") != 0 ){   //error_message != ""
+	  return error_message;
 	}
+
+
+	unsigned int rows = GetHeight();
+	unsigned int cols = GetWidth(); //not including \0 col in the end
 	for(unsigned int row = 0; row < rows; ++row) 
 	{
 		for(unsigned int col = 0; col < cols; ++col) 
 		{
-			if( ! IsValidTile( _floor(row,col) ) )
-				return false;
-			if((col == cols-1) || (col == 0) || (row == rows-1) || (row == 0))
-			{
-				if( ! IsWallTile(_floor(row,col)) )
-					return false;
+
+			//the check of illegal char and IsWallTile is useless, since we call this
+			//function after we fixed the house when we read it from the file
+
+			//if( ! IsValidTile( _floor(row,col) ) )
+			//	return "illegal char in house"; 
+			if( !( (col == cols-1) || (col == 0) || (row == rows-1) || (row == 0) ) )
+			{ //in case we are not at the edges:
+				//if( ! IsWallTile(_floor(row,col)) ) //we check this after we fix the house!
+				//	return false;
+				if( IsDockingTile(_floor(row,col)) )
+				{
+					if(dockingStationExists)
+						return "too many docking stations (more than one D in house)"; //two docking stations
+					dockingStationExists = true;
+				}
 			}
-			else if( IsDockingTile(_floor(row,col)) )
-			{
-				if(dockingStationExists)
-					return false; //two docking stations
-				dockingStationExists = true;
-			}
+			 
 		}
 	}
-	return dockingStationExists;
+	//return dockingStationExists;
+	//check if there a docking station exists:
+	if(dockingStationExists == false)
+		return "missing docking station (no D in house)";
+	return "valid";
 }
 
 
