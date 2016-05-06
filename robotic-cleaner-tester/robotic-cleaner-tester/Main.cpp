@@ -6,8 +6,6 @@
 #include "Simulator.h"
 #include "CommandLineInterpeter.h"
 #include "SingletonHouseIOManager.h"
-//#include "DynamicHouse.h"
-//#include "FilesLister.h"
 #include "FilesListerWithSuffix.h"
 #include <time.h>
 #include <string.h>
@@ -25,7 +23,8 @@ int main(int argc, char * argv[])
 	//string algorithmFolder = (commandLineArguments.size() == 3) ? commandLineArguments[2] : "./";
 	string algorithmFolder = commandLineArguments[2];
 	
-	Simulator s = Simulator();
+	//Simulator s = Simulator();
+	Simulator s;
 	bool con = s.ReadConfigFile(configFile); 
 	if(con == false)
 	    return EXIT_FAILURE;
@@ -101,7 +100,11 @@ int main(int argc, char * argv[])
 	}
 	
  	s.LoadRuns();
- 	s.RunAllHouses();
+	
+	size_t num_threads = 3;  //TODO:  should get number of threads from command line arguments.  also handle case where num_threads > num of houses
+	
+	
+ 	s.RunAllHouses(num_threads);
 	s.printScores();
 	
 	cout << endl;

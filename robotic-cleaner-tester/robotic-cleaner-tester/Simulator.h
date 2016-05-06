@@ -3,6 +3,17 @@
 
 
 #include <string>
+
+#include <iostream>
+#include <functional>
+#include <memory>
+#include <list>
+#include <cassert>
+#include <thread>
+#include <atomic>
+#include <mutex>
+
+
 //#include "AlgorithmSingleRun.h"    //SubSimulation.h  includes it already
 #include "Direction.h"
 #include "Sensor.h"
@@ -19,6 +30,9 @@ class Simulator
 {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 private:
+	
+	atomic_size_t _indexOfHouse{0}; // atomic_size_t is a language typedef for std::atomic<size_t>
+	//atomic_size_t _indexOfHouse;
 	vector<House *> _houses;
 	map<string, int> _configs;
 	Battery * _defaultBattery;
@@ -32,7 +46,6 @@ private:
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
 	Simulator(void);
-	Simulator(const string & configFilePath);
 	~Simulator(void);
 	void initiallize();
 
@@ -46,7 +59,8 @@ public:
 	bool ReadConfigFile(const string & configFilePath);
 	int LoadHouses( vector<std::string> housesVector );
 	int LoadAlgorithms(vector<string> algorithmFiles);
-	void RunAllHouses();
+	void RunAllHouses(size_t num_threads);
+	void RunSingleSubSimulationThread();
 	int LoadRuns();
 	void RunAll(int houseIndex);  //Run SubSimulation on house
 	void registerScores(int winner_num_steps, int houseIndex, int simulationSteps);

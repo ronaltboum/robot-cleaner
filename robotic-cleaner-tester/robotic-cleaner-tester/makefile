@@ -8,7 +8,7 @@ default:
 #simulator part
 	
 simulator: FilesListerWithSuffix.o FilesLister.o Battery.o House.o SingletonHouseIOManager.o Sensor.o AlgorithmSingleRun.o SubSimulation.o SingletonConfigReader.o Simulator.o AlgorithmFactory.o Main.o
-	$(CC) -rdynamic -o simulator $^ $(LIBS)
+	$(CC) -rdynamic -o simulator $^ $(LIBS) -pthread
 	
 Main.o: Main.cpp
 	$(CC) -c $(CFLAGS) $< $(LIBS)	

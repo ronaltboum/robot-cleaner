@@ -7,14 +7,10 @@ using namespace std;
 
 Simulator::Simulator(void)
 {
-	initiallize();
+  initiallize();
 }
 
-Simulator::Simulator(const string & configFilePath)
-{
-	initiallize();
-	ReadConfigFile(configFilePath);
-}
+
 
 //************************************
 // Brief:		called in each c'tor to initialize all
@@ -174,19 +170,72 @@ int Simulator::LoadRuns()
 	return 1;  
 }
 
-
-void Simulator::RunAllHouses()
+//pre: num_threads >= 1
+void Simulator::RunAllHouses(size_t num_threads)
 {
   int houseNum = _houses.size();  //number of valid houses
-  for( int houseIndex = 0 ; houseIndex < houseNum; ++houseIndex)
-  {
-    RunAll(houseIndex);
+  if(num_threads == 1){
+    for( int houseIndex = 0 ; houseIndex < houseNum; ++houseIndex)
+    {
+      RunAll(houseIndex);
+    }
   }
+  else {   //num_threads > 1
+    
+//     // ===> create the threads as vector of pointers to threads (unique_ptr)
+//         vector<unique_ptr<thread>> threads(num_threads);
+//         for(auto& thread_ptr : threads) {
+//             // ===> actually create the threads and run them
+//             thread_ptr = make_unique<thread>(&Simulation::runSingleSubSimulationThread, this); // create and run the thread
+//         }
+//         
+//         // ===> join all the threads to finish nicely (i.e. without crashing / terminating threads)
+//         for(auto& thread_ptr : threads) {
+//             thread_ptr->join();
+//         }
+  
+
+    //create the threads and run them:
+    vector<std::thread> vecThread(num_threads);
+    for( int thNum = 0 ; thNum < num_threads; ++thNum)
+    {
+      vecThread.at(thNum) = std::thread(&Simulator::RunSingleSubSimulationThread, this);
+     // vecThread.at(thNum) = std::thread(&Simulator::Foo, this);
+    }
+    
+    //wait for all threads to finish
+    for( int thNum = 0 ; thNum < num_threads; ++thNum)
+    {
+      vecThread.at(thNum).join();
+    }
+      
+  }
+  
+}
+
+
+void Simulator::RunSingleSubSimulationThread()
+{
+        // ===> thread should take a new task, if available, and run it
+        // if no task is available, thread is done
+        for(size_t index = _indexOfHouse++; // fetch old value, then add. equivalent to: fetch_add(1)
+            index < _houses.size();
+            index = _indexOfHouse++) {
+	  
+	  
+		cout << std::this_thread::get_id() << ": " << "is assigned to house at index: " << index << endl;  //delete !!!!!!!!!!!!!!!!!!
+                RunAll(index); //runs all algorithms on the house in _houses[houseIndex]
+        }
+        return;
 }
 
 //Brief: runs all algorithms on the house in _houses[houseIndex] in a round robin fashion
 void Simulator::RunAll(int houseIndex)
 {
+  
+	cout << std::this_thread::get_id() << ": " << "is in RunAll on house at index: " << houseIndex << endl;  //delete !!!!!!!!!!!!!!!!!!
+  
+  
 	SubSimulation * sub = _subSimulations[houseIndex]; 
 	int maxSteps = _houses[houseIndex] -> GetMaxSteps();
 	bool isThereAWinner = sub -> GetDoesWinnerExist();

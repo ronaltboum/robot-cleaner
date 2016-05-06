@@ -1,0 +1,1 @@
+-should i make map of scores thread safe ?  in vid10 i think kirsh says that if we use boost then there are thread safe date structures.  
