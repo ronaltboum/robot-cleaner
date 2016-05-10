@@ -1,5 +1,6 @@
 //#include "stdafx.h"
 #include "_039563838_A.h"
+#include "AlgorithmRegistration.h"
 #include <iostream>
 
 _039563838_A::_039563838_A(const AbstractSensor& sensor, map<string, int> config)
@@ -137,18 +138,21 @@ vector<Direction> _039563838_A::GetPossibleDirections(Direction lastStep) const
 	return possibleDirections;
 }
 
-extern "C" {
-AbstractAlgorithm *maker(){
-   return new _039563838_A;
-}
-class proxy { 
-public:
-   proxy(){
-      // register the maker with the factory using file name 
-      factory["039563838_A_"] = maker;
-   }
-};
-// our one instance of the proxy
-proxy p;
-}
+REGISTER_ALGORITHM (_039563838_A)
+
+
+// extern "C" {
+// AbstractAlgorithm *maker(){
+   // return new _039563838_A;
+// }
+// class proxy { 
+// public:
+   // proxy(){
+      // // register the maker with the factory using file name 
+      // factory["039563838_A_"] = maker;
+   // }
+// };
+// // our one instance of the proxy
+// proxy p;
+// }
 

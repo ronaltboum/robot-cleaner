@@ -52,19 +52,19 @@ FilesLister.o: FilesLister.cpp FilesLister.h
 039563838_A_.so: _039563838_A.o
 	g++ -shared -Wl,-soname,039563838_A_.so -o 039563838_A_.so _039563838_A.o
 
-_039563838_A.o: _039563838_A.cpp _039563838_A.h AbstractAlgorithm.h FactoryDefinition.h
+_039563838_A.o: _039563838_A.cpp _039563838_A.h AbstractAlgorithm.h FactoryDefinition.h AlgorithmRegistration.h
 	$(CC) -c -fPIC $(CFLAGS) $<
 	
 039563838_C_.so: _039563838_C.o
 	g++ -shared -Wl,-soname,039563838_C_.so -o 039563838_C_.so _039563838_C.o
 
-_039563838_C.o: _039563838_C.cpp _039563838_C.h AbstractAlgorithm.h FactoryDefinition.h
+_039563838_C.o: _039563838_C.cpp _039563838_C.h AbstractAlgorithm.h FactoryDefinition.h AlgorithmRegistration.h
 	$(CC) -c -fPIC $(CFLAGS) $<
 	
 039563838_B_.so: _039563838_B.o
 	g++ -shared -Wl,-soname,039563838_B_.so -o 039563838_B_.so _039563838_B.o
 
-_039563838_B.o: _039563838_B.cpp _039563838_B.h AbstractAlgorithm.h FactoryDefinition.h
+_039563838_B.o: _039563838_B.cpp _039563838_B.h AbstractAlgorithm.h FactoryDefinition.h AlgorithmRegistration.h
 	$(CC) -c -fPIC $(CFLAGS) $<
 	
 	

@@ -128,18 +128,20 @@ Direction _039563838_B::ChooseDirectionByPreference() const
 	return Direction::Stay;
 }
 
-extern "C" {
-AbstractAlgorithm *maker(){
-   return new _039563838_B;
-}
-class proxy { 
-public:
-   proxy(){
-      // register the maker with the factory using file name 
-      factory["039563838_B_"] = maker;
-   }
-};
-// our one instance of the proxy
-proxy p;
-}
+REGISTER_ALGORITHM (_039563838_B)
+
+// extern "C" {
+// AbstractAlgorithm *maker(){
+   // return new _039563838_B;
+// }
+// class proxy { 
+// public:
+   // proxy(){
+      // // register the maker with the factory using file name 
+      // factory["039563838_B_"] = maker;
+   // }
+// };
+// // our one instance of the proxy
+// proxy p;
+// }
 
