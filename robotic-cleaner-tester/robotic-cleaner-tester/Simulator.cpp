@@ -276,12 +276,23 @@ bool Simulator::MoveAllOneStep(int & currentRankAlgorithmsCompetingOn, int house
 	int numAlgorithmWon = 0; //for this step
 	int algosRunning = 0;
 	vector<Direction> lastSteps(runNum, Direction::Stay);
+	Direction temp;
 	for( int runIndex = 0 ; runIndex < runNum; ++runIndex)
 	{
 		AlgorithmSingleRun * runIterator = singleRuns[runIndex];
 		if(runIterator->CanDoStep()){
 			++algosRunning;
-			lastSteps[runIndex] =  runIterator->DoStep(lastSteps[runIndex]);
+
+			lastSteps[runIndex] = runIterator-> GetLastDirection(); 
+
+			//cout << "in Simulator before DoStep:  lastSteps[runIndex] =";	  //delete!!!!!!!!!!!!!!!!!!!!!
+			//PrintDirection(lastSteps[runIndex]); //delete!!!!!!!!!!!!!!!!!!!!!	
+			
+			lastSteps[runIndex] = runIterator->DoStep(lastSteps[runIndex]); 
+			
+			//cout << "in Simulator: after DoStep:  lastSteps[runIndex] =";			
+			//PrintDirection(lastSteps[runIndex]); //delete!!!!!!!!!!!!!!!!!!!!!
+	
 			if(runIterator->HasWon()){
 				runIterator->SetActualPosition(currentRankAlgorithmsCompetingOn);
 				++numAlgorithmWon;
@@ -587,4 +598,27 @@ string* Simulator::GetAbsPath(string relativePath)
 // if (value) {
 //     mValue = new std::string(value);
 // }
+}
+
+
+//for debug
+void Simulator::PrintDirection(Direction chosen)
+{
+	switch (chosen)
+	{
+	case Direction::North:
+		cout << "North" << endl;
+		return;
+	case Direction::South:
+		cout << "South" << endl;
+		return;
+	case Direction::East:
+		cout << "East" << endl;
+		return;
+	case Direction::West:
+		cout << "West" << endl;
+		return;
+	default:
+		cout << "Stay" << endl;
+	}
 }

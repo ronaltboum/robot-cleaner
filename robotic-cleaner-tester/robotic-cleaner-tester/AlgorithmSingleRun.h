@@ -27,6 +27,7 @@ private:
 	int _sumOfDirtBeforeCleaning;
 	
 	string _algorithmFileName;
+	Direction _lastDirection;  //added because signature of step() changed.  keeps the direction of the lastStep actually performed by the simulation
 	
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
@@ -50,6 +51,7 @@ public:
 	int GetNumberOfStepsCommited() const { return _numberOfStepsCommited; }
 	
 	string GetAlgorithmFileName() { return _algorithmFileName; }
+	Direction GetLastDirection() { return _lastDirection; }
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:

@@ -19,8 +19,8 @@ class _039563838_D :	public AbstractAlgorithm
 {
 //~~~~~~~~~~~~~~~~~~~~` Macros and definitions ~~~~~~~~~~~~~~~~~~~~~~~~~
 enum class AlgorithmStatus {ChargingInDocking,			// the algorithm is charging until battery is full
-								Exploring,				// the algorithm is exploring
-								StayingUntilClean,		// the algorithm is in dirty spot so it stays there until it's cleaned
+								Exploring,				// the algorithm is exploring. Always prefers to visit cells it hasn't been in
+								
 								Returning};				// the algorithm battery is about to finish so it's returning to docking
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 protected:
@@ -41,7 +41,7 @@ protected:
     	GeneralizedPoint position = {0,0};  //as far as the algorithm is concerned, the docking point is at (0,0)
 //    SensorInformation s;
        int stepsFromDocking = -1;
-//    int totalSteps = 0;
+       int totalSteps = 0;
 //    int phase = -1; // phases 0-7: explore surrounding, phase 8: select new direction
 //    const static Direction dir_by_phase[8];
 //    Direction requestedStep = Direction::Stay;
@@ -64,10 +64,18 @@ protected:
 	virtual void UpdateState(); //: change the state
 	static Direction OppositeDirection(Direction d);
 	virtual vector<Direction> GetPossibleDirections(Direction lastStep) const;
+	Direction Handle_Explore_State(vector<Direction> possibleDirections);
+
+
 	void updateAlgorithmInfo(Direction lastStep);
 	int calcStepsToDocking(int stepsFromDocking, const GeneralizedPoint& position);
 	void updateStepsToDocking(int stepsToDocking, const GeneralizedPoint& position);
 	void printDebugHouseMapping();
+	void PrintLastDirection(Direction lastStep); //for debug
+	void PrintAlgorithmStatus();  //for debug
+	void PrintPossibleDirections(vector<Direction> possible_directions); //for debug
+	void PrintPossibleDirection(Direction possibleDirection); //for debug
+	void PrintDirection(Direction chosen); //for debug
 
 
 }; // end of class _039563838_D

@@ -77,6 +77,7 @@ public:
 	void PrintHouseErrors();
 	void PrintAlgoErrors();
 	string* GetAbsPath(string relativePath);  //returns absolute path or null in case of error
+	void PrintDirection(Direction chosen); //for debug
 private:
 	bool MoveAllOneStep(int & currentRankAlgorithmsCompetingOn, int houseIndex);
 

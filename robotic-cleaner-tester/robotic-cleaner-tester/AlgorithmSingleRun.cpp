@@ -13,6 +13,7 @@ AlgorithmSingleRun::AlgorithmSingleRun(const map<string, int> & configs, Abstrac
 	_canStillRun = true;
 	_sumOfDirtBeforeCleaning = _currentHouse->SumOfDirtInTheHouse();
 	_algorithmFileName = algorithmFileName;
+	_lastDirection = Direction::Stay;
 }
 
 
@@ -120,6 +121,7 @@ Direction AlgorithmSingleRun::DoStep(Direction lastStep)
 		_canStillRun = false;
 	++_numberOfStepsCommited;
 
+	_lastDirection = chosenDirection;
 	return chosenDirection;
 }
 

@@ -102,7 +102,7 @@ int main(int argc, char * argv[])
  	s.LoadRuns();
 	
 	//size_t num_threads = 3;  //TODO:  should get number of threads from command line arguments.  also handle case where num_threads > num of houses
-	size_t num_threads = 1;
+	size_t num_threads = 1;   //TODO:  test several algos together with printings to make sure MoveAllOneStep works ok
 	
 	
  	s.RunAllHouses(num_threads);
