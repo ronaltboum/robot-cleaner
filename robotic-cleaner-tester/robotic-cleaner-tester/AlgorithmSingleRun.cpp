@@ -119,8 +119,8 @@ Direction AlgorithmSingleRun::DoStep(Direction lastStep)
 	}
 	if(IsAlgorithmBatteryEmpty())   //in this case we print the score, and we do not print error, as instructed in the link:  http://moodle.tau.ac.il/mod/page/view.php?id=375915
 		_canStillRun = false;
+	
 	++_numberOfStepsCommited;
-
 	_lastDirection = chosenDirection;
 	return chosenDirection;
 }

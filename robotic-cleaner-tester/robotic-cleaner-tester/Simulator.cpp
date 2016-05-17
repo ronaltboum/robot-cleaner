@@ -275,8 +275,9 @@ bool Simulator::MoveAllOneStep(int & currentRankAlgorithmsCompetingOn, int house
 	int runNum = singleRuns.size(); 
 	int numAlgorithmWon = 0; //for this step
 	int algosRunning = 0;
+	int maxSteps = _houses[houseIndex] -> GetMaxSteps();
 	vector<Direction> lastSteps(runNum, Direction::Stay);
-	Direction temp;
+	bool alreadyNotified = false;  
 	for( int runIndex = 0 ; runIndex < runNum; ++runIndex)
 	{
 		AlgorithmSingleRun * runIterator = singleRuns[runIndex];
@@ -297,8 +298,18 @@ bool Simulator::MoveAllOneStep(int & currentRankAlgorithmsCompetingOn, int house
 				runIterator->SetActualPosition(currentRankAlgorithmsCompetingOn);
 				++numAlgorithmWon;
 				sub -> SetDoesWinnerExist(true);
+				//notify all algorithms running on this house, that there's a winner:
+				CallAboutToFinish(houseIndex);				
+	
 				//cout << "win!!!!!!!!!!!!!!!"<<endl;  //delete!!!!!!!!!!!!!!!!!!!!!
 			}
+		}
+
+		//call aboutToFinish when steps == MaxSteps - MaxStepsAfterWinner
+		if(runIterator -> GetNumberOfStepsCommited()  == (maxSteps - GetMaxStepsAfterWinner() )  ) {
+			if(alreadyNotified == false)
+				CallAboutToFinish(houseIndex);
+			alreadyNotified = true;  //we only need to notify once per house
 		}
 	}
 	currentRankAlgorithmsCompetingOn += numAlgorithmWon;
@@ -306,6 +317,30 @@ bool Simulator::MoveAllOneStep(int & currentRankAlgorithmsCompetingOn, int house
 	    return true;
 	return false;
 }
+
+
+//call aboutToFinish for all algorithms running ho house at index houseIndex:
+void Simulator::CallAboutToFinish(int houseIndex)
+{
+	SubSimulation * sub = _subSimulations[houseIndex]; 
+	vector< AlgorithmSingleRun *> singleRuns = sub -> GetSingleRuns();
+	for (int runIndex = 0; runIndex < singleRuns.size()  ; runIndex++) {
+		AlgorithmSingleRun * runIterator = singleRuns[runIndex];
+		(runIterator -> GetCurrentAlgorithm() ) -> aboutToFinish( GetMaxStepsAfterWinner() );
+	}
+}
+
+
+int Simulator::GetMaxStepsAfterWinner() const
+{
+	//map<string, int> _configs
+	map<string, int>::const_iterator it;
+	it = _configs.find("MaxStepsAfterWinner");
+	 if (it != _configs.end())
+		return it->second;
+	return 0; //should never get here
+}
+
 
 
 

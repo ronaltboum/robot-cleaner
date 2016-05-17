@@ -52,6 +52,7 @@ public:
 	
 	string GetAlgorithmFileName() { return _algorithmFileName; }
 	Direction GetLastDirection() { return _lastDirection; }
+	AbstractAlgorithm * GetCurrentAlgorithm() { return _currentAlgorithm; }
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:

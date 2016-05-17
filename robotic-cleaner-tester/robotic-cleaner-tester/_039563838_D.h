@@ -2,7 +2,6 @@
 #define _039563838_D_h__
 
 #include "Direction.h"
-#include "AbstractSensor.h"
 #include "DirectionExt.h"
 #include "AbstractAlgorithm.h"
 #include "FactoryDefinition.h"  //header file where factory is defined
@@ -13,17 +12,19 @@
 #include <iostream>
 #include "Battery.h"
 #include "GeneralizedPoint.h"
-#include "AlgorithmRegistration.h"
 
 using namespace std;
 
 class _039563838_D :	public AbstractAlgorithm
 {
 //~~~~~~~~~~~~~~~~~~~~` Macros and definitions ~~~~~~~~~~~~~~~~~~~~~~~~~
-enum class AlgorithmStatus {ChargingInDocking,			// the algorithm is charging until battery is full
-								Exploring,				// the algorithm is exploring. Always prefers to visit cells it hasn't been in
-								
-								Returning};				// the algorithm battery is about to finish so it's returning to docking
+//enum class AlgorithmStatus {ChargingInDocking,			// the algorithm is charging until battery is full
+//														Exploring,				// the algorithm is exploring. Always prefers to visit cells it hasn't been in
+//														Returning,				// the algorithm battery is running out,  so it's returning to docking via the same path it travelled from docking to current position
+//														ReturningRapidly 	//the algorithm doesn't have enough steps left to return via the path it travelled from docking to current position. Therefore, the algorithm returns via the shortest path to docking.
+//};	
+
+enum class AlgorithmStatus {ChargingInDocking, Exploring, Returning, ReturningRapidly };			
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 protected:
 	AlgorithmStatus _robotStatus;
@@ -44,6 +45,8 @@ protected:
 //    SensorInformation s;
        int stepsFromDocking = -1;
        int totalSteps = 0;
+	int _stepsTillFinishing = -8;  //_stepsTillFinishing == MaxStepsAfterWinner when aboutToFinish is called by the simulation
+	bool AboutToFinishWasCalled = false;  //equals true if aboutToFinish was called by the simulation
 //    int phase = -1; // phases 0-7: explore surrounding, phase 8: select new direction
 //    const static Direction dir_by_phase[8];
 //    Direction requestedStep = Direction::Stay;
@@ -58,7 +61,7 @@ public:
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
 	virtual Direction step(Direction lastStep);
-	virtual void aboutToFinish(int stepsTillFinishing) {}
+	virtual void aboutToFinish(int stepsTillFinishing); 
 	virtual void setSensor(const AbstractSensor& sensor);
 	virtual void setConfiguration(map<string, int> config);
 protected:
@@ -70,8 +73,11 @@ protected:
 
 
 	void updateAlgorithmInfo(Direction lastStep);
+	Direction FindShortestPath();
 	int calcStepsToDocking(int stepsFromDocking, const GeneralizedPoint& position);
 	void updateStepsToDocking(int stepsToDocking, const GeneralizedPoint& position);
+
+
 	void printDebugHouseMapping();
 	void PrintLastDirection(Direction lastStep); //for debug
 	void PrintAlgorithmStatus();  //for debug

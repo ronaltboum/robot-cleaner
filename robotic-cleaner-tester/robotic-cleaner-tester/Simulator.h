@@ -53,6 +53,7 @@ public:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Getters/Setters ~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
 	map<string, string> GetBadHousesMap() const;
+	int GetMaxStepsAfterWinner() const;
 	
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
@@ -80,6 +81,7 @@ public:
 	void PrintDirection(Direction chosen); //for debug
 private:
 	bool MoveAllOneStep(int & currentRankAlgorithmsCompetingOn, int houseIndex);
+	void CallAboutToFinish(int houseIndex);
 
 };
 

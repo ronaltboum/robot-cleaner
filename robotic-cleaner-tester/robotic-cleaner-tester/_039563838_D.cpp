@@ -40,18 +40,20 @@ Direction _039563838_D::step(Direction lastStep)
 {
 	
 	PrintLastDirection(lastStep);  //for debug.  delete later!!!
+	cout << "_stepsTillFinishing = " << _stepsTillFinishing << endl << endl;  //delete !!!
 
 	if(lastStep != Direction::Stay)  //TODO: not sure.  test this
 		_pathFromDocking.push_back(lastStep);
 
-	updateAlgorithmInfo(lastStep);
+	updateAlgorithmInfo(lastStep);  //updates lastStep
 
 	UpdateState();
 
-	switch(_robotStatus)
+	switch(_robotStatus)  //TODO: add case ReturnRapdily
 	{
-		
-	case AlgorithmStatus::ChargingInDocking:  //TODO: add aboutToFinish function to this algo
+	case AlgorithmStatus::ReturningRapidly:
+		return FindShortestPath();
+	case AlgorithmStatus::ChargingInDocking: 
 		 return Direction::Stay;
 	case AlgorithmStatus::Returning:
 		//lastStep  = _pathFromDocking.back();
@@ -77,6 +79,7 @@ Direction _039563838_D::step(Direction lastStep)
 			//_pathFromDocking.push_back(chosen);  // should push_back the actual direction taken by the simulation and not chosen 
 			return chosen;
 		}
+	
 	}
 
 	//cout << "i'm not supposed to get here!!!!"  << endl;  //delete later!!!
@@ -142,6 +145,21 @@ void _039563838_D::UpdateState()
 			_robotStatus = AlgorithmStatus::Returning;
 //		else if(_dirtInCurrentLocation > 0)
 //			_robotStatus = AlgorithmStatus::StayingUntilClean;
+		
+		else if(AboutToFinishWasCalled == true) {
+			int shortestDistanceFromDocking = houseMapping[position].stepsToDocking;
+			if(shortestDistanceFromDocking >=  (_stepsTillFinishing) )  {  //this algo prefers to return in the same path it travelled from docking to current position. However, if it doesn't have enough steps left, it returns via the shortest route to docking
+				if(_stepsTillFinishing <  (int)_pathFromDocking.size() ) {  //must return via shortest route to docking
+					_robotStatus = AlgorithmStatus::ReturningRapidly;
+				}
+				else
+					_robotStatus = AlgorithmStatus::Returning;
+
+			}
+//			else if(shortestDistanceFromDocking >  (_stepsTillFinishing))  {
+//				//TODO: shortestDistanceFromDocking > (_stepsTillFinishing) // depends on the score formula. maybe it's better 					to give up returning to docking via the shortest route and instead return in the path it came from (there's 				probably dust there)
+//			}
+		}
 		else
 			_robotStatus = AlgorithmStatus::Exploring;
 		break;
@@ -149,10 +167,31 @@ void _039563838_D::UpdateState()
 		_battery.Consume();
 		if(IsInDocking())
 			_robotStatus = AlgorithmStatus::ChargingInDocking;
+
+		else if(AboutToFinishWasCalled == true) {
+			//int shortestDistanceFromDocking = houseMapping[position].stepsToDocking;
+			if(_stepsTillFinishing <  (int)_pathFromDocking.size() ) {  //must return via shortest route to docking
+				_robotStatus = AlgorithmStatus::ReturningRapidly;
+			}
+		}
+		break;
+
+	case AlgorithmStatus::ReturningRapidly:	
+		if(IsInDocking())
+			_robotStatus = AlgorithmStatus::ChargingInDocking;
 		break;
 	}
 
 }
+
+
+void _039563838_D::aboutToFinish(int stepsTillFinishing)
+{
+	AboutToFinishWasCalled = true;
+	_stepsTillFinishing = stepsTillFinishing;
+	//if(totalSteps
+}
+
 
 // Brief: returns opposite direction
 Direction _039563838_D::OppositeDirection(Direction d)
@@ -190,13 +229,16 @@ vector<Direction> _039563838_D::GetPossibleDirections(Direction lastStep) const
 }
 
 
-
 void _039563838_D::updateAlgorithmInfo(Direction lastStep) 
 {
+
+	if(AboutToFinishWasCalled == true)
+		--_stepsTillFinishing;
 	++totalSteps;
 	SensorInformation s =  _robotSensor ->sense();   
 	position.move(lastStep); // update the robot position, as managed by the algorithm, to the new position. It's NOT the same as the Point* field of the sensor
 
+	cout << "position after move is:	( " << position.getX() << ", " << position.getY() << ")" << endl; //delete!!!
 	//        s = sensor->sense();
 	//        debug << "position: " << position << ", dirtLevel = " << s.dirtLevel << endl;
 	//        // update the map with the info on the dirt level
@@ -224,6 +266,27 @@ void _039563838_D::updateAlgorithmInfo(Direction lastStep)
 		}
 		// for debug
 		printDebugHouseMapping();	
+}
+
+
+//Iterates over all directions and returns the direction with minimal stepsToDocking
+Direction _039563838_D::FindShortestPath()  //TODO:  debug this function with simulations
+{
+	int min = -2;
+	Direction ret = Direction::Stay;
+	for(Direction d: directions) {
+            GeneralizedPoint pointToCheck = position;
+            pointToCheck.move(d);
+            auto neighbourInfo = houseMapping.find(pointToCheck);
+            if(neighbourInfo != houseMapping.end() && neighbourInfo->second.stepsToDocking != -1 && (neighbourInfo->second.isWall == false) ) {
+            	if(neighbourInfo->second.stepsToDocking < min )  {
+			min = neighbourInfo->second.stepsToDocking;
+			ret = d;
+		}
+            }
+        }
+
+	return ret;
 }
 
 
@@ -400,6 +463,9 @@ void _039563838_D::PrintAlgorithmStatus()
 	case AlgorithmStatus::Returning:
 		cout << "status = Returning" << endl;
 		return;
+	case AlgorithmStatus::ReturningRapidly:
+		cout << "status = ReturningRapidly" << endl;
+		return;
 	default:
 		cout << "status =  unspecified" << endl;
 	}
@@ -408,21 +474,21 @@ void _039563838_D::PrintAlgorithmStatus()
 
 
 
-REGISTER_ALGORITHM (_039563838_D)
+//REGISTER_ALGORITHM (_039563838_D)
 
 
- // extern "C" {
- // AbstractAlgorithm *maker(){
- //    return new _039563838_D;
- // }
- // class proxy { 
- // public:
- //    proxy(){
- //       // register the maker with the factory using file name 
- //       factory["039563838_D_"] = maker;
- //    }
- // };
- // // our one instance of the proxy
- // proxy p;
- // }
+ extern "C" {
+ AbstractAlgorithm *maker(){
+    return new _039563838_D;
+ }
+ class proxy { 
+ public:
+    proxy(){
+       // register the maker with the factory using file name 
+       factory["039563838_D_"] = maker;
+    }
+ };
+ // our one instance of the proxy
+ proxy p;
+ }
 
