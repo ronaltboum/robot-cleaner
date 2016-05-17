@@ -408,21 +408,21 @@ void _039563838_D::PrintAlgorithmStatus()
 
 
 
-//REGISTER_ALGORITHM (_039563838_D)
+REGISTER_ALGORITHM (_039563838_D)
 
 
- extern "C" {
- AbstractAlgorithm *maker(){
-    return new _039563838_D;
- }
- class proxy { 
- public:
-    proxy(){
-       // register the maker with the factory using file name 
-       factory["039563838_D_"] = maker;
-    }
- };
- // our one instance of the proxy
- proxy p;
- }
+ // extern "C" {
+ // AbstractAlgorithm *maker(){
+ //    return new _039563838_D;
+ // }
+ // class proxy { 
+ // public:
+ //    proxy(){
+ //       // register the maker with the factory using file name 
+ //       factory["039563838_D_"] = maker;
+ //    }
+ // };
+ // // our one instance of the proxy
+ // proxy p;
+ // }
 

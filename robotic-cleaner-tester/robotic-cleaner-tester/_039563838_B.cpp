@@ -32,7 +32,7 @@ _039563838_B::~_039563838_B(void)
 // Brief:		choose a step and do it
 // Returns:   	Direction where it went
 //************************************
-Direction _039563838_B::step()
+Direction _039563838_B::step() 
 {
 	Direction lastStep;
 	UpdateState();

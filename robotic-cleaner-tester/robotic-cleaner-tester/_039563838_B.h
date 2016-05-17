@@ -1,14 +1,22 @@
 #ifndef _039563838_B_h__
 #define _039563838_B_h__
 
-#include "Direction.h"
-#include "AbstractAlgorithm.h"
-#include "FactoryDefinition.h"  //header file where factory is defined
+
+#include <iostream>
+#include <functional>
+#include <memory>
+#include <list>
+#include <cassert>
 #include <deque>
 #include <stdlib.h>
 #include <stdio.h>
 #include <vector>
 #include <iostream>
+#include "Direction.h"
+#include "AbstractSensor.h"
+#include "AbstractAlgorithm.h"
+#include "AlgorithmRegistration.h"
+#include "FactoryDefinition.h"  //header file where factory is defined
 #include "Battery.h"
 
 using namespace std;
@@ -39,10 +47,10 @@ public:
 	
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
-	virtual Direction step();
-	virtual void aboutToFinish(int stepsTillFinishing) {}
-	virtual void setSensor(const AbstractSensor& sensor);
-	virtual void setConfiguration(map<string, int> config);
+	virtual Direction step() override;
+	virtual void aboutToFinish(int stepsTillFinishing) override{}
+	virtual void setSensor(const AbstractSensor& sensor) override;
+	virtual void setConfiguration(map<string, int> config) override;
 protected:
 	virtual bool IsInDocking() const; //: check if the algorithm is in the docking station
 	virtual void UpdateState(); //: change the state
@@ -59,7 +67,7 @@ inline void _039563838_B::setSensor(const AbstractSensor& sensor)
 	_robotSensor = &sensor;
 }
 
-inline void _039563838_B::setConfiguration(map<string, int> config)
+inline void _039563838_B::setConfiguration(map<string, int> config) 
 {
 	_configs = map<string,int>(config);
 	_battery = Battery(_configs);

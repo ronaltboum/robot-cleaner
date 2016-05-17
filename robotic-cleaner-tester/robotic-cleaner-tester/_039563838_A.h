@@ -1,25 +1,33 @@
 #ifndef _039563838_A_h__
 #define _039563838_A_h__
 
-#include "Direction.h"
-#include "AbstractAlgorithm.h"
-#include "FactoryDefinition.h"  //header file where factory is defined
+#include <iostream>
+#include <functional>
+#include <memory>
+#include <list>
+#include <map>
+#include <cassert>
 #include <deque>
 #include <stdlib.h>
 #include <stdio.h>
 #include <vector>
 #include <iostream>
+#include "Direction.h"
+#include "AbstractSensor.h"
+#include "AbstractAlgorithm.h"
+#include "AlgorithmRegistration.h"
+#include "FactoryDefinition.h"  //header file where factory is defined
 #include "Battery.h"
-
 using namespace std;
 
 class _039563838_A :	public AbstractAlgorithm
 {
 //~~~~~~~~~~~~~~~~~~~~` Macros and definitions ~~~~~~~~~~~~~~~~~~~~~~~~~
 enum class AlgorithmStatus {ChargingInDocking,			// the algorithm is charging until battery is full
-								Exploring,				// the algorithm is exploring
-								StayingUntilClean,		// the algorithm is in dirty spot so it stays there until it's cleaned
-								Returning};				// the algorithm battery is about to finish so it's returning to docking
+							Exploring,				// the algorithm is exploring
+							StayingUntilClean,		// the algorithm is in dirty spot so it stays there until it's cleaned
+							Returning};				// the algorithm battery is about to finish so it's returning to docking
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 protected:
 	AlgorithmStatus _robotStatus;
@@ -29,25 +37,23 @@ protected:
 	deque<Direction> _pathFromDocking; // the path back to docking
 	int _dirtInCurrentLocation;
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
 	_039563838_A(void);
 	_039563838_A(const AbstractSensor& sensor, map<string, int> config);
 	~_039563838_A(void);
 	void initiallize(); //function called in each c'tor
-
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
-	virtual Direction step();
-	virtual void aboutToFinish(int stepsTillFinishing) {}
-	virtual void setSensor(const AbstractSensor& sensor);
-	virtual void setConfiguration(map<string, int> config);
+	virtual Direction step() override;
+	virtual void aboutToFinish(int stepsTillFinishing) override{}
+	virtual void setSensor(const AbstractSensor& sensor) override;
+	virtual void setConfiguration(map<string, int> config) override;
 protected:
 	virtual bool IsInDocking() const; //: check if the algorithm is in the docking station
 	virtual void UpdateState(); //: change the state
 	static Direction OppositeDirection(Direction d);
 	virtual vector<Direction> GetPossibleDirections(Direction lastStep) const;
-
 
 }; // end of class _039563838_A
 

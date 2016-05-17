@@ -1,8 +1,6 @@
-CC = g++
+CC = g++-5
 LIBS = -ldl
-CFLAGS = -std=c++0x -g -Wall -O2 -pedantic -pthread
-
-#CFLAGS = -std=c++11 -g -Wall -O2 -pedantic -pthread
+CFLAGS = -std=c++14 -g -Wall -O2 -pedantic -pthread
 
 
 default:
@@ -10,17 +8,20 @@ default:
 	
 #simulator part
 	
-simulator: DirectionExt.o GeneralizedPoint.o FilesListerWithSuffix.o FilesLister.o Battery.o House.o SingletonHouseIOManager.o Sensor.o AlgorithmSingleRun.o SubSimulation.o SingletonConfigReader.o Simulator.o AlgorithmFactory.o Main.o
+simulator: DirectionExt.o GeneralizedPoint.o FilesListerWithSuffix.o FilesLister.o Battery.o House.o SingletonHouseIOManager.o Sensor.o AlgorithmSingleRun.o SubSimulation.o SingletonConfigReader.o AlgorithmRegistration.o AlgorithmFactory.o Simulator.o  Main.o
 	$(CC) -rdynamic -o simulator $^ $(LIBS) -pthread
 	
 Main.o: Main.cpp
 	$(CC) -c $(CFLAGS) $< $(LIBS)	
 
-AlgorithmFactory.o: AlgorithmFactory.cpp AlgorithmFactory.h $(LIBS)	
-	$(CC) -c $(CFLAGS) $<
-	
 Simulator.o: Simulator.cpp Simulator.h Direction.h
 	$(CC) -c $(CFLAGS) $<
+
+AlgorithmFactory.o: AlgorithmFactory.cpp AlgorithmFactory.h $(LIBS)	
+	$(CC) -c $(CFLAGS) $<
+
+AlgorithmRegistration.o: AlgorithmRegistration.cpp	
+	$(CC) -c $(CFLAGS) $^ $(LIBS)
 
 SingletonConfigReader.o: SingletonConfigReader.cpp SingletonConfigReader.h	
 	$(CC) -c $(CFLAGS) $<
@@ -40,8 +41,6 @@ SingletonHouseIOManager.o: SingletonHouseIOManager.cpp SingletonHouseIOManager.h
 House.o: House.cpp SingletonHouseIOManager.h House.h Matrix.h Point.h Direction.h 
 	$(CC) -c $(CFLAGS) $<
 
-Battery.o: Battery.cpp Battery.h 
-	$(CC) -c $(CFLAGS) $<
 	
 FilesListerWithSuffix.o: FilesListerWithSuffix.cpp FilesListerWithSuffix.h FilesLister.h 
 	$(CC) -c $(CFLAGS) $<
@@ -57,35 +56,18 @@ DirectionExt.o: DirectionExt.cpp DirectionExt.h
 	
 #dynamic algorithms part
 
+Battery.o: Battery.cpp
+	$(CC) -c -fPIC $(CFLAGS) $^
+#	g++-5 -c -fPIC -std=c++14 -g -Wall -O2 -pedantic -pthread Battery.cpp
 
-039563838_D_.so: _039563838_D.o
-	g++ -shared -Wl,-soname,039563838_D_.so -o 039563838_D_.so _039563838_D.o
+_039563838_D.so: Battery.o _039563838_D.o
+	$(CC) -shared -Wl,-soname,$@ -o $@ $^
 
-_039563838_D.o: _039563838_D.cpp _039563838_D.h AbstractAlgorithm.h FactoryDefinition.h GeneralizedPoint.h
-	$(CC) -c -fPIC $(CFLAGS) $<
-#	
-#039563838_C_.so: _039563838_C.o
-#	g++ -shared -Wl,-soname,039563838_C_.so -o 039563838_C_.so _039563838_C.o
-
-#_039563838_C.o: _039563838_C.cpp _039563838_C.h AbstractAlgorithm.h FactoryDefinition.h
-#	$(CC) -c -fPIC $(CFLAGS) $<
-#	
-#039563838_B_.so: _039563838_B.o
-#	g++ -shared -Wl,-soname,039563838_B_.so -o 039563838_B_.so _039563838_B.o
-
-#_039563838_B.o: _039563838_B.cpp _039563838_B.h AbstractAlgorithm.h FactoryDefinition.h
-#	$(CC) -c -fPIC $(CFLAGS) $<
-
-#ComplexA.so: _ComplexA.o
-#	g++ -shared -Wl,-soname,ComplexA.so -o ComplexA.so _ComplexA.o
-
-#_ComplexA.o: _ComplexA.cpp ComplexA.h AbstractAlgorithm.h FactoryDefinition.h
-#	$(CC) -c -fPIC $(CFLAGS) $<
-	
+_039563838_D.o: _039563838_D.cpp
+	$(CC) -c -fPIC $(CFLAGS) $^
 	
 #all: 
-all:  039563838_D_.so simulator
-# 039563838_C_.so 039563838_B_.so
+all: _039563838_D.so simulator
 
 clean:
-	rm -f *.so *.o simulator
+	rm -f *.so *.o simulator *~

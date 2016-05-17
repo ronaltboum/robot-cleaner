@@ -2,6 +2,7 @@
 #define _039563838_D_h__
 
 #include "Direction.h"
+#include "AbstractSensor.h"
 #include "DirectionExt.h"
 #include "AbstractAlgorithm.h"
 #include "FactoryDefinition.h"  //header file where factory is defined
@@ -12,6 +13,7 @@
 #include <iostream>
 #include "Battery.h"
 #include "GeneralizedPoint.h"
+#include "AlgorithmRegistration.h"
 
 using namespace std;
 

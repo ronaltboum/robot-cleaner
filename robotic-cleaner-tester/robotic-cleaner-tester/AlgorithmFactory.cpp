@@ -1,151 +1,111 @@
 #include "AlgorithmFactory.h"
-#include "AbstractAlgorithm.h"
-#define BUF_SIZE 1024
 
-using namespace std;
+//========================================================================
+// AlgorithmFactory.cpp is part of the simulation project ONLY
+// You have the freedom to implement it as you wish!
+// You even don't have to have such a class!
+//========================================================================
+// create the static field
+AlgorithmFactory AlgorithmFactory::instance;
 
-// our global factory for making Algorithms
-map<string, maker_t *, less<string> > factory;
+//create a set of all the abstract algorithms
+vector<AbstractAlgorithm *> AlgorithmFactory::CreateSetOfAllAlgorithms() const 
+{
+    vector<AbstractAlgorithm *> algorithms;
+    for(auto algorithmFactoryFunc : algorithmFactories) {
+        algorithms.push_back(algorithmFactoryFunc().release());
+    }
+    return algorithms;
+}
+
+//----------------------------------------------------------------------------
+// AlgorithmFactory::
+// Load the algoirthm so library
+// return wheter the file was loaded successfully
+//----------------------------------------------------------------------------
+bool AlgorithmFactory::loadAlgorithm(const std::string& fullPath, const std::string& algoName) {
+    void *dlib;
+    size_t size = instance.size();
+    string errorMessage;
+    cout << "opening: " << fullPath << endl;
+    dlib = dlopen( fullPath.c_str(), RTLD_NOW);
+    if(dlib == NULL){
+        errorMessage = "file cannot be loaded or is not a valid .so";
+        _badAlgoMap.insert( pair<string, string>(algoName, errorMessage) );
+        return false;
+    }
+    if(instance.size() == size) {
+        dlclose(dlib);
+        errorMessage = ".so was loaded but no algorithm was registered";
+        _badAlgoMap.insert( pair<string, string>(algoName, errorMessage) );
+        return false;
+    }
+    dl_list.insert(dl_list.end(), dlib);
+    instance.setNameForLastAlgorithm(algoName);
+    return true;
+}
+
 
 int AlgorithmFactory::ReadAlgorithms(vector<string> algorithmFiles)
 {
-
-   dl_itr dlItr;
-   f_itr fitr;
   
-   vector<string>::iterator stringIt;
-   vector<string> validSO;  //names of all so that are valid. later we check if each name is registered
-   void *dlib;
-   string errorMessage;
-   for(stringIt=algorithmFiles.begin() ; stringIt!=algorithmFiles.end() ; stringIt++){
-	string fullFileName = (*stringIt);
-	string algoName = ExtractFileName (fullFileName);
-	//const char* suffix = ".";
-	string algoNoSuffix = GetRidOfSuffix (algoName);
-	string appended;
-	if(fullFileName.length() > 0){
-	    if(fullFileName[0] != '/')
-	       appended = "./" + (*stringIt);   // append ./ to the front of the lib name
-	    else
-		appended = (*stringIt);
-	}
-	else
-	  appended = "./" + (*stringIt);   // append ./ to the front of the lib name
-
-	dlib = dlopen( appended.c_str(), RTLD_NOW);
-
-	//printf("%s\n", appended.c_str() );   //delete !!!!!!!!!!!!!!!!!
-
-	if(dlib == NULL){
-	    errorMessage = "file cannot be loaded or is not a valid .so";
-	    _badAlgoMap.insert( pair<string, string>(algoNoSuffix, errorMessage) );
-	 }
-	 
-	// add the handle to our list
-	if(dlib != NULL)
-	  dl_list.insert(dl_list.end(), dlib);
-	
-	validSO.push_back(algoNoSuffix);
-   }
-   
-   int i = 0;
-   // create an array of the AbstractAlgorithm names
-   for(fitr=factory.begin(); fitr!=factory.end(); fitr++){
-	  algorithmNames.insert(algorithmNames.end(), fitr->first);
-	  i++;
-   }
-   
-   //search in factory every algo name which is a valid .so.  if it's not in factory, then it isn't registered
-   for(stringIt = validSO.begin() ; stringIt != validSO.end() ; stringIt++){
-      fitr = factory.find(*stringIt);
-      if ( fitr == factory.end() ) { // not found
-	  errorMessage = "valid .so but no algorithm was registered after loading it";
-	  //string withSuffix = (*stringIt) + ".so";
-	  _badAlgoMap.insert( pair<string, string>( (*stringIt) , errorMessage) );
-      }
-   }
-   
-   return i;
+    vector<string>::const_iterator stringIt;
+    string errorMessage = "file cannot be loaded or is not a valid .so";;
+    int loadedSuccessfully = 0;
+    for(stringIt=algorithmFiles.begin() ; stringIt!=algorithmFiles.end() ; stringIt++){
+        string fullFilePath = (*stringIt);
+        string algoName = ExtractFileName (fullFilePath);
+        //const char* suffix = ".";
+        string algoNoSuffix = GetRidOfSuffix (algoName);
+        if(fullFilePath.length() > 0 && fullFilePath[0] != '/'){
+            fullFilePath = "./" + fullFilePath;   // append ./ to the front of the lib name
+        }
+        if(loadAlgorithm(fullFilePath, algoNoSuffix)){
+            ++loadedSuccessfully;
+        }
+    }
+    return loadedSuccessfully;
 }
 
 void AlgorithmFactory::tryAlgorithms()
 {
-//	vector<AbstractAlgorithm *> algoSet = CreateSetOfAllAlgorithms();
-//	vector<AbstractAlgorithm *>::iterator aItr;
-//	for(aItr=algoSet.begin(); aItr!=algoSet.end();aItr++){
-//		(*aItr)->setConfiguration(map<string, int>());
-//		//Direction d = (*aItr)->step();
-//		(*aItr)->step();
-//		(*aItr)->aboutToFinish(0);
-//	}
-//	
-//	for(aItr=algoSet.begin(); aItr!=algoSet.end();aItr++){
-//		delete *aItr;
-//	}
+//  vector<AbstractAlgorithm *> algoSet = CreateSetOfAllAlgorithms();
+//  vector<AbstractAlgorithm *>::iterator aItr;
+//  for(aItr=algoSet.begin(); aItr!=algoSet.end();aItr++){
+//      (*aItr)->setConfiguration(map<string, int>());
+//      //Direction d = (*aItr)->step();
+//      (*aItr)->step();
+//      (*aItr)->aboutToFinish(0);
+//  }
+//  
+//  for(aItr=algoSet.begin(); aItr!=algoSet.end();aItr++){
+//      delete *aItr;
+//  }
 }
 
-
-vector<AbstractAlgorithm *> AlgorithmFactory::CreateSetOfAllAlgorithms()
+string AlgorithmFactory::ExtractFileName (string filename)
 {
-	vector<AbstractAlgorithm *> algorithmSet = vector<AbstractAlgorithm *>();
-	vector<string>::iterator nItr;
-	for(nItr=algorithmNames.begin(); nItr!=algorithmNames.end(); nItr++){
-		algorithmSet.push_back(factory[*nItr]());
-	}
-	return algorithmSet;
+    string cuttedString = filename;
+    size_t idx = cuttedString.rfind('/');
+    if(idx != std::string::npos)
+    {
+        cuttedString = cuttedString.substr(idx);
+    }
+    idx = cuttedString.rfind('\\');
+    if(idx != std::string::npos)
+    {
+        cuttedString = cuttedString.substr(idx);
+    }
+    return cuttedString;
 }
 
-string AlgorithmFactory::ExtractFileName (string toSplit)
+string AlgorithmFactory::GetRidOfSuffix (string filename)
 {
-  vector<string> words;
-  //std::string str ("/ron/dir/simple one.house");
 
-  char * cstr = new char [toSplit.length()+1];
-  std::strcpy (cstr, toSplit.c_str());
-
-  // cstr now contains a c-string copy of toSplit
-  
-  char * p = std::strtok (cstr,"/");
-  stringstream myStreamString;
-  myStreamString << p;
-  string myString = myStreamString.str();
-  //cout << myString << endl;
-  words.push_back(myString);
-  p = std::strtok(NULL, "/");
-    
-  while (p!=0)
-  {
-    //std::cout << p << '\n';
-     stringstream myStreamString;
-     myStreamString << p;
-     string myString = myStreamString.str();
-     //cout << myString << endl;
-     words.push_back(myString);
-     p = std::strtok(NULL,"/");
-   
-  }
-  
-  vector<string>::iterator strIt;
-  delete[] cstr;
-  //for (strIt = words.begin();  strIt != words.end(); ++strIt) {
-    //cout << (*strIt) << endl;
-  //}
-  string last = words.back();  //simple1.house
-  //cout<< last << endl;
-  return last;
-}
-
-string AlgorithmFactory::GetRidOfSuffix (string toSplit)
-{
-  
-  char * cstr = new char [toSplit.length()+1];
-  std::strcpy (cstr, toSplit.c_str());
-  // cstr now contains a c-string copy of toSplit
-  char * p = std::strtok (cstr,".");
-  stringstream myStreamString;
-  myStreamString << p;
-  string myString = myStreamString.str();
-  
-  delete[] cstr;
-  return myString;
+    size_t idx = filename.rfind('.');
+    if(idx != std::string::npos)
+    {
+        return filename.substr(0, idx);
+    }
+    return filename;
 }
