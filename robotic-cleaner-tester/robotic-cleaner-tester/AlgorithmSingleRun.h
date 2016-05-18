@@ -29,6 +29,8 @@ private:
 	string _algorithmFileName;
 	Direction _lastDirection;  //added because signature of step() changed.  keeps the direction of the lastStep actually performed by the simulation
 	
+	bool debug_AlgorithmSingleRun = true;  //for debugging
+
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
 	AlgorithmSingleRun (

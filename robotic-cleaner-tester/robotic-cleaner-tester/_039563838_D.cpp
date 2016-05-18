@@ -39,17 +39,21 @@ _039563838_D::~_039563838_D(void)
 Direction _039563838_D::step(Direction lastStep)
 {
 	
-	PrintLastDirection(lastStep);  //for debug.  delete later!!!
-	cout << "_stepsTillFinishing = " << _stepsTillFinishing << endl << endl;  //delete !!!
+	if(_debug) {
+		PrintLastDirection(lastStep);  //for debug.  delete later!!!
+		cout << "_stepsTillFinishing = " << _stepsTillFinishing << endl << endl;  //delete !!!
+	}
 
-	if(lastStep != Direction::Stay)  //TODO: not sure.  test this
-		_pathFromDocking.push_back(lastStep);
+	if(_robotStatus != AlgorithmStatus::Returning)  {
+		if(lastStep != Direction::Stay)  
+			_pathFromDocking.push_back(lastStep); 
+	}
 
 	updateAlgorithmInfo(lastStep);  //updates lastStep
 
 	UpdateState();
 
-	switch(_robotStatus)  //TODO: add case ReturnRapdily
+	switch(_robotStatus)
 	{
 	case AlgorithmStatus::ReturningRapidly:
 		return FindShortestPath();
@@ -58,31 +62,35 @@ Direction _039563838_D::step(Direction lastStep)
 	case AlgorithmStatus::Returning:
 		//lastStep  = _pathFromDocking.back();
 		_pathFromDocking.pop_back();
-		return OppositeDirection(lastStep);
+		return OppositeDirection(lastStep); 
 	case AlgorithmStatus::Exploring:
 		//Always prefers to visit cells it hasn't been in
 		vector<Direction> possible_directions = GetPossibleDirections(lastStep); // get all directions besides of {opposite of lastStep, stay}
 
-		//PrintPossibleDirections(possible_directions);  //for debug.  delete later !!!
+		if(_debug)
+			PrintPossibleDirections(possible_directions);  //for debug.  delete later !!!
 
 		if(possible_directions.empty()){
+			if(_debug)
+				cout << "possible_directions is empty !!!" << endl;  //delete !!!!
 			_pathFromDocking.pop_back();
 			return OppositeDirection(lastStep);
 		}
 		else{
 			//Direction chosen = possible_directions[0];
 			Direction chosen = Handle_Explore_State(possible_directions);
-
-			cout << "chosen Direction in Exlporing is:  "; //delete later!!!
-			PrintDirection(chosen); //delete later !!!
-
+			if(_debug) {
+				cout << "chosen Direction in Exlporing is:  "; //delete later!!!
+				PrintDirection(chosen); //delete later !!!
+			}
 			//_pathFromDocking.push_back(chosen);  // should push_back the actual direction taken by the simulation and not chosen 
 			return chosen;
 		}
 	
 	}
 
-	//cout << "i'm not supposed to get here!!!!"  << endl;  //delete later!!!
+	if(_debug)
+		cout << "i'm not supposed to get here!!!!"  << endl;  //delete later!!!
 
 	return Direction::Stay;
 }
@@ -128,7 +136,8 @@ void _039563838_D::UpdateState()
  	SensorInformation info = _robotSensor->sense();
  	_dirtInCurrentLocation = info.dirtLevel;
 	
-	PrintAlgorithmStatus();  //for debug.  delete later!!!!
+	if(_debug)
+		PrintAlgorithmStatus();  //for debug.  delete later!!!!
 
 	switch(_robotStatus)
 	{
@@ -141,8 +150,13 @@ void _039563838_D::UpdateState()
 	case AlgorithmStatus::Exploring:
 		_battery.Consume();
 		//_dirtInCurrentLocation -= _dirtInCurrentLocation ? 1 : 0; //clean by one (or stays 0)  --> already updated in updateAlgorithmInfo function
-		if(_battery.GetStepsBeforeRecharge() ==  (int)_pathFromDocking.size())
+		//if(_battery.GetStepsBeforeRecharge() ==  (int)_pathFromDocking.size())
+			//_robotStatus = AlgorithmStatus::Returning;
+
+		if(_battery.GetBattery_level() <= (  (int)( _battery.GetBattery_capacity() / 2) + 1  )  )  {
 			_robotStatus = AlgorithmStatus::Returning;
+			cout <<endl << endl << "starting to return" << endl << endl;  //delete !!!!
+		}
 //		else if(_dirtInCurrentLocation > 0)
 //			_robotStatus = AlgorithmStatus::StayingUntilClean;
 		
@@ -177,6 +191,7 @@ void _039563838_D::UpdateState()
 		break;
 
 	case AlgorithmStatus::ReturningRapidly:	
+		cout << "status is ReturningRapidly " << endl;   // delete !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		if(IsInDocking())
 			_robotStatus = AlgorithmStatus::ChargingInDocking;
 		break;
@@ -189,7 +204,8 @@ void _039563838_D::aboutToFinish(int stepsTillFinishing)
 {
 	AboutToFinishWasCalled = true;
 	_stepsTillFinishing = stepsTillFinishing;
-	//if(totalSteps
+	
+	cout << "aboutToFinish was called !!" << endl;  // delete !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
 
@@ -238,10 +254,13 @@ void _039563838_D::updateAlgorithmInfo(Direction lastStep)
 	SensorInformation s =  _robotSensor ->sense();   
 	position.move(lastStep); // update the robot position, as managed by the algorithm, to the new position. It's NOT the same as the Point* field of the sensor
 
-	cout << "position after move is:	( " << position.getX() << ", " << position.getY() << ")" << endl; //delete!!!
+	if(_debug)	
+		cout << "position after move is:	( " << position.getX() << ", " << position.getY() << ")" << endl; //delete!!!
+	
 	//        s = sensor->sense();
 	//        debug << "position: " << position << ", dirtLevel = " << s.dirtLevel << endl;
-	//        // update the map with the info on the dirt level
+	
+	// update the map with the info on the dirt level
 	stepsFromDocking = calcStepsToDocking(stepsFromDocking + 1, position);
 	CellInfo cellInfo;
 	if(s.dirtLevel != 0)
@@ -264,27 +283,38 @@ void _039563838_D::updateAlgorithmInfo(Direction lastStep)
 		        }
 		    }
 		}
-		// for debug
-		printDebugHouseMapping();	
+		if(_debug)
+			printDebugHouseMapping();	
 }
 
 
 //Iterates over all directions and returns the direction with minimal stepsToDocking
 Direction _039563838_D::FindShortestPath()  //TODO:  debug this function with simulations
 {
-	int min = -2;
+	int min = 0;   int i = 0;
 	Direction ret = Direction::Stay;
 	for(Direction d: directions) {
             GeneralizedPoint pointToCheck = position;
             pointToCheck.move(d);
             auto neighbourInfo = houseMapping.find(pointToCheck);
             if(neighbourInfo != houseMapping.end() && neighbourInfo->second.stepsToDocking != -1 && (neighbourInfo->second.isWall == false) ) {
+				++i;
+				if(i == 1) {  //just in order to give min it's initial value at the first iteration
+				min = neighbourInfo->second.stepsToDocking;
+				ret = d;
+				}
+
             	if(neighbourInfo->second.stepsToDocking < min )  {
-			min = neighbourInfo->second.stepsToDocking;
-			ret = d;
-		}
-            }
+					min = neighbourInfo->second.stepsToDocking;
+					ret = d;
+				}
+           }
         }
+
+	if(_debug) {
+		cout << "in FindShortestPath and chosen direction = " ;
+		PrintDirection(ret); // delete !!!!
+	}
 
 	return ret;
 }
@@ -340,7 +370,7 @@ void _039563838_D::updateStepsToDocking(int stepsToDocking, const GeneralizedPoi
 void _039563838_D::printDebugHouseMapping() 
 {
 
-	if(true) {
+	if(_debug) {
 	
             cout << "---------------------------" << endl;
             //cout << "totalSteps: " << totalSteps << endl;

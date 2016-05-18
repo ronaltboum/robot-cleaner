@@ -105,9 +105,11 @@ Direction AlgorithmSingleRun::DoStep(Direction lastStep)
 	Direction chosenDirection = _currentAlgorithm->step(lastStep);
 	_currentPosition->Move(chosenDirection);
 	
-// 	int pRow = _currentPosition -> GetRow();
-// 	int pCol = _currentPosition -> GetCol();
-// 	cout<< "new Point = " << pRow << " , " << pCol << endl;  //delte !!!!!!!!!!!!!!!
+	if(debug_AlgorithmSingleRun)  {  //for debugging
+ 		int pRow = _currentPosition -> GetRow();
+ 		int pCol = _currentPosition -> GetCol();
+ 		cout<< "In AlgorithmSingleRun:  new Point = " << pRow << " , " << pCol << endl;  //delte !!!!!!!!!!
+	}
 	
 	if(HasMadeIllegalStep())
 	{

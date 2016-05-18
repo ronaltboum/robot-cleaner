@@ -50,6 +50,7 @@ protected:
 //    int phase = -1; // phases 0-7: explore surrounding, phase 8: select new direction
 //    const static Direction dir_by_phase[8];
 //    Direction requestedStep = Direction::Stay;
+	int _debug = 0;  //when _debug ==1 we uncomment the debug prints
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:

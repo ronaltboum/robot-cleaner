@@ -143,6 +143,16 @@ int Simulator::LoadRuns()
 		algoNamesIterator = algoNames.begin();
 		for(_algoIterator=algorithms.begin() ; _algoIterator!=algorithms.end() ; _algoIterator++){
 			Point * startingPoint = _houses[houseIndex]->GetDockingStation(); //new is deallocated by AlgorithmSingleRun
+
+			if(debugSimulator) {
+				int pRow = startingPoint -> GetRow();
+ 				int pCol = startingPoint -> GetCol();
+ 				cout<< "In Simulator:  startingPoint = " << pRow << " , " << pCol << endl << endl;  //delte !!!!!!!!!!
+				_houses[houseIndex]->Print();
+				cout << endl << endl;
+			}
+
+
 			int width = ( _houses[houseIndex])-> GetWidth();
 			int height = ( _houses[houseIndex])-> GetHeight();
 			int max = ( _houses[houseIndex])-> GetMaxSteps();
@@ -304,12 +314,19 @@ bool Simulator::MoveAllOneStep(int & currentRankAlgorithmsCompetingOn, int house
 				//cout << "win!!!!!!!!!!!!!!!"<<endl;  //delete!!!!!!!!!!!!!!!!!!!!!
 			}
 		}
-
 		//call aboutToFinish when steps == MaxSteps - MaxStepsAfterWinner
 		if(runIterator -> GetNumberOfStepsCommited()  == (maxSteps - GetMaxStepsAfterWinner() )  ) {
 			if(alreadyNotified == false)
 				CallAboutToFinish(houseIndex);
-			alreadyNotified = true;  //we only need to notify once per house
+			alreadyNotified = true;  //we only need to notify once per house	
+		}
+
+
+		//debug
+		if(debugSimulator) {
+			cout << "numOfStepsCommited = " << runIterator -> GetNumberOfStepsCommited() << endl;
+			//cout << "maxSteps = " << maxSteps << endl;
+			//cout << "MaxStepsAfterWinner = " << GetMaxStepsAfterWinner() << endl;
 		}
 	}
 	currentRankAlgorithmsCompetingOn += numAlgorithmWon;
@@ -400,7 +417,7 @@ void Simulator::registerScores(int winner_num_steps, int houseIndex, int simulat
 		//string trimmedHouseName = hNameNoSuffix.substr(0,9);
 		addScore(algoName, hNameNoSuffix, score);
 		
-		//cout << algoName <<" on house "<< hNameNoSuffix << " returned to docking == " << is_back_in_docking << endl;
+		cout << algoName <<" on house "<< hNameNoSuffix << " returned to docking == " << is_back_in_docking << endl; //delete later !!
 	}
 	
 }
