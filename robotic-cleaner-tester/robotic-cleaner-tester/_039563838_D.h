@@ -3,7 +3,9 @@
 
 #include "Direction.h"
 #include "DirectionExt.h"
+#include "AlgorithmRegistration.h"
 #include "AbstractAlgorithm.h"
+#include "AbstractSensor.h"
 #include "FactoryDefinition.h"  //header file where factory is defined
 #include <deque>
 #include <stdlib.h>

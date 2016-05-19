@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <map>
 
 using namespace std;
 
@@ -14,10 +15,17 @@ using namespace std;
 class CommandLineInterpeter
 {
 //~~~~~~~~~~~~~~~~~~~~` Macros ~~~~~~~~~~~~~~~~~~~~~~~~~`
-#define configFileName "config.ini"
-#define configFlag "-config"
-#define housePathFlag "-house_path"
-#define algorithmPathFlag "-algorithm_path"
+public:
+	typedef map<string,string>::iterator it_type;
+	typedef map<string,string>::const_iterator const_it_type;
+	#define THREAD_ATTRIBUTE string("-threads")
+	#define IsThreadAttribute(s) (! THREAD_ATTRIBUTE.compare((s)))
+	enum class CommandLineProblems {OddCLA, UnknownCLA, ThreadIsntNum, NoProblem};	
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+private:
+	static map<string,string> CLAvalues; // map of all the CLA names to their values
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 private:
@@ -26,104 +34,52 @@ private:
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
-	static vector<string> readCommandLineArguments(int argc, char * argv[]){
-		string configFilePath;
-		string houseFolder;
-		string algorithmFolder;
 
-		if(argc >= 3) //case where there is at least one argument given by the user
-		{
-			if ( ! strcmp(argv[1], configFlag))
-			{
-				configFilePath = string(argv[2]);
-			}
-			else if (! strcmp(argv[1], housePathFlag))
-			{
-				houseFolder = string(argv[2]);
-			}
-			else if (! strcmp(argv[1], algorithmPathFlag))
-			{
-				algorithmFolder = string(argv[2]);
-			}
-			else
-			{
-				cout << "invalid flags. flags are -config and -house_path and -algorithm_path";
-			}
-		}
-		if(argc >= 5)  //case where at least 2 out of 3 arguments were given by the user
-		{
-			if ( ! strcmp(argv[3], configFlag))
-			{
-				configFilePath = string(argv[4]);
-			}
-			else if (! strcmp(argv[3], housePathFlag))
-			{
-				houseFolder = string(argv[4]);
-			}
-			else if (! strcmp(argv[3], algorithmPathFlag))
-			{
-				algorithmFolder = string(argv[4]);
-			}
-			else
-			{
-				cout << "invalid flags. flags are -config and -house_path and -algorithm_path";
-			}
-		}
-
-		if(argc >= 7)  //case where all arguments were given by the user
-		{
-			
-			if ( ! strcmp(argv[5], configFlag))
-			{
-				configFilePath = string(argv[6]);
-			}
-			else if (! strcmp(argv[5], housePathFlag))
-			{
-				houseFolder = string(argv[6]);
-			}
-			else if (! strcmp(argv[5], algorithmPathFlag))
-			{
-				algorithmFolder = string(argv[6]);
-			}
-			else
-			{
-				cout << "invalid flags. flags are -config and -house_path and -algorithm_path";
-			}
-		}
-
-
-		if(configFilePath != ""){
-			if( configFilePath[configFilePath.length() - 1] != '/' ){
-				configFilePath.append("/");
-			}
-		}
-		configFilePath.append(configFileName);
-
-		if(houseFolder != ""){
-			if( houseFolder[houseFolder.length() - 1] != '/' ){
-				houseFolder.append("/");
-			}
-		}
-		else
-		 houseFolder = "./"; 
-		
-		
-		if(algorithmFolder != ""){
-			if( algorithmFolder[algorithmFolder.length() - 1] != '/' ){
-				algorithmFolder.append("/");
-			}
-		}
-		else
-		 algorithmFolder = "./";
-
-		vector<string> commandLineArguments = vector<string>();
-		commandLineArguments.push_back(configFilePath);
-		commandLineArguments.push_back(houseFolder);
-		commandLineArguments.push_back(algorithmFolder);
-		
-		return commandLineArguments;
+	// initialize the default parameters value
+	static map<string,string> initMap(){
+		map<string,string> CLAs;
+		CLAs["-config"]		 = "config.ini";
+		CLAs["-house_path"] 	 = "./";
+		CLAs["-algorithm_path"] = "./";
+		CLAs["-score_formula"]  = "score_formula.so";
+		CLAs[THREAD_ATTRIBUTE] = "1";
+		return CLAs;
 	}
 
+	// brief: read command line arguments, and returns if there was a problem
+	// post: CLAvalues
+	static CommandLineProblems readCommandLineArguments(int argc, const char * argv[]);
+	static CommandLineProblems ReadAttributeValuePair(const char * attributeName, const char * attributeValue);
+
+	// returns the CLA values
+	static const map<string,string> & getCLAvalues(){
+		return CLAvalues;
+	}
+
+	static const string & getConfigFile() {
+		return CLAvalues["-config"];
+	}
+
+	static const string & getHousePath() {
+		return CLAvalues["-house_path"] ;
+	}
+
+	static const string & getAlgorithmPath() {
+		return CLAvalues["-algorithm_path"];
+	}
+
+	static const string & getScoreFormulaFile(){
+		return CLAvalues["-score_formula"];
+	}
+
+	static int getThreads(){
+		char* p;
+		long converted = strtol(CLAvalues[THREAD_ATTRIBUTE].c_str(), &p, 10);
+		if (*p) {
+			return -1;
+		}
+		return (int) converted ;
+	}
 };
 
 #endif // CommandLineInterpeter_h__

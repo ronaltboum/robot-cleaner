@@ -1,6 +1,5 @@
-//#include "stdafx.h"
 #include "_039563838_D.h"
-//#include "AlgorithmRegistration.h"
+#include "AlgorithmRegistration.h"
 #include <iostream>
 
 using namespace std;
@@ -60,9 +59,11 @@ Direction _039563838_D::step(Direction lastStep)
 	case AlgorithmStatus::ChargingInDocking: 
 		 return Direction::Stay;
 	case AlgorithmStatus::Returning:
-		//lastStep  = _pathFromDocking.back();
-		_pathFromDocking.pop_back();
-		return OppositeDirection(lastStep); 
+	{
+			Direction rStep = _pathFromDocking.back();
+			_pathFromDocking.pop_back();
+			return OppositeDirection(rStep); 
+	}
 	case AlgorithmStatus::Exploring:
 		//Always prefers to visit cells it hasn't been in
 		vector<Direction> possible_directions = GetPossibleDirections(lastStep); // get all directions besides of {opposite of lastStep, stay}
@@ -504,21 +505,4 @@ void _039563838_D::PrintAlgorithmStatus()
 
 
 
-//REGISTER_ALGORITHM (_039563838_D)
-
-
- extern "C" {
- AbstractAlgorithm *maker(){
-    return new _039563838_D;
- }
- class proxy { 
- public:
-    proxy(){
-       // register the maker with the factory using file name 
-       factory["039563838_D_"] = maker;
-    }
- };
- // our one instance of the proxy
- proxy p;
- }
-
+REGISTER_ALGORITHM (_039563838_D)

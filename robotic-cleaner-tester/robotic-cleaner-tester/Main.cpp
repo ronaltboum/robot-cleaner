@@ -12,16 +12,33 @@
 #include <stdlib.h>
 
 typedef std::map<std::string, std::string>::iterator it_type;
+#define printUsageMessage() cout << "Usage: simulator [-config <config path>] [-house_path <house path>] [-algorithm_path <algorithm path>]" << endl
 
-int main(int argc, char * argv[])
+int main(int argc, const char * argv[])
 {
 	srand((unsigned int)time(NULL));
-	
-	vector<string> commandLineArguments = CommandLineInterpeter::readCommandLineArguments(argc, argv);
-	string configFile = commandLineArguments[0];
-	string houseFolder = commandLineArguments[1];
-	//string algorithmFolder = (commandLineArguments.size() == 3) ? commandLineArguments[2] : "./";
-	string algorithmFolder = commandLineArguments[2];
+	CommandLineInterpeter::CommandLineProblems problemOccored =
+	 	CommandLineInterpeter::readCommandLineArguments(argc, argv);
+	switch(problemOccored){
+		case CommandLineInterpeter::CommandLineProblems::ThreadIsntNum:
+		case CommandLineInterpeter::CommandLineProblems::OddCLA:
+		case CommandLineInterpeter::CommandLineProblems::UnknownCLA:
+			printUsageMessage();
+			return EXIT_FAILURE;
+		default:
+			break;
+	}
+	const string configFile = CommandLineInterpeter::getConfigFile();
+	const string houseFolder = CommandLineInterpeter::getHousePath();
+	const string algorithmFolder = CommandLineInterpeter::getAlgorithmPath();
+	const string scoreFormulaFile = CommandLineInterpeter::getScoreFormulaFile();
+	int num_threads = CommandLineInterpeter::getThreads(); //TODO:  test several algos together with printings to make sure MoveAllOneStep works ok
+	if(num_threads == -1){
+		//shouldn't get here
+		printUsageMessage();
+		return EXIT_FAILURE;
+	}
+
 	
 	//Simulator s = Simulator();
 	Simulator s;
@@ -33,17 +50,17 @@ int main(int argc, char * argv[])
 	vector<string> algorithmFiles;
 	int numAlgoFiles = 0;
 	try{
-	 FilesListerWithSuffix algorithmsSuffix = FilesListerWithSuffix(algorithmFolder, ".so" );
-	 algorithmFiles = algorithmsSuffix.getFilesList();
-	 numAlgoFiles = algorithmFiles.size();
-	 //case where there are no algorithms in the folder provided by algorithm_path, or there was no algorithm path provided and there are no algorithms in the current directory
-	 if (algorithmFiles.size() == 0){
-	   throw 20;
-	 }
+		FilesListerWithSuffix algorithmsSuffix = FilesListerWithSuffix(algorithmFolder, ".so" );
+		algorithmFiles = algorithmsSuffix.getFilesList();
+		numAlgoFiles = algorithmFiles.size();
+		//case where there are no algorithms in the folder provided by algorithm_path, or there was no algorithm path provided and there are no algorithms in the current directory
+		if (algorithmFiles.size() == 0){
+			throw 20;
+		}
 	}
 	catch(int e){
-	  cout << "Usage: simulator [-config <config path>] [-house_path <house path>] [-algorithm_path <algorithm path>]" << endl;
-	  return EXIT_FAILURE;
+		printUsageMessage();
+		return EXIT_FAILURE;
 	}
 	
 	
@@ -77,8 +94,8 @@ int main(int argc, char * argv[])
 	    }
 	}
 	catch(int e) {
-	    cout << "Usage: simulator [-config <config path>] [-house_path <house path>] [-algorithm_path <algorithm path>]" << endl;
-	    return EXIT_FAILURE;
+		printUsageMessage();
+		return EXIT_FAILURE;
 	}
 	
 	
@@ -101,10 +118,6 @@ int main(int argc, char * argv[])
 	
  	s.LoadRuns();
 	
-	//size_t num_threads = 3;  //TODO:  should get number of threads from command line arguments.  also handle case where num_threads > num of houses
-	size_t num_threads = 1;   //TODO:  test several algos together with printings to make sure MoveAllOneStep works ok
-	
-	
  	s.RunAllHouses(num_threads);
 	s.printScores();
 	
@@ -112,7 +125,6 @@ int main(int argc, char * argv[])
 	 //(validHouses != 0)
 	if( (numHouseFiles > validHouses) || (numAlgoFiles > validAlgo) )
 	   cout << "Errors:" << endl;  
-	
 	s.PrintHouseErrors();
 	s.PrintAlgoErrors();
 	//getchar();

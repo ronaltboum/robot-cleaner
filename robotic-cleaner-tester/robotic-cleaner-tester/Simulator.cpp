@@ -20,7 +20,6 @@ void Simulator::initiallize()
 	_houses = vector<House *>();  
 	_configs = map<string, int>();
 	_defaultBattery = NULL;
-	_algorithmFactory = NULL;
 	_badHousesMap = map<string, string>();
 	_scoresMap = map<string, map<string, int> >();
 	_subSimulations =  vector< SubSimulation *>();
@@ -41,7 +40,6 @@ Simulator::~Simulator(void)
 	
 	
 	delete _defaultBattery;
-	delete _algorithmFactory;
 	
 }
 
@@ -117,10 +115,8 @@ int Simulator::LoadHouses( vector<string> housesVector )
 //************************************
 int Simulator::LoadAlgorithms(vector<string> algorithmFiles)
 {
-	_algorithmFactory = new AlgorithmFactory();
-	int validAlgorithms = _algorithmFactory->ReadAlgorithms(algorithmFiles);
+	int validAlgorithms = AlgorithmFactory::getInstance().ReadAlgorithms(algorithmFiles);
 	return validAlgorithms;
-	//_algorithms = _algorithmFactory->CreateSetOfAllAlgorithms();
 }
 
 
@@ -131,13 +127,13 @@ int Simulator::LoadRuns()
 	vector<AbstractAlgorithm *> algorithms;
 	vector<AbstractAlgorithm *>::iterator _algoIterator;
 	
-	vector<string> algoNames = _algorithmFactory -> GetAlgorithmNames();
+	vector<string> algoNames = AlgorithmFactory::getInstance().GetAlgorithmNames();
 	vector<string>::iterator algoNamesIterator;
 	
 	for( int houseIndex = 0 ; houseIndex < houseNum; ++houseIndex)
 	{
 		
-		algorithms = _algorithmFactory->CreateSetOfAllAlgorithms();
+		algorithms = AlgorithmFactory::getInstance().CreateSetOfAllAlgorithms();
 	
 		vector< AlgorithmSingleRun *> singleRuns;
 		algoNamesIterator = algoNames.begin();
@@ -253,6 +249,7 @@ void Simulator::RunAll(int houseIndex)
 	int currentRankAlgorithmsCompetingOn = 1;
 	bool finishEarly = false;  //finishEarly == true iff all algorithms finished before maxSteps. This happens when: 1.all won  2.all hit wall   3.all ran out of battery
 	//run until someone one or sombodywon
+
 	for(;currentStep < maxSteps && ! isThereAWinner && (finishEarly == false); ++currentStep){
 		finishEarly = MoveAllOneStep(currentRankAlgorithmsCompetingOn, houseIndex);
 		isThereAWinner = sub -> GetDoesWinnerExist();	
@@ -293,14 +290,11 @@ bool Simulator::MoveAllOneStep(int & currentRankAlgorithmsCompetingOn, int house
 		AlgorithmSingleRun * runIterator = singleRuns[runIndex];
 		if(runIterator->CanDoStep()){
 			++algosRunning;
-
 			lastSteps[runIndex] = runIterator-> GetLastDirection(); 
 
 			//cout << "in Simulator before DoStep:  lastSteps[runIndex] =";	  //delete!!!!!!!!!!!!!!!!!!!!!
 			//PrintDirection(lastSteps[runIndex]); //delete!!!!!!!!!!!!!!!!!!!!!	
-			
 			lastSteps[runIndex] = runIterator->DoStep(lastSteps[runIndex]); 
-			
 			//cout << "in Simulator: after DoStep:  lastSteps[runIndex] =";			
 			//PrintDirection(lastSteps[runIndex]); //delete!!!!!!!!!!!!!!!!!!!!!
 	
@@ -428,14 +422,14 @@ void Simulator::printScores()
   int houseNum = _houses.size();  //number of valid houses
   int cols = houseNum + 2;
   //rows = num of valid  algos + 1
-  //int algoNum = _algorithmFactory -> GetAlgorithmNames().size();  
   //int rows = algoNum + 1;
   int numCharsInRow = 13 + 10*(cols - 1) + (cols + 1);
+  int i = 0 ;
   printDashes(numCharsInRow);
   vector<string> trimmedValidHouseNames = GetValidTrimmedHousesNames();
   printFirstRow(houseNum, trimmedValidHouseNames);
   printDashes(numCharsInRow);
-  vector<string> algoNames = _algorithmFactory -> GetAlgorithmNames();
+  vector<string> algoNames = AlgorithmFactory::getInstance().GetAlgorithmNames();
   vector<string>::iterator algoNamesIt;
   for(algoNamesIt = algoNames.begin() ; algoNamesIt != algoNames.end(); algoNamesIt++) {
     string algoName = (*algoNamesIt);
@@ -610,7 +604,7 @@ void Simulator::PrintHouseErrors()
 
 void Simulator::PrintAlgoErrors()
 {
-  map<string,string> m = (_algorithmFactory-> GetBadAlgoMap() );
+  map<string,string> m = (AlgorithmFactory::getInstance().GetBadAlgoMap() );
   map<string, string>::iterator strIt;
   for(strIt = m.begin(); strIt != m.end(); strIt++) {
       string withSuffix = (strIt->first) + ".so";

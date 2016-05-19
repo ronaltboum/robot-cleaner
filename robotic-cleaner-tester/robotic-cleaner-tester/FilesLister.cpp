@@ -2,81 +2,83 @@
 using namespace std;
 
 
-  FilesLister::FilesLister(const string& basePath)
+FilesLister::FilesLister(const string& basePath)
   :  basePath_ (basePath)
-  {
-    this->refresh();
+{
+  this->refresh();
+}
+
+void FilesLister::refresh()
+{
+  DIR *dir;
+  struct dirent *ent;
+  this->filesList_.clear();
+  if(this->basePath_ == "./")
+  {  //case where we have to search the current directory
+    if( (dir = opendir(".")) != NULL)
+    {
+      while ((ent = readdir (dir)) != NULL) 
+      {
+        this->filesList_.push_back(FilesLister::concatenateAbsolutePath("", ent->d_name));
+      }
+      closedir (dir);
+    }
   }
 
-  void FilesLister::refresh()
+  else if ((dir = opendir (this->basePath_.c_str())) != NULL) 
   {
-    DIR *dir;
-    struct dirent *ent;
-    this->filesList_.clear();
-    
-    if(this->basePath_ == "./"){  //case where we have to search the current directory
-      if( (dir = opendir(".")) != NULL){
-	while ((ent = readdir (dir)) != NULL) {
-	  this->filesList_.push_back(FilesLister::concatenateAbsolutePath("", ent->d_name));
-      }
-      closedir (dir);
-      }
-      
+    while ((ent = readdir (dir)) != NULL) 
+    {
+      this->filesList_.push_back(FilesLister::concatenateAbsolutePath(this->basePath_, ent->d_name));
     }
-    
-    else if ((dir = opendir (this->basePath_.c_str())) != NULL) {
-      
-      while ((ent = readdir (dir)) != NULL) {
-        this->filesList_.push_back(FilesLister::concatenateAbsolutePath(this->basePath_, ent->d_name));
-      }
-      closedir (dir);
-    } else {
-    
+    closedir (dir);
+  } 
+  else 
+  {
     //cout << "Error: could not open directory: " <<  this->basePath_ << endl;  // delete !!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-      throw 20;
-      return;
-    }
-    std::sort(this->filesList_.begin(), this->filesList_.end());
+    throw 20;
+    return;
   }
+  std::sort(this->filesList_.begin(), this->filesList_.end());
+}
 
 
-  
-  string FilesLister::concatenateAbsolutePath(const string& dirPath, const string& fileName)
-  {
-    if (dirPath.empty()){
-      //cout << "i'm in dirPath.empty" << endl;  //delete !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      return fileName;
-      
-    }
-    
+
+string FilesLister::concatenateAbsolutePath(const string& dirPath, const string& fileName)
+{
+if (dirPath.empty()){
+//cout << "i'm in dirPath.empty" << endl;  //delete !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+return fileName;
+
+}
+
 //     else if (dirPath.back() == "./"){
 //       return fileName;
 //     }
-    
-    if( dirPath[dirPath.length() - 1] == '/' )
-      return dirPath  + fileName;
-    
-    //if (dirPath.back() == '/')
-      //return dirPath  + fileName;
-    return dirPath + "/" + fileName;
-  }
+
+if( dirPath[dirPath.length() - 1] == '/' )
+return dirPath  + fileName;
+
+//if (dirPath.back() == '/')
+//return dirPath  + fileName;
+return dirPath + "/" + fileName;
+}
 
 
-  
+
 void FilesLister::printStringVector (const vector<string>& vec)
 {
-  for (vector<string>::const_iterator itr = vec.begin();
-       itr != vec.end();
-       ++itr)
-  {
-    cout << *itr;
-    if (itr+1 != vec.end())
-    {
-      cout << ", ";
-    }
-  }
-  cout << endl;
+for (vector<string>::const_iterator itr = vec.begin();
+itr != vec.end();
+++itr)
+{
+cout << *itr;
+if (itr+1 != vec.end())
+{
+cout << ", ";
+}
+}
+cout << endl;
 }
 
 

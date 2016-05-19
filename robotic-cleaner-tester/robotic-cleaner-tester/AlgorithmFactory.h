@@ -31,15 +31,16 @@ private:
     vector<string> algorithmNames; 
     map<string, string> _badAlgoMap;
     list<std::function<unique_ptr<AbstractAlgorithm>()>> algorithmFactories;
-
     static AlgorithmFactory instance;
 
+    AlgorithmFactory(){};
     void registerAlgorithm(std::function<unique_ptr<AbstractAlgorithm>()> algorithmFactory) {
         instance.algorithmFactories.push_back(algorithmFactory);
     }
     void setNameForLastAlgorithm(const std::string& algorithmName) {
         assert(algorithmFactories.size()-1 == algorithmNames.size());
         algorithmNames.push_back(algorithmName);
+	cout << "AlgorithmFactory::setNameForLastAlgorithm " << algorithmName << " was added" << endl;
     }
 
     bool loadAlgorithm(const string& fullPath, const string& algoName);

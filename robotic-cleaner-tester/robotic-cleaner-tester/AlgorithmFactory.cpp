@@ -24,6 +24,7 @@ vector<AbstractAlgorithm *> AlgorithmFactory::CreateSetOfAllAlgorithms() const
 // return wheter the file was loaded successfully
 //----------------------------------------------------------------------------
 bool AlgorithmFactory::loadAlgorithm(const std::string& fullPath, const std::string& algoName) {
+	cout << "AlgorithmFactory::loadAlgorithm fullPath: " << fullPath << " algoName: " << algoName <<endl;
     void *dlib;
     size_t size = instance.size();
     string errorMessage;
