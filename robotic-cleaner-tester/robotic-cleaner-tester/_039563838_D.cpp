@@ -1,3 +1,4 @@
+//#include "stdafx.h"
 #include "_039563838_D.h"
 #include "AlgorithmRegistration.h"
 #include <iostream>
@@ -44,9 +45,11 @@ Direction _039563838_D::step(Direction lastStep)
 	}
 
 	if(_robotStatus != AlgorithmStatus::Returning)  {
-		if(lastStep != Direction::Stay)  
+		if(lastStep != Direction::Stay && _doNotPush == false)  
 			_pathFromDocking.push_back(lastStep); 
 	}
+
+	_doNotPush = false;
 
 	updateAlgorithmInfo(lastStep);  //updates lastStep
 
@@ -59,36 +62,45 @@ Direction _039563838_D::step(Direction lastStep)
 	case AlgorithmStatus::ChargingInDocking: 
 		 return Direction::Stay;
 	case AlgorithmStatus::Returning:
-	{
-			Direction rStep = _pathFromDocking.back();
-			_pathFromDocking.pop_back();
-			return OppositeDirection(rStep); 
-	}
+		{
+		Direction recommendedStep  = _pathFromDocking.back();
+		_pathFromDocking.pop_back();
+		 return OppositeDirection(recommendedStep);
+		} 
 	case AlgorithmStatus::Exploring:
-		//Always prefers to visit cells it hasn't been in
-		vector<Direction> possible_directions = GetPossibleDirections(lastStep); // get all directions besides of {opposite of lastStep, stay}
+		{
+			//Always prefers to visit cells it hasn't been in
+			vector<Direction> possible_directions = GetPossibleDirections(lastStep); // get all directions besides of {opposite of lastStep, stay}
 
-		if(_debug)
-			PrintPossibleDirections(possible_directions);  //for debug.  delete later !!!
-
-		if(possible_directions.empty()){
 			if(_debug)
-				cout << "possible_directions is empty !!!" << endl;  //delete !!!!
-			_pathFromDocking.pop_back();
-			return OppositeDirection(lastStep);
-		}
-		else{
-			//Direction chosen = possible_directions[0];
-			Direction chosen = Handle_Explore_State(possible_directions);
-			if(_debug) {
-				cout << "chosen Direction in Exlporing is:  "; //delete later!!!
-				PrintDirection(chosen); //delete later !!!
+				PrintPossibleDirections(possible_directions);  //for debug.  delete later !!!
+
+			if(possible_directions.empty()){
+				if(_debug)
+					cout << "possible_directions is empty !!!" << endl;  //delete !!!!
+
+				//_pathFromDocking.pop_back();          //old ron
+				//return OppositeDirection(lastStep);   // old ron
+				Direction recommendedStep  = _pathFromDocking.back();
+				_pathFromDocking.pop_back();
+				_doNotPush = true;
+		 		return OppositeDirection(recommendedStep);  //TODO: also need to make sure, i don't push_back in next step
+		
 			}
-			//_pathFromDocking.push_back(chosen);  // should push_back the actual direction taken by the simulation and not chosen 
-			return chosen;
-		}
+			else{
+				//Direction chosen = possible_directions[0];
+				Direction chosen = Handle_Explore_State(possible_directions);
+				if(_debug) {
+					cout << "chosen Direction in Exlporing is:  "; //delete later!!!
+					PrintDirection(chosen); //delete later !!!
+				}
+				//_pathFromDocking.push_back(chosen);  // should push_back the actual direction taken by the simulation and not chosen 
+				return chosen;
+			}
+
+		} //closes Exploring case
 	
-	}
+	} //closes switch
 
 	if(_debug)
 		cout << "i'm not supposed to get here!!!!"  << endl;  //delete later!!!
@@ -143,58 +155,74 @@ void _039563838_D::UpdateState()
 	switch(_robotStatus)
 	{
 	case AlgorithmStatus::ChargingInDocking:
-		if(_battery.OneRechargeBeforeFullyRecharged())
-			_robotStatus = AlgorithmStatus::Exploring;
-		_battery.Recharge();
+		{
+			if(_battery.OneRechargeBeforeFullyRecharged())
+				_robotStatus = AlgorithmStatus::Exploring;
+			_battery.Recharge();
+		}
 		break;
 	//case AlgorithmStatus::StayingUntilClean:
 	case AlgorithmStatus::Exploring:
-		_battery.Consume();
-		//_dirtInCurrentLocation -= _dirtInCurrentLocation ? 1 : 0; //clean by one (or stays 0)  --> already updated in updateAlgorithmInfo function
-		//if(_battery.GetStepsBeforeRecharge() ==  (int)_pathFromDocking.size())
-			//_robotStatus = AlgorithmStatus::Returning;
+		{
+			_battery.Consume();
+			//_dirtInCurrentLocation -= _dirtInCurrentLocation ? 1 : 0; //clean by one (or stays 0)  --> already updated in updateAlgorithmInfo function
+			//if(_battery.GetStepsBeforeRecharge() ==  (int)_pathFromDocking.size())
+				//_robotStatus = AlgorithmStatus::Returning;
 
-		if(_battery.GetBattery_level() <= (  (int)( _battery.GetBattery_capacity() / 2) + 1  )  )  {
-			_robotStatus = AlgorithmStatus::Returning;
-			cout <<endl << endl << "starting to return" << endl << endl;  //delete !!!!
-		}
-//		else if(_dirtInCurrentLocation > 0)
-//			_robotStatus = AlgorithmStatus::StayingUntilClean;
+			if(AboutToFinishWasCalled == true) {
+				int shortestDistanceFromDocking = houseMapping[position].stepsToDocking;
+				if(shortestDistanceFromDocking >=  (_stepsTillFinishing) )  {  //this algo prefers to return in the same path it travelled from docking to current position. However, if it doesn't have enough steps left, it returns via the shortest route to docking
+					if(_stepsTillFinishing <  (int)_pathFromDocking.size() ) {  //must return via shortest route to docking
+						_robotStatus = AlgorithmStatus::ReturningRapidly;
+					}
+					else
+						_robotStatus = AlgorithmStatus::Returning;
+
+				}
+	//			else if(shortestDistanceFromDocking >  (_stepsTillFinishing))  {
+	//				//TODO: shortestDistanceFromDocking > (_stepsTillFinishing) // depends on the score formula. maybe it's better 					to give up returning to docking via the shortest route and instead return in the path it came from (there's 				probably dust there)
+	//			}
+			}
+
+			
+			else if(_battery.GetBattery_level() <= (  (int)( _battery.GetBattery_capacity() / 2) + 1  )  )  {
+				_robotStatus = AlgorithmStatus::Returning;
+				cout << endl << "starting to return when battery level = " << _battery.GetBattery_level() << "   and battery capacity = " <<  _battery.GetBattery_capacity() <<  endl;  //delete !!!!!!!!!!
+
+				cout << "current position when starting to return : ( " << position.getX() << ", " << position.getY() << ")" << endl; //delete!!!
+				auto p = houseMapping.find(position);   //delete !!!!!!!!!!!!!!!!!!!!!!!!
+				cout << "stepsToDocking when starting to return = " <<  p->second.stepsToDocking  << endl; 	//delete !!!!! 
+			}
+	//		else if(_dirtInCurrentLocation > 0)
+	//			_robotStatus = AlgorithmStatus::StayingUntilClean;
 		
-		else if(AboutToFinishWasCalled == true) {
-			int shortestDistanceFromDocking = houseMapping[position].stepsToDocking;
-			if(shortestDistanceFromDocking >=  (_stepsTillFinishing) )  {  //this algo prefers to return in the same path it travelled from docking to current position. However, if it doesn't have enough steps left, it returns via the shortest route to docking
+			
+			else
+				_robotStatus = AlgorithmStatus::Exploring;
+		}
+		break;
+	case AlgorithmStatus::Returning:
+		{
+			_battery.Consume();
+			if(IsInDocking())
+				_robotStatus = AlgorithmStatus::ChargingInDocking;
+
+			else if(AboutToFinishWasCalled == true) {
+				//int shortestDistanceFromDocking = houseMapping[position].stepsToDocking;
 				if(_stepsTillFinishing <  (int)_pathFromDocking.size() ) {  //must return via shortest route to docking
 					_robotStatus = AlgorithmStatus::ReturningRapidly;
 				}
-				else
-					_robotStatus = AlgorithmStatus::Returning;
-
-			}
-//			else if(shortestDistanceFromDocking >  (_stepsTillFinishing))  {
-//				//TODO: shortestDistanceFromDocking > (_stepsTillFinishing) // depends on the score formula. maybe it's better 					to give up returning to docking via the shortest route and instead return in the path it came from (there's 				probably dust there)
-//			}
-		}
-		else
-			_robotStatus = AlgorithmStatus::Exploring;
-		break;
-	case AlgorithmStatus::Returning:
-		_battery.Consume();
-		if(IsInDocking())
-			_robotStatus = AlgorithmStatus::ChargingInDocking;
-
-		else if(AboutToFinishWasCalled == true) {
-			//int shortestDistanceFromDocking = houseMapping[position].stepsToDocking;
-			if(_stepsTillFinishing <  (int)_pathFromDocking.size() ) {  //must return via shortest route to docking
-				_robotStatus = AlgorithmStatus::ReturningRapidly;
 			}
 		}
 		break;
 
 	case AlgorithmStatus::ReturningRapidly:	
-		cout << "status is ReturningRapidly " << endl;   // delete !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		if(IsInDocking())
-			_robotStatus = AlgorithmStatus::ChargingInDocking;
+		{
+			cout << "status is ReturningRapidly " << endl;   // delete !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			_battery.Consume();
+			if(IsInDocking())
+				_robotStatus = AlgorithmStatus::ChargingInDocking;
+		}
 		break;
 	}
 
@@ -207,7 +235,11 @@ void _039563838_D::aboutToFinish(int stepsTillFinishing)
 	_stepsTillFinishing = stepsTillFinishing;
 	
 	cout << "aboutToFinish was called !!" << endl;  // delete !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-}
+	cout << "current position : ( " << position.getX() << ", " << position.getY() << ")" << endl; //delete!!!
+	
+	auto p = houseMapping.find(position);   //delete !!!!!!!!!!!!!!!!!!!!!!!!
+	cout << "stepsToDocking = " <<  p->second.stepsToDocking  << endl; 	//delete !!!!! 
+} 
 
 
 // Brief: returns opposite direction
@@ -506,3 +538,20 @@ void _039563838_D::PrintAlgorithmStatus()
 
 
 REGISTER_ALGORITHM (_039563838_D)
+
+
+// extern "C" {
+// AbstractAlgorithm *maker(){
+//    return new _039563838_D;
+// }
+// class proxy { 
+// public:
+//    proxy(){
+//       // register the maker with the factory using file name 
+//       factory["039563838_D_"] = maker;
+//    }
+// };
+// // our one instance of the proxy
+// proxy p;
+// }
+
