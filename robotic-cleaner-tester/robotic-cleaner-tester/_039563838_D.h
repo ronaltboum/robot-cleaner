@@ -5,8 +5,9 @@
 #include "DirectionExt.h"
 #include "AlgorithmRegistration.h"
 #include "AbstractAlgorithm.h"
-#include "AbstractSensor.h"
 #include "FactoryDefinition.h"  //header file where factory is defined
+#include "AbstractSensor.h"
+
 #include <deque>
 #include <stdlib.h>
 #include <stdio.h>
@@ -35,6 +36,8 @@ protected:
 	Battery _battery;
 	deque<Direction> _pathFromDocking; // the path back to docking
 	int _dirtInCurrentLocation;
+
+	bool _doNotPush = false; //when _doNotPush == true, then algorithm doesn't push_back last step to _pathFromDocking
 
 	struct CellInfo {
 		int dirt = -1; // -1 represents "unknown"
