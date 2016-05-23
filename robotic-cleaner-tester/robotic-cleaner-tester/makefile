@@ -8,13 +8,16 @@ default:
 	
 #simulator part
 	
-simulator: CommandLineInterpeter.o DirectionExt.o GeneralizedPoint.o FilesListerWithSuffix.o FilesLister.o Battery.o House.o SingletonHouseIOManager.o Sensor.o AlgorithmSingleRun.o SubSimulation.o SingletonConfigReader.o AlgorithmRegistration.o AlgorithmFactory.o Simulator.o  Main.o
+simulator: CommandLineInterpeter.o DirectionExt.o GeneralizedPoint.o FilesListerWithSuffix.o FilesLister.o Battery.o House.o SingletonHouseIOManager.o Sensor.o AlgorithmSingleRun.o SubSimulation.o SingletonConfigReader.o AlgorithmRegistration.o AlgorithmFactory.o ScoreRegistrar.o Simulator.o  Main.o
 	$(CC) -rdynamic -o simulator $^ $(LIBS) -pthread
 	
 Main.o: Main.cpp
 	$(CC) -c $(CFLAGS) $< $(LIBS)	
 
 Simulator.o: Simulator.cpp Simulator.h Direction.h
+	$(CC) -c $(CFLAGS) $<
+
+ScoreRegistrar.o: ScoreRegistrar.cpp
 	$(CC) -c $(CFLAGS) $<
 
 AlgorithmFactory.o: AlgorithmFactory.cpp AlgorithmFactory.h $(LIBS)	
@@ -72,9 +75,16 @@ _039563838_D.so: Battery.o DirectionExt.o GeneralizedPoint.o _039563838_D.o
 
 _039563838_D.o: _039563838_D.cpp
 	$(CC) -c -fPIC $(CFLAGS) $^
+
+#dynamic default score formula
+score_formula.so: score_formula.o
+	$(CC) -shared -Wl,-soname,$@ -o $@ $^
+
+score_formula.o: score_formula.cpp
+	$(CC) -c -fPIC $(CFLAGS) $^
 	
 #all: 
-all: _039563838_D.so simulator
+all: _039563838_D.so score_formula.so simulator
 
 clean:
 	rm -f *.so *.o simulator *~

@@ -24,6 +24,8 @@
 #include <sstream> 
 #include <fstream>
 #include "AlgorithmFactory.h"
+#include "ScoreRegistrar.h"
+
 using namespace std;
 
 class Simulator

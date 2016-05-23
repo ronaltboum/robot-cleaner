@@ -114,7 +114,7 @@ Direction _039563838_D::Handle_Explore_State(vector<Direction> possibleDirection
 {
 	//requestedStep = dir_by_phase[phase];
 	int maxDirt = -1;
-	Direction maxDirtDirection;
+	Direction maxDirtDirection = Direction::Stay;
 	for(Direction d: possibleDirections) {
 		GeneralizedPoint newPos = position;
 		newPos.move(d);

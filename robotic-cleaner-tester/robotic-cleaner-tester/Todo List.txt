@@ -9,3 +9,6 @@ ron to do:
 1. in FilesLister add handling of execption
 2. in SingletonHouseIOManager in function ReadHouseFromFile(istream &in):  handle errors regarding
 docking points
+
+
+-should i make map of scores thread safe ?  in vid10 i think kirsh says that if we use boost then there are thread safe date structures.  

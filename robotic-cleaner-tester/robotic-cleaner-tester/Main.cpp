@@ -40,18 +40,31 @@ int main(int argc, const char * argv[])
 	}
 
 	
-	//Simulator s = Simulator();
+	//reading config file
 	Simulator s;
 	bool con = s.ReadConfigFile(configFile); 
 	if(con == false)
 	    return EXIT_FAILURE;
 	
+	// loading score
+	string errorLoadingScore = ScoreRegistrar::getInstance().loadScoreFunc(scoreFormulaFile);
+	if(errorLoadingScore != "" ){
+		cout << errorLoadingScore;
+		return EXIT_FAILURE;
+	}
+
 	
 	vector<string> algorithmFiles;
 	int numAlgoFiles = 0;
 	try{
 		FilesListerWithSuffix algorithmsSuffix = FilesListerWithSuffix(algorithmFolder, ".so" );
 		algorithmFiles = algorithmsSuffix.getFilesList();
+		
+		//removing score formula file
+		algorithmFiles.erase(std::remove_if(algorithmFiles.begin(), 
+                              algorithmFiles.end(),
+                              [](string filename){return (filename.find("score_formula.so") != string::npos );}),
+               algorithmFiles.end());
 		numAlgoFiles = algorithmFiles.size();
 		//case where there are no algorithms in the folder provided by algorithm_path, or there was no algorithm path provided and there are no algorithms in the current directory
 		if (algorithmFiles.size() == 0){

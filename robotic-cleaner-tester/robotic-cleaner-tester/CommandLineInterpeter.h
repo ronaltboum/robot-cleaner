@@ -18,8 +18,6 @@ class CommandLineInterpeter
 public:
 	typedef map<string,string>::iterator it_type;
 	typedef map<string,string>::const_iterator const_it_type;
-	#define THREAD_ATTRIBUTE string("-threads")
-	#define IsThreadAttribute(s) (! THREAD_ATTRIBUTE.compare((s)))
 	enum class CommandLineProblems {OddCLA, UnknownCLA, ThreadIsntNum, NoProblem};	
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -31,6 +29,7 @@ private:
 private:
 	CommandLineInterpeter(void){}
 	~CommandLineInterpeter(void){}
+	static void ValidateScoreFile ();
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
@@ -41,8 +40,8 @@ public:
 		CLAs["-config"]		 = "config.ini";
 		CLAs["-house_path"] 	 = "./";
 		CLAs["-algorithm_path"] = "./";
-		CLAs["-score_formula"]  = "score_formula.so";
-		CLAs[THREAD_ATTRIBUTE] = "1";
+		CLAs["-score_formula"]  = "./score_formula.so";
+		CLAs["-threads"] = "1";
 		return CLAs;
 	}
 
@@ -74,7 +73,7 @@ public:
 
 	static int getThreads(){
 		char* p;
-		long converted = strtol(CLAvalues[THREAD_ATTRIBUTE].c_str(), &p, 10);
+		long converted = strtol(CLAvalues["-threads"].c_str(), &p, 10);
 		if (*p) {
 			return -1;
 		}

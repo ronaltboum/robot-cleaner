@@ -203,14 +203,14 @@ void Simulator::RunAllHouses(size_t num_threads)
 
     //create the threads and run them:
     vector<std::thread> vecThread(num_threads);
-    for( int thNum = 0 ; thNum < num_threads; ++thNum)
+    for( size_t thNum = 0 ; thNum < num_threads; ++thNum)
     {
       vecThread.at(thNum) = std::thread(&Simulator::RunSingleSubSimulationThread, this);
      // vecThread.at(thNum) = std::thread(&Simulator::Foo, this);
     }
     
     //wait for all threads to finish
-    for( int thNum = 0 ; thNum < num_threads; ++thNum)
+    for( size_t thNum = 0 ; thNum < num_threads; ++thNum)
     {
       vecThread.at(thNum).join();
     }
@@ -335,7 +335,7 @@ void Simulator::CallAboutToFinish(int houseIndex)
 {
 	SubSimulation * sub = _subSimulations[houseIndex]; 
 	vector< AlgorithmSingleRun *> singleRuns = sub -> GetSingleRuns();
-	for (int runIndex = 0; runIndex < singleRuns.size()  ; runIndex++) {
+	for (size_t runIndex = 0; runIndex < singleRuns.size()  ; runIndex++) {
 		AlgorithmSingleRun * runIterator = singleRuns[runIndex];
 		(runIterator -> GetCurrentAlgorithm() ) -> aboutToFinish( GetMaxStepsAfterWinner() );
 	}
@@ -359,9 +359,7 @@ int Simulator::GetMaxStepsAfterWinner() const
 
 // winner_num_steps == maxSteps if nobody won
 void Simulator::registerScores(int winner_num_steps, int houseIndex, int simulationSteps)
-{
-	int score;
-	
+{	
 	SubSimulation * sub = _subSimulations[houseIndex]; 
 	vector< AlgorithmSingleRun *> singleRuns = sub -> GetSingleRuns();
 	int runNum = singleRuns.size();
@@ -369,16 +367,16 @@ void Simulator::registerScores(int winner_num_steps, int houseIndex, int simulat
 	//cout << "number of algo in SubSimulation = " << runNum << endl;
 	
 	//int runNum = _runs.size();
-	string hNameNoSuffix;    string algoName;
+	string hNameNoSuffix, algoName;
 	int this_num_steps;
 	for( int runIndex = 0 ; runIndex < runNum; ++runIndex)
 	{
 		AlgorithmSingleRun * runIterator = singleRuns[runIndex];
+		algoName = runIterator-> GetAlgorithmFileName(); 
+		hNameNoSuffix =  _houses[houseIndex] -> GetHouseFileName();
+		this_num_steps = runIterator->GetNumberOfStepsCommited();
+
 		if(runIterator->HasMadeIllegalStep())  {   //algorithm hit a wall !
-			
-			algoName = runIterator-> GetAlgorithmFileName(); 
-			hNameNoSuffix =  _houses[houseIndex] -> GetHouseFileName();
-			this_num_steps = runIterator->GetNumberOfStepsCommited();
 			//http://moodle.tau.ac.il/mod/forum/discuss.php?d=57047
 			//Algorithm 331332334_E_ when running on House 003 went on a wall in step 7
 			string errorMessage = "Algorithm " + algoName + " when running on House " + hNameNoSuffix + " went on a wall in step " + to_string(this_num_steps);
@@ -388,10 +386,6 @@ void Simulator::registerScores(int winner_num_steps, int houseIndex, int simulat
 		}
 		bool hasWon = runIterator->HasWon();
 		int actual_position = runIterator->GetActualPosition();
-		int position_in_copmetition = min(actual_position, 4);
-		if(hasWon == false)
-		      position_in_copmetition = 10;
-		this_num_steps = runIterator->GetNumberOfStepsCommited();
 		int sum_dirt_in_house = runIterator->GetSumOfDirtBeforeCleaning();
 		int dirt_collected = runIterator->GetDirtCollected();
 		//if algorithm stopped because of empty battery, then the number of steps it committed will be simulationSteps. see:  http://moodle.tau.ac.il/mod/page/view.php?id=374508
@@ -400,14 +394,10 @@ void Simulator::registerScores(int winner_num_steps, int houseIndex, int simulat
 		if(is_battery_empty == true && hasWon == false)
 		    this_num_steps = simulationSteps;
 		bool is_back_in_docking = runIterator->IsBackInDocking(); 
-		score = 2000 
-			- (position_in_copmetition - 1) * 50 
-			+ (winner_num_steps - this_num_steps) * 10 
-			- (sum_dirt_in_house - dirt_collected) * 3 
-			+ (is_back_in_docking? 50 : -200);
-		score = max(0, score);
-		algoName = runIterator -> GetAlgorithmFileName();
-		hNameNoSuffix =  _houses[houseIndex] -> GetHouseFileName();
+
+		map<string, int> params= {{"actual_position_in_competition", actual_position}, {"simulation_steps", simulationSteps}, {"winner_num_steps", winner_num_steps}, {"this_num_steps", this_num_steps}, {"sum_dirt_in_house", sum_dirt_in_house}, {"dirt_collected", dirt_collected}, {"is_back_in_docking", is_back_in_docking}};
+		int score = ScoreRegistrar::getInstance().calc_score(params);
+
 		//string trimmedHouseName = hNameNoSuffix.substr(0,9);
 		addScore(algoName, hNameNoSuffix, score);
 		
@@ -424,7 +414,6 @@ void Simulator::printScores()
   //rows = num of valid  algos + 1
   //int rows = algoNum + 1;
   int numCharsInRow = 13 + 10*(cols - 1) + (cols + 1);
-  int i = 0 ;
   printDashes(numCharsInRow);
   vector<string> trimmedValidHouseNames = GetValidTrimmedHousesNames();
   printFirstRow(houseNum, trimmedValidHouseNames);
