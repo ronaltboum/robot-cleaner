@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <iostream>
 using namespace std;
 
 class Battery
@@ -35,6 +36,7 @@ public:
 	bool IsBatteryEmpty() const{
 		return (GetBattery_level() <= 0);
 	}
+	friend ostream& operator<<(ostream& out, const Battery& b);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
@@ -45,6 +47,7 @@ public:
 	//it's docking point
 	int GetStepsBeforeRecharge() const; // Get number of steps before needing to recharge
 	bool OneRechargeBeforeFullyRecharged() const; //: returns true if one more recharge will fill the battery
+	void printBatteryStats() const;
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ inline functions ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -103,6 +106,11 @@ inline bool Battery::OneRechargeBeforeFullyRecharged() const
 {
 	//return (_battery_level + _recharge_rate > _battery_capacity);
 	return (_battery_capacity  <=  _battery_level + _recharge_rate  );
+}
+
+inline ostream& operator<<(ostream& out, const Battery & b) {
+	return out << "curr level: " << b._battery_level
+		<< " con_rate: " << b._consumption_rate << " remaining steps: " << b.GetStepsBeforeRecharge() << endl;
 }
 
 #endif //__BATTERY__H_

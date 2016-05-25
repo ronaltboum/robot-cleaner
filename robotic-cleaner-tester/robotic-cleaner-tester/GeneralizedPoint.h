@@ -2,15 +2,18 @@
 #define GeneralizedPoint_h__
 
 #include "Direction.h"
+#include "DirectionExt.h"
+#include <iostream>
+#include <vector>
 
-//using namespace std;
+using namespace std;
 
 class GeneralizedPoint {   //a point that can also represent negative coordinates!  used in the implementations of algorithms
     
 	int x, y;
 
 public:
-    GeneralizedPoint(int _x, int _y) : x(_x), y(_y) {}
+    GeneralizedPoint(int _x = 0, int _y =0) : x(_x), y(_y) {}
 
     GeneralizedPoint distance(const GeneralizedPoint& other)const {
         return GeneralizedPoint(x - other.x, y - other.y);
@@ -35,9 +38,29 @@ public:
         return (x < other.x || (x == other.x && y < other.y)); 
     }
 
-//    friend std::ostream& operator<<(std::ostream& out, const GeneralizedPoint& p) {
-//        return out << "(" << p.x << "," << p.y << ")";
-//    }
+    bool operator==(const GeneralizedPoint& rhs) const
+    {
+        return ! ( (*this) < rhs || rhs < (*this) );
+    }
+
+    bool operator!=(const GeneralizedPoint& rhs) const
+    {
+        return !((*this) == rhs);
+    }
+
+    Direction GetDirection(const GeneralizedPoint & other) const;
+
+    string ToString() const{
+        return string("(") + std::to_string(x) + string(",") + std::to_string(y) + string(")");
+    }  
+
+    static string ToStringPath(const vector<GeneralizedPoint> & path);
+
+   friend ostream& operator<<(ostream& out, const GeneralizedPoint& p){
+       return out << p.ToString();
+   }
+
+ 
 };
 
 #endif //GeneralizedPoint_h__

@@ -44,17 +44,17 @@ protected:
 		int stepsToDocking = -1; // -1 represents "unknown"
 		bool isWall;
 	};
-    	map<GeneralizedPoint, CellInfo> houseMapping;
+	map<GeneralizedPoint, CellInfo> houseMapping;
 	//    Direction currDir = Direction::East;
-    	GeneralizedPoint position = {0,0};  //as far as the algorithm is concerned, the docking point is at (0,0)
-//    SensorInformation s;
-       int stepsFromDocking = -1;
-       int totalSteps = 0;
+	GeneralizedPoint position = {0,0};  //as far as the algorithm is concerned, the docking point is at (0,0)
+	//    SensorInformation s;
+	int stepsFromDocking = -1;
+	int totalSteps = 0;
 	int _stepsTillFinishing = -8;  //_stepsTillFinishing == MaxStepsAfterWinner when aboutToFinish is called by the simulation
 	bool AboutToFinishWasCalled = false;  //equals true if aboutToFinish was called by the simulation
-//    int phase = -1; // phases 0-7: explore surrounding, phase 8: select new direction
-//    const static Direction dir_by_phase[8];
-//    Direction requestedStep = Direction::Stay;
+	//    int phase = -1; // phases 0-7: explore surrounding, phase 8: select new direction
+	//    const static Direction dir_by_phase[8];
+	//    Direction requestedStep = Direction::Stay;
 	int _debug = 0;  //when _debug ==1 we uncomment the debug prints
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -96,13 +96,15 @@ Direction AlgorithmSingleRun::DoStep(Direction lastStep)
 	else
 		_robotBattery->Consume();
 
+	//making the move and updating 
+	Direction chosenDirection = _currentAlgorithm->step(lastStep);
+
 	if( _currentHouse->IsDirty(*_currentPosition) ){
 		_currentHouse->Clean(*_currentPosition);
 		_dirtCollected++;
 	}
 
-	//making the move and updating 
-	Direction chosenDirection = _currentAlgorithm->step(lastStep);
+
 	_currentPosition->Move(chosenDirection);
 	
 	if(debug_AlgorithmSingleRun)  {  //for debugging

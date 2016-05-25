@@ -38,7 +38,6 @@ _039563838_D::~_039563838_D(void)
 //************************************
 Direction _039563838_D::step(Direction lastStep)
 {
-	
 	if(_debug) {
 		PrintLastDirection(lastStep);  //for debug.  delete later!!!
 		cout << "_stepsTillFinishing = " << _stepsTillFinishing << endl << endl;  //delete !!!
@@ -280,6 +279,7 @@ vector<Direction> _039563838_D::GetPossibleDirections(Direction lastStep) const
 
 void _039563838_D::updateAlgorithmInfo(Direction lastStep) 
 {
+	cout << "updateAlgorithmInfo" << directions << endl;
 
 	if(AboutToFinishWasCalled == true)
 		--_stepsTillFinishing;

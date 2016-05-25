@@ -70,6 +70,12 @@ GeneralizedPoint.o: GeneralizedPoint.cpp
 	$(CC) -c -fPIC $(CFLAGS) $^
 #	$(CC) -c $(CFLAGS) $<
 
+_039563838_E.so: Battery.o DirectionExt.o GeneralizedPoint.o _039563838_E.o
+	$(CC) -shared -Wl,-soname,$@ -o $@ $^
+
+_039563838_E.o: _039563838_E.cpp
+	$(CC) -c -fPIC $(CFLAGS) $^
+
 _039563838_D.so: Battery.o DirectionExt.o GeneralizedPoint.o _039563838_D.o
 	$(CC) -shared -Wl,-soname,$@ -o $@ $^
 
@@ -84,7 +90,7 @@ score_formula.o: score_formula.cpp
 	$(CC) -c -fPIC $(CFLAGS) $^
 	
 #all: 
-all: _039563838_D.so score_formula.so simulator
+all: _039563838_D.so _039563838_E.so score_formula.so simulator
 
 clean:
 	rm -f *.so *.o simulator *~
