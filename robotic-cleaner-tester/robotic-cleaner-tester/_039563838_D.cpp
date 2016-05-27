@@ -186,11 +186,11 @@ void _039563838_D::UpdateState()
 			
 			else if(_battery.GetBattery_level() <= (  (int)( _battery.GetBattery_capacity() / 2) + 1  )  )  {
 				_robotStatus = AlgorithmStatus::Returning;
-				cout << endl << "starting to return when battery level = " << _battery.GetBattery_level() << "   and battery capacity = " <<  _battery.GetBattery_capacity() <<  endl;  //delete !!!!!!!!!!
-
-				cout << "current position when starting to return : ( " << position.getX() << ", " << position.getY() << ")" << endl; //delete!!!
-				auto p = houseMapping.find(position);   //delete !!!!!!!!!!!!!!!!!!!!!!!!
-				cout << "stepsToDocking when starting to return = " <<  p->second.stepsToDocking  << endl; 	//delete !!!!! 
+				if(_debug){
+					auto p = houseMapping.find(position);
+					cout << endl << "starting to return. battery= " << _battery.GetBattery_level() << "/" <<  _battery.GetBattery_capacity()
+					<< "from: "<< position << " d: " << p->second.stepsToDocking  << endl;
+				}
 			}
 	//		else if(_dirtInCurrentLocation > 0)
 	//			_robotStatus = AlgorithmStatus::StayingUntilClean;
@@ -279,7 +279,7 @@ vector<Direction> _039563838_D::GetPossibleDirections(Direction lastStep) const
 
 void _039563838_D::updateAlgorithmInfo(Direction lastStep) 
 {
-	cout << "updateAlgorithmInfo" << directions << endl;
+	if(_debug) cout << "updateAlgorithmInfo. lastStep: " << lastStep << endl;
 
 	if(AboutToFinishWasCalled == true)
 		--_stepsTillFinishing;

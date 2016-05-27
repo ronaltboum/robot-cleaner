@@ -2,6 +2,7 @@
 #define __BATTERY__H_
 
 #include <map>
+#include <algorithm>
 #include <string>
 #include <iostream>
 using namespace std;
@@ -45,7 +46,7 @@ public:
 	//it's docking point.  returns false if _battery_level < 0 after consume - game over
 	void Recharge();	//fill the battery with _recharge_rate at each time unit the robot is in
 	//it's docking point
-	int GetStepsBeforeRecharge() const; // Get number of steps before needing to recharge
+	int GetStepsBeforeRecharge(bool isInDocking) const; // Get number of steps before needing to recharge
 	bool OneRechargeBeforeFullyRecharged() const; //: returns true if one more recharge will fill the battery
 	void printBatteryStats() const;
 };
@@ -97,9 +98,12 @@ inline int Battery::GetBattery_level() const
 	return _battery_level;
 }
 
-inline int Battery::GetStepsBeforeRecharge() const
+inline int Battery::GetStepsBeforeRecharge(bool isInDocking) const
 {
-	return (int)(_battery_level / _consumption_rate);
+	if(isInDocking)
+		return min((_battery_level + _recharge_rate), _battery_capacity) / _consumption_rate + 1;
+	else
+		return (int)(_battery_level / _consumption_rate);
 }
 
 inline bool Battery::OneRechargeBeforeFullyRecharged() const
@@ -110,7 +114,7 @@ inline bool Battery::OneRechargeBeforeFullyRecharged() const
 
 inline ostream& operator<<(ostream& out, const Battery & b) {
 	return out << "curr level: " << b._battery_level
-		<< " con_rate: " << b._consumption_rate << " remaining steps: " << b.GetStepsBeforeRecharge() << endl;
+		<< " con_rate: " << b._consumption_rate << endl;
 }
 
 #endif //__BATTERY__H_

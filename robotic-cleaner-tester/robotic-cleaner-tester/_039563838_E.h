@@ -15,40 +15,51 @@
 #include <iostream>
 #include "Battery.h"
 #include "GeneralizedPoint.h"
+#include "DynamicPathFinder.h"
 
 using namespace std;
 
 class _039563838_E :	public AbstractAlgorithm
 {
+	friend class DynamicPathFinder;
 //~~~~~~~~~~~~~~~~~~~~` Macros and definitions ~~~~~~~~~~~~~~~~~~~~~~~~~
-//enum class AlgorithmStatus {ChargingInDocking,			
-//														Exploring,				// the algorithm is exploring. Always prefers to visit cells it hasn't been in
-//														Returning,				
-//														ReturningRapidly 	
-//};	
-
-enum class AlgorithmStatus {
-	FirstStep, 			// the algorithm didn't made any step yet
-	ChargingInDocking, 	// the algorithm is charging until battery is full
-	Exploring, 			// the algorithm is trying to reach all points in the house it has no information on
-	Cleaning,			// the algorithm is done exploring and now it's greedily cleans
-	Returning, 			// the algorithm battery is running out,  so it's returning to docking via the same path it travelled from docking to current position
-	Done 				// the algorithm is done cleaning the house
-};			
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 protected:
-	struct CellInfo {
-		int dirt = -1; // -1 represents "unknown"
-		int stepsToDocking = -1; // -1 represents "unknown" when it's wall
-		bool isWall = false;
-		vector<Direction> parents = vector<Direction>(); // directions where you can go from here to get to docking fastest
-		//directions of where we know we can go back. false might be unkown yet and change in the future.
-		map<Direction, bool> possibleKnownDirections = { {Direction::East, false}, {Direction::West, false}, 
-												{Direction::South, false}, {Direction::North, false}};
-		bool isUnexplored() const { return (dirt == -1); }
-		bool isClean() const { return (dirt == 0); }
+	// a struct used to save the best cleaning path, and recalculate it only when needed 
+	// (= when the simulator chose to ignore our recommendations)
+	struct CleaningPathCache
+	{
+		vector<GeneralizedPoint> savedPath;
+		size_t index = 0;
+
+		bool WasCorrectStepCommited(Direction lastStep){
+			if(savedPath.empty() || ReachedEnd() || index == 0) //out of boundries
+				return false;
+			return savedPath[index - 1].GetDirection(savedPath[index]) == lastStep;
+		}
+		bool ReachedEnd(){
+			return index >= savedPath.size() - 1; // index in last element
+		}
+		Direction GetDirection()
+		{
+			Direction d = savedPath[index].GetDirection(savedPath[index + 1]);
+			++index;
+			return d;
+		}
 	};
 
+	enum class AlgorithmStatus {
+		FirstStep, 			// the algorithm didn't made any step yet
+		ChargingInDocking, 	// the algorithm is charging until battery is full
+		Exploring, 			// the algorithm is trying to reach all points in the house it has no information on
+		Cleaning,			// the algorithm is done exploring and now it's greedily cleans
+		Returning, 			// the algorithm battery is running out,  so it's returning to docking via the same path it travelled from docking to current position
+		Done 				// the algorithm is done cleaning the house
+	};	
+
+	typedef DynamicPathFinder::CellInfo CellInfo;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+protected:
 	AlgorithmStatus _robotStatus;
 	const AbstractSensor* _robotSensor;
 	map<string,int> _configs;
@@ -62,7 +73,8 @@ protected:
 	int _stepsTillFinishing;  //_stepsTillFinishing == MaxStepsAfterWinner when aboutToFinish is called by the simulation
 								// otherwise it's -1
 	bool AboutToFinishWasCalled;  //equals true if aboutToFinish was called by the simulation
-	int _debug;  //when _debug ==1 we uncomment the debug prints
+	CleaningPathCache _cleaningPathCache; // used for saving cleaning path and reusing it
+	bool _debug = false;  //when _debug ==1 we uncomment the debug prints
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
@@ -91,6 +103,7 @@ protected:
 	virtual void UpdateState(); //: change the state
 	Direction Handle_Explore_State();
 	Direction Handle_Returning_State();
+	Direction Handle_Cleaning_State(Direction lastStep);
 	bool CheckAllCleaned();
 
 

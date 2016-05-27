@@ -64,13 +64,14 @@ Battery.o: Battery.cpp
 
 DirectionExt.o: DirectionExt.cpp
 	$(CC) -c -fPIC $(CFLAGS) $^
-#	$(CC) -c $(CFLAGS) $<
 
 GeneralizedPoint.o: GeneralizedPoint.cpp
 	$(CC) -c -fPIC $(CFLAGS) $^
-#	$(CC) -c $(CFLAGS) $<
 
-_039563838_E.so: Battery.o DirectionExt.o GeneralizedPoint.o _039563838_E.o
+DynamicPathFinder.o: DynamicPathFinder.cpp
+	$(CC) -c -fPIC $(CFLAGS) $^
+
+_039563838_E.so: Battery.o DirectionExt.o GeneralizedPoint.o DynamicPathFinder.o _039563838_E.o
 	$(CC) -shared -Wl,-soname,$@ -o $@ $^
 
 _039563838_E.o: _039563838_E.cpp

@@ -28,13 +28,12 @@ void _039563838_E::initiallize()
 	startingPointInfo.dirt = 0;
 	startingPointInfo.stepsToDocking = 0;
 	startingPointInfo.isWall = false;
-
+	_cleaningPathCache = { vector<GeneralizedPoint>(), 0};
 
 	houseMapping[position] = startingPointInfo;
 	totalSteps = 0;
 	_stepsTillFinishing = -8;  //_stepsTillFinishing == MaxStepsAfterWinner when aboutToFinish is called by the simulation
 	_aboutToFinishWasCalled = false;  //equals true if aboutToFinish was called by the simulation
-	_debug = 0;  //when _debug ==1 we uncomment the debug prints
 	_allExplored = false;
 	_allCleaned = false;
 }
@@ -50,33 +49,37 @@ _039563838_E::~_039563838_E(void)
 //************************************
 Direction _039563838_E::step(Direction lastStep)
 {
-	if(true) {
+	if(_debug) {
 		cout << " " << totalSteps;
 		if(_aboutToFinishWasCalled) cout << "_stepsTillFinishing = " << _stepsTillFinishing << endl;  //delete !!!
 	}
 	UpdateAlgorithmInfo(lastStep);  //updates lastStep
+	AlgorithmStatus previous = _robotStatus;
 	UpdateState();
+	if(previous == AlgorithmStatus::Cleaning && _robotStatus != previous) // reseting cache
+	{
+		_cleaningPathCache = { vector<GeneralizedPoint>(), 0};
+	}
+
 	Direction d;
 	switch(_robotStatus)
 	{
 	case AlgorithmStatus::Done:
-	case AlgorithmStatus::ChargingInDocking: 
+	case AlgorithmStatus::ChargingInDocking:
+		if(_debug) cout << "charging" << endl;
 		 return Direction::Stay;
 	case AlgorithmStatus::Cleaning:
-		return Direction::Stay; //TODO: change
+		return Handle_Cleaning_State(lastStep);
 	case AlgorithmStatus::Returning:
 		return Handle_Returning_State();
 	case AlgorithmStatus::Exploring:
 		d = Handle_Explore_State();
-		if(_debug) cout << "4. explore returned direction" << endl;
-		if(_debug) cout << "map size: " <<  houseMapping.size() << endl;
 		return d;
 	case AlgorithmStatus::FirstStep:
 		return Direction::Stay; //shouldn't get here
 	} //closes switch
 
-	if(_debug)
-		cout << "i'm not supposed to get here!!!!"  << endl;  //delete later!!!
+	if(_debug) cout << "i'm not supposed to get here!!!!"  << endl;  //delete later!!!
 
 	return Direction::Stay;
 }
@@ -87,19 +90,41 @@ Direction _039563838_E::Handle_Returning_State(){
 	return position.GetDirection(newDestination);
 }
 
+Direction _039563838_E::Handle_Cleaning_State(Direction lastStep)
+{
+	if(! _cleaningPathCache.WasCorrectStepCommited(lastStep))
+	{
+		int remainingSteps = _aboutToFinishWasCalled ? _stepsTillFinishing : _battery.GetStepsBeforeRecharge(IsInDocking());
+		//if(_debug) cout << " _039563838_E::Handle_Cleaning_State\tremainingSteps: " << remainingSteps << endl;
+		DynamicPathFinder pf = DynamicPathFinder(position, houseMapping, remainingSteps);
+		pf.RunIteration();
+		_cleaningPathCache.savedPath = pf.GetBestPathTo({0,0});
+		_cleaningPathCache.index = 0;
+		if(_debug){
+			cout << endl << endl << _battery << endl;
+			cout  << endl << "remainingSteps : " << remainingSteps <<" cleaning path: ";
+			for(auto & p: _cleaningPathCache.savedPath)
+				cout << p;
+			cout << endl << "path len: " << _cleaningPathCache.savedPath.size() << endl;
+		}
+	}
+
+	return _cleaningPathCache.GetDirection();
+}
+
 Direction _039563838_E::Handle_Explore_State()
 {
 	deque<vector<GeneralizedPoint>> SPToUnexplored = GetSPToUnexplored();
-	if(_debug){
-		cout << SPToUnexplored.size() << " shortest paths to unexplored found: " << endl;
-		int i =1;
-		for(const vector<GeneralizedPoint>& path : SPToUnexplored){
-			cout << "Path " << i << ": " << GeneralizedPoint::ToStringPath(path) << endl;
-			++i;
-		}
-	}
+	// if(_debug){
+	// 	cout << SPToUnexplored.size() << " shortest paths to unexplored found: " << endl;
+	// 	int i =1;
+	// 	for(const vector<GeneralizedPoint>& path : SPToUnexplored){
+	// 		cout << "Path " << i << ": " << GeneralizedPoint::ToStringPath(path) << endl;
+	// 		++i;
+	// 	}
+	// }
 	GeneralizedPoint newDestination = SPToUnexplored.front()[1];
-	if(_debug) cout << "from: " << position << " to: " << newDestination << " d: " << position.GetDirection(newDestination) << endl;
+	if(_debug) cout << "explore retruned from: " << position << " to: " << newDestination << endl;
 	return position.GetDirection(newDestination);
 }
 
@@ -164,19 +189,19 @@ deque<vector<GeneralizedPoint>> _039563838_E::GetSPToUnexplored() const
 	Q.push_back(position);
 	int iterationNum = 1; // for debug TODO: delete
 	while(! foundUnexplored && iterationNum < 8){
-		if(_debug) cout << endl << "iterationNum: " << iterationNum << endl; 
-		if(_debug) cout << "Q: " << (currentQueueIs1 ? "Q1" : "Q2") 
-			<< " size: " << Q.size() << " OtherQ: " << (currentQueueIs1 ? "Q2" : "Q1") << " size: " << OtherQ.size() << endl;
+		// if(_debug) cout << endl << "iterationNum: " << iterationNum << endl; 
+		// if(_debug) cout << "Q: " << (currentQueueIs1 ? "Q1" : "Q2") 
+		// 	<< " size: " << Q.size() << " OtherQ: " << (currentQueueIs1 ? "Q2" : "Q1") << " size: " << OtherQ.size() << endl;
 		while( !Q.empty() ){
 			GeneralizedPoint point = Q.back();
 			Q.pop_back();
-			if(_debug){
-				int k = 0;
-				for ( const auto &directionAvailablePair : houseMapping.at(point).possibleKnownDirections)
-					if( directionAvailablePair.second)
-						k++;
-				cout << "available directions: " << k << endl;
-			}
+			// if(_debug){
+			// 	int k = 0;
+			// 	for ( const auto &directionAvailablePair : houseMapping.at(point).possibleKnownDirections)
+			// 		if( directionAvailablePair.second)
+			// 			k++;
+			// 	cout << "available directions: " << k << endl;
+			// }
 
 			for ( const auto &directionAvailablePair : houseMapping.at(point).possibleKnownDirections) 
 		    {
@@ -187,7 +212,7 @@ deque<vector<GeneralizedPoint>> _039563838_E::GetSPToUnexplored() const
 				neighboor.move(d);
 				int neighboorDistance = distanceFromPosition[neighboor];
 				bool addToQueue = (neighboorDistance == -1);
-				if(_debug) cout << "point at " << d << ": " << neighboor << " distance: " << neighboorDistance << (addToQueue ? " added" : "") << endl;
+				// if(_debug) cout << "point at " << d << ": " << neighboor << " distance: " << neighboorDistance << (addToQueue ? " added" : "") << endl;
 				if( addToQueue){
 					distanceFromPosition[neighboor] = current_distance_from_position + 1;
 					OtherQ.push_back(neighboor);
@@ -201,9 +226,9 @@ deque<vector<GeneralizedPoint>> _039563838_E::GetSPToUnexplored() const
 				}
 		    }
 		}
-		if(_debug) cout << "other q size: " << OtherQ.size() << endl;
+		// if(_debug) cout << "other q size: " << OtherQ.size() << endl;
 		// switch q's
-		if(_debug) ++iterationNum;
+		// if(_debug) ++iterationNum;
 		currentQueueIs1 = (! currentQueueIs1);
 		std::swap(Q, OtherQ);
 		//Q = currentQueueIs1 ? Q1 : Q2;
@@ -260,10 +285,10 @@ deque<vector<GeneralizedPoint>> _039563838_E::GetSPToUnexplored() const
 // Returns:   	void
 void _039563838_E::UpdateState()
 {
-	if(_debug){
-		cout << "_039563838_E::UpdateState" << endl;
-		PrintAlgorithmStatus();  //for debug.  delete later!!!!
-	}
+	// if(_debug){
+	// 	cout << "_039563838_E::UpdateState" << endl;
+	// 	PrintAlgorithmStatus();  //for debug.  delete later!!!!
+	// }
 
 	if(_robotStatus == AlgorithmStatus::Done)
 		return;
@@ -273,14 +298,16 @@ void _039563838_E::UpdateState()
 		return;
 	}
 
-	int remainingSteps = _aboutToFinishWasCalled ? _stepsTillFinishing : _battery.GetStepsBeforeRecharge();
+	int remainingSteps = _aboutToFinishWasCalled ? _stepsTillFinishing : _battery.GetStepsBeforeRecharge(IsInDocking());
+	if(_debug) cout << " updatestate remaining: "<< remainingSteps << " from here: "<< houseMapping.at(position).stepsToDocking << endl ;
 	//TODO: check that when it reaches 0 it stays
-	if(remainingSteps <= houseMapping.at(position).stepsToDocking){
+	if(remainingSteps <= houseMapping.at(position).stepsToDocking && _robotStatus != AlgorithmStatus::Returning){
 		_robotStatus = AlgorithmStatus::Returning;
-		cout << endl << "starting to return when battery level = " << _battery.GetBattery_level() << "   and battery capacity = " <<  _battery.GetBattery_capacity() <<  endl;  //delete !!!!!!!!!!
-		cout << "current position when starting to return : ( " << position.getX() << ", " << position.getY() << ")" << endl; //delete!!!
-		auto p = houseMapping.find(position);   //delete !!!!!!!!!!!!!!!!!!!!!!!!
-		cout << "stepsToDocking when starting to return = " <<  p->second.stepsToDocking  << endl; 	//delete !!!!! 
+		if(_debug){
+			auto p = houseMapping.find(position);
+			cout << endl << "starting to return. battery= " << _battery.GetBattery_level() << "/" <<  _battery.GetBattery_capacity()
+				<< "from: "<< position << " d: " << p->second.stepsToDocking  << endl;
+		}
 		return;	
 	}
 
@@ -293,7 +320,6 @@ void _039563838_E::UpdateState()
 			{
 				if(_battery.OneRechargeBeforeFullyRecharged())
 					_robotStatus = _allExplored ? AlgorithmStatus::Cleaning : AlgorithmStatus::Exploring ;
-				_battery.Recharge();
 			}
 			return;
 		case AlgorithmStatus::Exploring:
@@ -306,11 +332,17 @@ void _039563838_E::UpdateState()
 			return;
 		case AlgorithmStatus::Returning:
 			{
-				if(IsInDocking())
-					_robotStatus = AlgorithmStatus::ChargingInDocking;
+				if(IsInDocking()){
+					_robotStatus = _allCleaned ? AlgorithmStatus::Done : AlgorithmStatus::ChargingInDocking;
+				}
 			}
 			return;
-			case AlgorithmStatus::Cleaning:
+			case AlgorithmStatus::Cleaning: //staying on clean for now
+				if(_allCleaned){
+					if(_debug) cout << endl << "all cleaned" << endl;
+					_robotStatus = AlgorithmStatus::Returning;
+				}
+				return;
 			case AlgorithmStatus::Done:
 			default:
 				cout << "UpdateState shouldn't get here" << endl;
@@ -352,23 +384,23 @@ void _039563838_E::UpdateAlgorithmInfo(Direction lastStep)
 		((! _allExplored) && (lastStep != Direction::Stay)) ||
 		(_robotStatus == AlgorithmStatus::FirstStep);
 	if(shouldUpdateNeighboors){
-		if(_debug) cout << "1.1. UpdateNeighboors starts" << endl;
+		// if(_debug) cout << "1.1. UpdateNeighboors starts" << endl;
 		UpdateNeighboors(s);
-		if(_debug) cout << "1.1. UpdateNeighboors ends" << endl;
+		// if(_debug) cout << "1.1. UpdateNeighboors ends" << endl;
 	}
 
 	int newDirtLevel = s.dirtLevel;
-	if(_debug) cout << "newDirtLevel: " << newDirtLevel << endl;
+	// if(_debug) cout << "newDirtLevel: " << newDirtLevel << endl;
 
 	newDirtLevel = newDirtLevel - ((newDirtLevel > 0) ? 1 : 0);
-	if(_debug) cout << "1.2. UpdateDirt starts" << endl;
+	// if(_debug) cout << "1.2. UpdateDirt starts" << endl;
 	UpdateDirt( houseMapping[position], newDirtLevel);
-	if(_debug) cout << "1.2. UpdateDirt ends" << endl;
+	// if(_debug) cout << "1.2. UpdateDirt ends" << endl;
 
-	if(_debug){	
-		cout << "position after move is:	( " << position.getX() << ", " << position.getY() << ")" << endl; //delete!!!
-		printDebugHouseMapping();	
-	}
+	// if(_debug){	
+	// 	// cout << "position after move is:	( " << position.getX() << ", " << position.getY() << ")" << endl; //delete!!!
+	// 	printDebugHouseMapping();	
+	// }
 }
 
 //gets the sensorinformation of the current point, and update its neighboors on the map
@@ -438,7 +470,7 @@ void _039563838_E::UpdateInMap(GeneralizedPoint point, CellInfo newInfo)
 {
 	if( ! isInMap(point)){
 		//save new point to map
-		if(_debug) cout << "new point was added: (" << point.getX() << ","  << point.getY() << ") d:" << newInfo.stepsToDocking << endl;
+		// if(_debug) cout << "new point was added: (" << point.getX() << ","  << point.getY() << ") d:" << newInfo.stepsToDocking << endl;
 		houseMapping[point] = newInfo;
 		return;
 	}
@@ -459,15 +491,15 @@ void _039563838_E::UpdateInMap(GeneralizedPoint point, CellInfo newInfo)
 	if(oldInfo.stepsToDocking == newInfo.stepsToDocking){
 		if( find(oldInfo.parents.begin(), oldInfo.parents.end(), newInfo.parents[0]) != oldInfo.parents.end())
 			return;	//path is already saved
-		if(_debug)	cout << "point: (" << point.getX() << ","  << point.getY() << ") update. new parent direction: " << newInfo.parents[0] << endl;
+		// if(_debug)	cout << "point: (" << point.getX() << ","  << point.getY() << ") update. new parent direction: " << newInfo.parents[0] << endl;
 		oldInfo.parents.push_back(newInfo.parents[0]);
 	} 
 
 	//shorter path found
 	if(oldInfo.stepsToDocking > newInfo.stepsToDocking){
-		if(_debug) cout << endl << "SP2D was found for " << point 
-			<< " old path d: " << oldInfo.stepsToDocking << " from: " << DirectionsToString(oldInfo.parents)
-			<< " new path d: " << newInfo.stepsToDocking << " from: " << DirectionsToString(newInfo.parents) << endl;
+		// if(_debug) cout << endl << "SP2D was found for " << point 
+		// 	<< " old path d: " << oldInfo.stepsToDocking << " from: " << DirectionsToString(oldInfo.parents)
+		// 	<< " new path d: " << newInfo.stepsToDocking << " from: " << DirectionsToString(newInfo.parents) << endl;
 		oldInfo.stepsToDocking = newInfo.stepsToDocking;
 
 		for ( const auto &directionAvailablePair : houseMapping.at(point).possibleKnownDirections) 
