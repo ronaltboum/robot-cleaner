@@ -99,13 +99,15 @@ Direction AlgorithmSingleRun::DoStep(Direction lastStep)
 	//making the move and updating 
 	Direction chosenDirection = _currentAlgorithm->step(lastStep);
 
+	_currentPosition->Move(chosenDirection);
+
 	if( _currentHouse->IsDirty(*_currentPosition) ){
 		_currentHouse->Clean(*_currentPosition);
 		_dirtCollected++;
 	}
 
 
-	_currentPosition->Move(chosenDirection);
+	//_currentPosition->Move(chosenDirection);
 	
 	if(debug_AlgorithmSingleRun)  {  //for debugging
  		int pRow = _currentPosition -> GetRow();
