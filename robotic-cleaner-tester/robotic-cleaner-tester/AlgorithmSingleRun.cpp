@@ -55,16 +55,9 @@ void AlgorithmSingleRun::initialize()
 
 bool AlgorithmSingleRun::CanDoStep() const
 {
-  //Tuval:
-// 	return (	(_numberOfStepsCommited < _configs.find("MaxSteps")->second) &&
-// 				(_canStillRun) &&
-// 				( ! _currentHouse->IsHouseClean()));
-	
-	
 	return (	(_numberOfStepsCommited <  (_currentHouse -> GetMaxSteps() )  ) &&
 				(_canStillRun) &&
 				 (! HasWon() ) )  ;
-				//( ! _currentHouse->IsHouseClean()));
 }
 
 bool AlgorithmSingleRun::IsHouseCleaned() const

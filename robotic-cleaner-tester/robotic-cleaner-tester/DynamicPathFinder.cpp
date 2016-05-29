@@ -2,7 +2,7 @@
 	
 	DynamicPathFinder::DynamicPathFinder(const GeneralizedPoint & startingLocation, 
 		const map<GeneralizedPoint, CellInfo> & completeHouseMapping, int requestedDistance)
-		: _startingLocation(startingLocation), _currentQueue(_dynamicQueue), _nextQueue(_dynamicQueue2)
+		: _startingLocation(startingLocation), _currentQueue(_dynamicQueue), _nextQueue(_dynamicQueue2), _currentHouseMap(completeHouseMapping)
 	{
 		_remainingSteps = requestedDistance;
 		_iterationNum = 1;
@@ -97,20 +97,15 @@
 			if(_debug) 	cout << currentPoint << "Step(): HouseMapToPaths size: " <<  _currentQueue.at(currentPoint)._mapToPaths.size() << endl;
 			auto & HouseMapToPaths = it->second._mapToPaths;
 
-			//getting known directions from point
-			vector<Direction> directionsFromPoint = {Direction::Stay};
-			for(auto & directionAvailablePair : HouseMapToPaths.cbegin()->first.at(currentPoint).possibleKnownDirections)
+			//iterating on all known directions from point
+			IteratorMoveUdate(currentPoint, currentPoint); // stay step iteration
+			for(const Direction & dir : HouseMapToPaths.cbegin()->first.at(currentPoint).possibleKnownDirections)
 			{
-				if(directionAvailablePair.second)
-					directionsFromPoint.push_back(directionAvailablePair.first);
-			}
-			if(_debug) cout << "possible directions num: \t" << directionsFromPoint.size() << endl;
-			
-			for(Direction & d : directionsFromPoint){
 				GeneralizedPoint dest = currentPoint;
-				dest.move(d);
+				dest.move(dir);
 				IteratorMoveUdate(currentPoint, dest);
 			}
+			if(_debug) cout << "possible directions num: \t" << HouseMapToPaths.cbegin()->first.at(currentPoint).possibleKnownDirections.size() << endl;
 		}
 
 		if(_debug){
@@ -136,20 +131,80 @@
 		while(_iterationNum < _remainingSteps + 1)
 			RunIterationStep();
 	}
-	
+
+	/*
+	*	Get a path and returns it's score - the score is based on the amount of dirt cleaned on path
+	*	and how far away from the docking was the dirt.
+	*/
+	int DynamicPathFinder::GetPathScore(const Path & path) const
+	{
+		int score  = 0;
+		map<GeneralizedPoint, int> scoringMap = map<GeneralizedPoint, int>();
+		for(const GeneralizedPoint & p : path)
+		{
+			if(scoringMap.find(p) != scoringMap.end())
+				scoringMap[p]++;
+			else
+				scoringMap[p] = 1;
+		}
+		for(const auto & pointScorePair : scoringMap){
+			const GeneralizedPoint & p = pointScorePair.first;
+			const CellInfo & pInfo = _currentHouseMap.at(p);
+			score += pInfo.stepsToDocking * min(scoringMap[p], pInfo.dirt);
+		}
+		return score;
+	}
+
+	/*
+	*	Get the best path from all the paths to point dest of size n.
+	*	The best path of all the path that cleans the biggest amout is the one that cleans the largest amout
+	*	of dirt from points distant from docking
+	*/
 	const DynamicPathFinder::Path DynamicPathFinder::GetBestPathTo(const GeneralizedPoint & dest) const
 	{		
 		map<HouseMap, vector<Path>> mapToPaths = _currentQueue.at(dest)._mapToPaths;
-		Path firstPath = mapToPaths.cbegin()->second.back();
+		vector<Path> relevantPaths = mapToPaths.cbegin()->second;
+		map<Path, int> scoringPathsMap = map<Path, int>();
+		if(_debug) cout << "GetBestPathTo: num of paths: " << relevantPaths.size() << endl;
+		if(relevantPaths.size() == 1)
+			return relevantPaths.front();
+		for(const auto & path : relevantPaths)
+		{
+			scoringPathsMap[path] = GetPathScore(path);
+		}
+		int maxPoints = -1;
+		Path bestPath = scoringPathsMap.begin()->first;
+		for(const auto & pathScorePair : scoringPathsMap)
+		{
+			if(pathScorePair.second > maxPoints){
+				maxPoints = pathScorePair.second;
+				bestPath = pathScorePair.first;
+			}
+		}
+		 
 		if(_debug){
 			cout << "amount cleaned: " << _currentQueue.at(dest)._amountCleaned << " size of map: " << _currentQueue.at(dest)._mapToPaths.size() << endl;
 			cout << "path: ";
-			for(auto & p: firstPath)
+			for(auto & p: bestPath)
 				cout << p;
-			cout << endl << "path len: " << firstPath.size() << endl;
+			cout << endl << "path len: " << bestPath.size() << endl;
 		}
-		return firstPath;
+		return bestPath;
 	}
+	
+	// const DynamicPathFinder::Path DynamicPathFinder::GetBestPathTo2(const GeneralizedPoint & dest) const
+	// {		
+	// 	map<HouseMap, vector<Path>> mapToPaths = _currentQueue.at(dest)._mapToPaths;
+	// 	Path firstPath = mapToPaths.cbegin()->second.back();
+	// 	if(_debug){
+	// 		cout << "amount cleaned: " << _currentQueue.at(dest)._amountCleaned << " size of map: " << _currentQueue.at(dest)._mapToPaths.size() << endl;
+	// 		cout << "path: ";
+	// 		for(auto & p: firstPath)
+	// 			cout << p;
+	// 		cout << endl << "path len: " << firstPath.size() << endl;
+	// 	}
+	// 	return firstPath;
+	// }
 
 	const DynamicPathFinder::Path DynamicPathFinder::GetBestPathToAny() const
 	{

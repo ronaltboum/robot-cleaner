@@ -53,4 +53,10 @@ void Battery::initialize()
 	_recharge_rate = 0;
 	_battery_level = _battery_capacity;
 }
+
+int Battery::GetOneWayDistanceFromDocking() const
+{
+	int stepsMinusOne = (int)((_battery_capacity - _consumption_rate) / (_consumption_rate * 2));
+	return 	stepsMinusOne + 1 ;
+}
 	

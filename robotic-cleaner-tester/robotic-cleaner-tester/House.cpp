@@ -230,10 +230,7 @@ std::ostream& operator<<(std::ostream& out, const House& houseToPrint)
 {
 	unsigned int cols = houseToPrint.GetWidth();
 	unsigned int rows = houseToPrint.GetHeight();
-	out << houseToPrint._shortName << endl;
-	out << houseToPrint._longName << endl;
-	out << rows << endl;
-	out << cols << endl;
+	out << houseToPrint._shortName << ":" << houseToPrint._longName << " " << cols << "x" << rows << endl;
 	for(unsigned int row = 0; row < rows; ++row) 
 	{
 		for(unsigned int col = 0; col < cols; ++col) 

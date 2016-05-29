@@ -31,8 +31,7 @@ public:
 		bool isWall = false;
 		vector<Direction> parents = vector<Direction>(); // directions where you can go from here to get to docking fastest
 		//directions of where we know we can go back. false might be unkown yet and change in the future.
-		map<Direction, bool> possibleKnownDirections = { {Direction::East, false}, {Direction::West, false}, 
-												{Direction::South, false}, {Direction::North, false}};
+		vector<Direction> possibleKnownDirections = vector<Direction>();
 		bool isUnexplored() const { return (dirt == -1); }
 		bool isClean() const { return (dirt == 0); }
 
@@ -52,15 +51,16 @@ public:
 		map<HouseMap, vector<Path>> _mapToPaths; // a map of all the housemaps with the paths leading to them
 	};
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-protected:
+private:
 	GeneralizedPoint _startingLocation;
 	map<GeneralizedPoint, PointInfo> _dynamicQueue;
 	map<GeneralizedPoint, PointInfo> _dynamicQueue2;
 	map<GeneralizedPoint, PointInfo> & _currentQueue;
 	map<GeneralizedPoint, PointInfo> & _nextQueue;
+	HouseMap _currentHouseMap;
 	size_t _iterationNum;
 	size_t _remainingSteps;
-	bool _debug = false;
+	bool _debug = true;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
 	DynamicPathFinder(const GeneralizedPoint & startingLocation, 
@@ -72,6 +72,7 @@ private:
 	bool MoveCleans(const GeneralizedPoint & src, const GeneralizedPoint & dest);
 	void IteratorMoveUdate(const GeneralizedPoint & src , const GeneralizedPoint & dest);
 	void RunIterationStep();
+	int GetPathScore(const Path & path) const;
 public:
 	void RunIteration();
 	const Path GetBestPathTo(const GeneralizedPoint & dest) const;
@@ -92,6 +93,15 @@ inline bool operator< (const map<GeneralizedPoint, DynamicPathFinder::CellInfo> 
 			return false;
 	}
 	return false;
+}
+
+inline std::ostream& operator<<(std::ostream& out, const DynamicPathFinder::CellInfo & c) {
+	if(c.isWall) 
+		return out << "wall" << endl;
+	
+	return out << "dirt: " << c.dirt << " distance: " << c.stepsToDocking << endl 
+		<< "parents: " << DirectionsToString(c.parents)  << endl
+		<< "possibleKnownDirections: " << DirectionsToString(c.possibleKnownDirections) << endl;
 }
 
 #endif // _DYNAMICPATHFINDER_H__

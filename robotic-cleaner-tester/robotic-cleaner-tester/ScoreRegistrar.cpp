@@ -14,7 +14,7 @@ ScoreRegistrar ScoreRegistrar::instance;
 // return wheter the file was loaded successfully
 //----------------------------------------------------------------------------
 string ScoreRegistrar::loadScoreFunc(const std::string& fullPath) {
-    cout << "ScoreRegistrar::loadScoreFunc fullPath: " << fullPath <<endl;
+    if(_debug) cout << "ScoreRegistrar::loadScoreFunc fullPath: " << fullPath <<endl;
 
     // open the library
     cout << "opening: " << fullPath << endl;
@@ -26,7 +26,7 @@ string ScoreRegistrar::loadScoreFunc(const std::string& fullPath) {
     }
     
     // load the symbol
-    cout << "Loading symbol calc_score...\n";
+    if(_debug) cout << "Loading symbol calc_score...\n";
     typedef int (*calc_score_t)(const map<string, int>&);
 
     // reset errors
@@ -34,7 +34,7 @@ string ScoreRegistrar::loadScoreFunc(const std::string& fullPath) {
     calc_score_func = (calc_score_t) dlsym(dl_file, "calc_score");
     const char *dlsym_error = dlerror();
     if (dlsym_error) {
-        cout << "cannot load score_func: " << dlsym_error << endl;
+        if(_debug) cout << "cannot load score_func: " << dlsym_error << endl;
         dlclose(dl_file);
         return NO_SCORE_FUNCTION;
     }

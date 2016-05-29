@@ -48,6 +48,7 @@ public:
 	//it's docking point
 	int GetStepsBeforeRecharge(bool isInDocking) const; // Get number of steps before needing to recharge
 	bool OneRechargeBeforeFullyRecharged() const; //: returns true if one more recharge will fill the battery
+	int GetOneWayDistanceFromDocking() const; // returns the maximal distance a robot can walk away from docking in order to make safe return; 
 	void printBatteryStats() const;
 };
 

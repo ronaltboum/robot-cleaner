@@ -30,6 +30,7 @@ private:
     void * dl_file; // list to hold handles for dynamic libs
     calc_score_t calc_score_func;
     bool score_func_loaded;
+    bool _debug = false;
     static ScoreRegistrar instance;
     ScoreRegistrar(){
     	score_func_loaded = false;
