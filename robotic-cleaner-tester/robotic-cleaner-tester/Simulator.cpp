@@ -140,7 +140,7 @@ int Simulator::LoadRuns()
 		for(_algoIterator=algorithms.begin() ; _algoIterator!=algorithms.end() ; _algoIterator++){
 			Point * startingPoint = _houses[houseIndex]->GetDockingStation(); //new is deallocated by AlgorithmSingleRun
 
-			if(debugSimulator) {
+			if(debugSimulator || true) {
 				int pRow = startingPoint -> GetRow();
  				int pCol = startingPoint -> GetCol();
  				cout<< "In Simulator:  startingPoint = " << pRow << " , " << pCol << endl << endl;  //delte !!!!!!!!!!
@@ -402,6 +402,16 @@ void Simulator::registerScores(int winner_num_steps, int houseIndex, int simulat
 		addScore(algoName, hNameNoSuffix, score);
 		
 		cout << algoName <<" on house "<< hNameNoSuffix << " returned to docking == " << is_back_in_docking << endl; //delete later !!
+		cout << algoName <<" on house "<< hNameNoSuffix << " :  sum_dirt_in_house = " << sum_dirt_in_house << "  , dirt_collected = " << dirt_collected << endl;    //delete later!!!  
+
+		cout << algoName << "on house " << hNameNoSuffix << " this_num_steps = " << this_num_steps << endl;  //delete
+
+		if(debugSimulator || true) {
+				
+ 			
+				runIterator -> GetCurrentHouse() -> Print();
+				cout << endl << endl;
+			}
 	}
 	
 }
