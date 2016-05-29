@@ -45,7 +45,7 @@ private:
 	vector< SubSimulation *> _subSimulations;
 	vector<string> _hitWallErrorMessages;   //contains all the error messages of algorithms that hit walls
 
-	bool debugSimulator = true;   //for debugging
+	bool debugSimulator = false;   //for debugging
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:

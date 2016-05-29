@@ -60,7 +60,7 @@ private:
 	HouseMap _currentHouseMap;
 	size_t _iterationNum;
 	size_t _remainingSteps;
-	bool _debug = true;
+	bool _debug = false;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
 	DynamicPathFinder(const GeneralizedPoint & startingLocation, 

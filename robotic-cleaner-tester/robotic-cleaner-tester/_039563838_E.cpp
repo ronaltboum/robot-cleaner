@@ -156,9 +156,9 @@ bool _039563838_E::CheckUnexploredPointsReachability()
 
 Direction _039563838_E::Handle_Explore_State()
 {
-	cout << "Handle_Explore_State" << endl;
+	//cout << "Handle_Explore_State" << endl;
 	deque<vector<GeneralizedPoint>> SPToUnexplored = GetSPToUnexplored();
-	cout << "GetSPToUnexplored size" << SPToUnexplored.size() << endl;
+	//cout << "GetSPToUnexplored size" << SPToUnexplored.size() << endl;
 	size_t remainingSteps = GetRemainingSteps();
 
 	if(SPToUnexplored.front().size() > remainingSteps){

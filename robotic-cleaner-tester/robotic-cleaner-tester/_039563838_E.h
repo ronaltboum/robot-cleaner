@@ -78,7 +78,7 @@ protected:
 								// otherwise it's -1
 	bool AboutToFinishWasCalled;  //equals true if aboutToFinish was called by the simulation
 	CleaningPathCache _cleaningPathCache; // used for saving cleaning path and reusing it
-	bool _debug = true;  //when _debug ==1 we uncomment the debug prints
+	bool _debug = false;  //when _debug ==1 we uncomment the debug prints
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
