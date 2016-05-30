@@ -1,24 +1,24 @@
 //#include "stdafx.h"
-#include "_039563838_X.h"
+#include "_039563838_A.h"
 #include "AlgorithmRegistration.h"
 #include <iostream>
 
 using namespace std;
 
-_039563838_X::_039563838_X(const AbstractSensor& sensor, map<string, int> config)
+_039563838_A::_039563838_A(const AbstractSensor& sensor, map<string, int> config)
 {
 	initiallize();
 	setSensor(sensor);
 	setConfiguration(config);
 }
 
-_039563838_X::_039563838_X(void)
+_039563838_A::_039563838_A(void)
 {
 	initiallize();
 }
 
 //function called in each c'tor
-void _039563838_X::initiallize()
+void _039563838_A::initiallize()
 {
 	_dirtInCurrentLocation = 0;
 	_configs = map<string,int>();
@@ -28,7 +28,7 @@ void _039563838_X::initiallize()
 	_previousStatus = AlgorithmStatus::ChargingInDocking;
 }
 
-_039563838_X::~_039563838_X(void)
+_039563838_A::~_039563838_A(void)
 {
 }
 
@@ -37,7 +37,7 @@ _039563838_X::~_039563838_X(void)
 // Recieves:	The ACTUAL last step that was taken by the simulation.  May be differnet than what the algorithm recommended
 // Returns:   	Direction where it went
 //************************************
-Direction _039563838_X::step(Direction lastStep)
+Direction _039563838_A::step(Direction lastStep)
 {
 	
 	//printDebugHouseMapping();
@@ -122,7 +122,7 @@ Direction _039563838_X::step(Direction lastStep)
 
 
 //pre: Assumes possibleDirections isn't empty
-Direction _039563838_X::Handle_Explore_State(vector<Direction> possibleDirections, Direction lastDirection)
+Direction _039563838_A::Handle_Explore_State(vector<Direction> possibleDirections, Direction lastDirection)
 {
 	//requestedStep = dir_by_phase[phase];
 	int maxDirt = -1;
@@ -221,7 +221,7 @@ Direction _039563838_X::Handle_Explore_State(vector<Direction> possibleDirection
 //************************************
 // Brief:		change the algorithm state, consume/recharge battery, and clean current location by 1 if not cleaned
 // Returns:   	void
-void _039563838_X::UpdateState()
+void _039563838_A::UpdateState()
 {
   
  	//SensorInformation info = _robotSensor->sense();  //dust in sensor is still not updated
@@ -368,7 +368,7 @@ void _039563838_X::UpdateState()
 }
 
 
-void _039563838_X::aboutToFinish(int stepsTillFinishing)
+void _039563838_A::aboutToFinish(int stepsTillFinishing)
 {
 	AboutToFinishWasCalled = true;
 	_stepsTillFinishing = stepsTillFinishing;
@@ -384,7 +384,7 @@ void _039563838_X::aboutToFinish(int stepsTillFinishing)
 
 
 // Brief: returns opposite direction
-Direction _039563838_X::OppositeDirection(Direction d)
+Direction _039563838_A::OppositeDirection(Direction d)
 {
 	switch (d)
 	{
@@ -406,7 +406,7 @@ Direction _039563838_X::OppositeDirection(Direction d)
 // Gets:	 	Direction lastStep - the last direction the algorithm moved to
 // Returns:   	vector<Direction> - all possible steps excluding going back and staying. empty if non possiblle
 //************************************
-vector<Direction> _039563838_X::GetPossibleDirections(Direction lastStep) const
+vector<Direction> _039563838_A::GetPossibleDirections(Direction lastStep) const
 {
 	Direction back = OppositeDirection(lastStep);  //in the first step of the algorithm lastStep = Direction::Stay
 	SensorInformation info = _robotSensor->sense();
@@ -419,7 +419,7 @@ vector<Direction> _039563838_X::GetPossibleDirections(Direction lastStep) const
 }
 
 
-void _039563838_X::updateAlgorithmInfo(Direction lastStep) 
+void _039563838_A::updateAlgorithmInfo(Direction lastStep) 
 {
 	//1st: lastStep = stay. curr = D, pos = 00. return to step. step chooses east. step notifies DoStep. 
 	//2nd: in DoStep: curr is still D. doesn't clean D. then move east to (1,0). Then call step()
@@ -507,7 +507,7 @@ void _039563838_X::updateAlgorithmInfo(Direction lastStep)
 
 
 //Iterates over all directions and returns the direction with minimal stepsToDocking
-Direction _039563838_X::FindShortestPath()  //TODO:  debug this function with simulations
+Direction _039563838_A::FindShortestPath()  //TODO:  debug this function with simulations
 {
 	int min = 0;   int i = 0;
 	Direction ret = Direction::Stay;
@@ -538,7 +538,7 @@ Direction _039563838_X::FindShortestPath()  //TODO:  debug this function with si
 }
 
 
-int _039563838_X::calcStepsToDocking(int stepsFromDocking, const GeneralizedPoint& position) 
+int _039563838_A::calcStepsToDocking(int stepsFromDocking, const GeneralizedPoint& position) 
 {
         // if this cell already has a better route - keep it!
         auto thisCellInfo = houseMapping.find(position);
@@ -565,7 +565,7 @@ int _039563838_X::calcStepsToDocking(int stepsFromDocking, const GeneralizedPoin
     }
 
 
-void _039563838_X::updateStepsToDocking(int stepsToDocking, const GeneralizedPoint& position) 
+void _039563838_A::updateStepsToDocking(int stepsToDocking, const GeneralizedPoint& position) 
 {
 	if(houseMapping[position].stepsToDocking > stepsToDocking || houseMapping[position].stepsToDocking == -1) {
 	    houseMapping[position].stepsToDocking = stepsToDocking;
@@ -585,7 +585,7 @@ void _039563838_X::updateStepsToDocking(int stepsToDocking, const GeneralizedPoi
 
 
 //for debug:
-void _039563838_X::printDebugHouseMapping() 
+void _039563838_A::printDebugHouseMapping() 
 {
 
 	if(_debug) {
@@ -624,7 +624,7 @@ void _039563838_X::printDebugHouseMapping()
 
 
 //for debug
-void _039563838_X::PrintPossibleDirections(vector<Direction> possible_directions)
+void _039563838_A::PrintPossibleDirections(vector<Direction> possible_directions)
 {
 	for(Direction d: possible_directions) {
 		PrintPossibleDirection(d);
@@ -632,7 +632,7 @@ void _039563838_X::PrintPossibleDirections(vector<Direction> possible_directions
 }
 
 //for debug
-void _039563838_X::PrintLastDirection(Direction lastStep)
+void _039563838_A::PrintLastDirection(Direction lastStep)
 {
 	switch (lastStep)
 	{
@@ -654,7 +654,7 @@ void _039563838_X::PrintLastDirection(Direction lastStep)
 }
 
 //for debug
-void _039563838_X::PrintPossibleDirection(Direction possibleDirection)
+void _039563838_A::PrintPossibleDirection(Direction possibleDirection)
 {
 	switch (possibleDirection)
 	{
@@ -677,7 +677,7 @@ void _039563838_X::PrintPossibleDirection(Direction possibleDirection)
 
 
 //for debug
-void _039563838_X::PrintDirection(Direction chosen)
+void _039563838_A::PrintDirection(Direction chosen)
 {
 	switch (chosen)
 	{
@@ -702,7 +702,7 @@ void _039563838_X::PrintDirection(Direction chosen)
 }
 
 //for debug
-void _039563838_X::PrintAlgorithmStatus()
+void _039563838_A::PrintAlgorithmStatus()
 {
 	//AlgorithmStatus status = _robotStatus;
 	switch (_robotStatus)
@@ -731,7 +731,7 @@ void _039563838_X::PrintAlgorithmStatus()
 }
 
 
-int _039563838_X::ReturnDirectionIndex(Direction d)
+int _039563838_A::ReturnDirectionIndex(Direction d)
 {
 	switch (d)                  //enum class Direction {East, West, South, North, Stay};
 	{
@@ -752,7 +752,7 @@ int _039563838_X::ReturnDirectionIndex(Direction d)
 }
 
 
-bool _039563838_X::IsInDocking() const
+bool _039563838_A::IsInDocking() const
 {
 //	bool wow = (position.GeneralizedPoint::getX() == 0) && (position.GeneralizedPoint::getY() == 0);
 //	if(wow)
@@ -762,7 +762,7 @@ bool _039563838_X::IsInDocking() const
 
 
 //returns the most eastern index in houseMapping known so far
-int _039563838_X::GetEastMost()
+int _039563838_A::GetEastMost()
 {
 	int mostEast = 0;  //docking is at (0,0)
 	//int yValue = 0;
@@ -777,7 +777,7 @@ int _039563838_X::GetEastMost()
 }
 
 //returns the most eastern index in houseMapping known so far
-int _039563838_X::GetWestMost()
+int _039563838_A::GetWestMost()
 {
 	int mostWest = 0;  //docking is at (0,0)
 	//int yValue = 0;
@@ -791,7 +791,7 @@ int _039563838_X::GetWestMost()
 	return mostWest;
 }
 
-int _039563838_X::GetNorthMost()
+int _039563838_A::GetNorthMost()
 {
 	int mostNorth = 0;  //docking is at (0,0)
 	//int yValue = 0;
@@ -805,7 +805,7 @@ int _039563838_X::GetNorthMost()
 	return mostNorth;
 }
 
-int _039563838_X::GetSouthMost()
+int _039563838_A::GetSouthMost()
 {
 	int mostSouth = 0;  //docking is at (0,0)
 	//int yValue = 0;
@@ -820,7 +820,7 @@ int _039563838_X::GetSouthMost()
 }
 
 
-int _039563838_X::calcDirt(Direction d)
+int _039563838_A::calcDirt(Direction d)
 {
 	
 	switch (d)
@@ -842,7 +842,7 @@ int _039563838_X::calcDirt(Direction d)
 }
 
 //sum all the known at this moment dust in houseMapping east of current position 
-int _039563838_X::SumDustEastOfMe()
+int _039563838_A::SumDustEastOfMe()
 {
 	int currentX = position.getX();
 	int sum = 0;
@@ -855,7 +855,7 @@ int _039563838_X::SumDustEastOfMe()
 	return sum;
 }
 
-int _039563838_X::SumDustWestOfMe()
+int _039563838_A::SumDustWestOfMe()
 {
 	int currentX = position.getX();
 	int sum = 0;
@@ -868,7 +868,7 @@ int _039563838_X::SumDustWestOfMe()
 	return sum;
 }
 
-int _039563838_X::SumDustNorthOfMe()
+int _039563838_A::SumDustNorthOfMe()
 {
 	int currentY = position.getY();
 	int sum = 0;
@@ -881,7 +881,7 @@ int _039563838_X::SumDustNorthOfMe()
 	return sum;
 }
 
-int _039563838_X::SumDustSouthOfMe()
+int _039563838_A::SumDustSouthOfMe()
 {
 	int currentY = position.getY();
 	int sum = 0;
@@ -894,7 +894,7 @@ int _039563838_X::SumDustSouthOfMe()
 	return sum;
 }
 
-int _039563838_X::Find_Closest_Dirty_Point(Direction d)
+int _039563838_A::Find_Closest_Dirty_Point(Direction d)
 {
 	switch (d)
 	{
@@ -914,8 +914,8 @@ int _039563838_X::Find_Closest_Dirty_Point(Direction d)
 	}
 }
 
-//vector<int> _039563838_X::Find_Naive_Distance_to_Closest_Dirty_Point (Direction d)  
-int _039563838_X::Find_Closest_Dirty_Point_East_of_Me()
+//vector<int> _039563838_A::Find_Naive_Distance_to_Closest_Dirty_Point (Direction d)  
+int _039563838_A::Find_Closest_Dirty_Point_East_of_Me()
 {
 	int currentX = position.getX();
 	int currentY = position.getY();
@@ -936,7 +936,7 @@ int _039563838_X::Find_Closest_Dirty_Point_East_of_Me()
 	return maxDistance;
 }
 
-int _039563838_X::Find_Closest_Dirty_Point_West_of_Me()
+int _039563838_A::Find_Closest_Dirty_Point_West_of_Me()
 {
 	int currentX = position.getX();
 	int currentY = position.getY();
@@ -957,7 +957,7 @@ int _039563838_X::Find_Closest_Dirty_Point_West_of_Me()
 	return maxDistance;
 }
 
-int _039563838_X::Find_Closest_Dirty_Point_North_of_Me()
+int _039563838_A::Find_Closest_Dirty_Point_North_of_Me()
 {
 	int currentX = position.getX();
 	int currentY = position.getY();
@@ -978,7 +978,7 @@ int _039563838_X::Find_Closest_Dirty_Point_North_of_Me()
 	return maxDistance;
 }
 
-int _039563838_X::Find_Closest_Dirty_Point_South_of_Me()
+int _039563838_A::Find_Closest_Dirty_Point_South_of_Me()
 {
 	int currentX = position.getX();
 	int currentY = position.getY();
@@ -999,18 +999,18 @@ int _039563838_X::Find_Closest_Dirty_Point_South_of_Me()
 	return maxDistance;
 }
 
-REGISTER_ALGORITHM (_039563838_X)
+REGISTER_ALGORITHM (_039563838_A)
 
 
 // extern "C" {
 // AbstractAlgorithm *maker(){
-//    return new _039563838_X;
+//    return new _039563838_A;
 // }
 // class proxy { 
 // public:
 //    proxy(){
 //       // register the maker with the factory using file name 
-//       factory["039563838_X_"] = maker;
+//       factory["039563838_A_"] = maker;
 //    }
 // };
 // // our one instance of the proxy

@@ -23,6 +23,7 @@ void Simulator::initiallize()
 	_badHousesMap = map<string, string>();
 	_scoresMap = map<string, map<string, int> >();
 	_subSimulations =  vector< SubSimulation *>();
+	_sortedAlgorithmsMap = map<double, vector<string>, std::greater<int>>();
 	
 }
 
@@ -46,13 +47,21 @@ Simulator::~Simulator(void)
 bool Simulator::ReadConfigFile(const string & configFilePath){
 	 
 	bool valid = SingletonConfigReader::instance(configFilePath) -> IsConfigValid ();
+	
+	//cout << "in Simulator::ReadConfigFile  valid config == " << valid << endl;
+
 	if(valid == false)
 	    return false;
-	bool missingParameters = SingletonConfigReader::instance(configFilePath) -> ReadConfigFromFile();
+
+	string path = configFilePath;
+	if(configFilePath != "config.ini")
+		path = path + "config.ini";
+
+	bool missingParameters = SingletonConfigReader::instance(path) -> ReadConfigFromFile();
 	if(missingParameters == false)
 	    return false;
 	
-	_configs = SingletonConfigReader::instance(configFilePath) -> GetConfigMap();
+	_configs = SingletonConfigReader::instance(path) -> GetConfigMap();
 	_defaultBattery = new Battery(_configs);
 
 // 	map<string,int>::iterator strIt;
@@ -140,7 +149,7 @@ int Simulator::LoadRuns()
 		for(_algoIterator=algorithms.begin() ; _algoIterator!=algorithms.end() ; _algoIterator++){
 			Point * startingPoint = _houses[houseIndex]->GetDockingStation(); //new is deallocated by AlgorithmSingleRun
 
-			if(debugSimulator || true) {
+			if(debugSimulator || false) {
 				int pRow = startingPoint -> GetRow();
  				int pCol = startingPoint -> GetCol();
  				cout<< "In Simulator:  startingPoint = " << pRow << " , " << pCol << endl << endl;  //delte !!!!!!!!!!
@@ -239,7 +248,7 @@ void Simulator::RunSingleSubSimulationThread()
 void Simulator::RunAll(int houseIndex)
 {
   
-	cout << std::this_thread::get_id() << ": " << "is in RunAll on house at index: " << houseIndex << endl;  //delete !!!!!!!!!!!!!!!!!!
+	//cout << std::this_thread::get_id() << ": " << "is in RunAll on house at index: " << houseIndex << endl;  //delete !!!!!!!!!!!!!!!!!!
   
   
 	SubSimulation * sub = _subSimulations[houseIndex]; 
@@ -406,7 +415,7 @@ void Simulator::registerScores(int winner_num_steps, int houseIndex, int simulat
 
 		cout << algoName << "on house " << hNameNoSuffix << " this_num_steps = " << this_num_steps << endl;  //delete
 
-		if(debugSimulator || true) {
+		if(debugSimulator || false) {
 				
  			
 				runIterator -> GetCurrentHouse() -> Print();
@@ -418,26 +427,95 @@ void Simulator::registerScores(int winner_num_steps, int houseIndex, int simulat
 
 void Simulator::printScores()
 {
-  //cols = num of valid houses + 2
-  int houseNum = _houses.size();  //number of valid houses
-  int cols = houseNum + 2;
-  //rows = num of valid  algos + 1
-  //int rows = algoNum + 1;
-  int numCharsInRow = 13 + 10*(cols - 1) + (cols + 1);
-  printDashes(numCharsInRow);
-  vector<string> trimmedValidHouseNames = GetValidTrimmedHousesNames();
-  printFirstRow(houseNum, trimmedValidHouseNames);
-  printDashes(numCharsInRow);
-  vector<string> algoNames = AlgorithmFactory::getInstance().GetAlgorithmNames();
-  vector<string>::iterator algoNamesIt;
-  for(algoNamesIt = algoNames.begin() ; algoNamesIt != algoNames.end(); algoNamesIt++) {
-    string algoName = (*algoNamesIt);
-    printRow(algoName);
-    printDashes(numCharsInRow);
-  }
+	//cols = num of valid houses + 2
+	int houseNum = _houses.size();  //number of valid houses
+	int cols = houseNum + 2;
+	//rows = num of valid  algos + 1
+	//int rows = algoNum + 1;
+	int numCharsInRow = 13 + 10*(cols - 1) + (cols + 1);
+	printDashes(numCharsInRow);
+	vector<string> trimmedValidHouseNames = GetValidTrimmedHousesNames();
+	printFirstRow(houseNum, trimmedValidHouseNames);
+	printDashes(numCharsInRow);
+	vector<string> algoNames = AlgorithmFactory::getInstance().GetAlgorithmNames();
+  
 
+//  vector<string>::iterator algoNamesIt;
+//  for(algoNamesIt = algoNames.begin() ; algoNamesIt != algoNames.end(); algoNamesIt++) {
+//    string algoName = (*algoNamesIt);
+//    printRow(algoName);
+//    printDashes(numCharsInRow);
+//  }
+	
+	SortAlgorithms(); 
+	//map<int, vector<string>> _sortedAlgorithmsMap
+	map<double, vector<string>>::iterator sortedIt;
+	for(auto& a : _sortedAlgorithmsMap) {
+		//if(a.second.dirt > 0) {
+		for(int i=0; i < (int)a.second.size() ; i++) {
+			printRow(a.second.at(i));
+			printDashes(numCharsInRow);
+		}
+	}
   
 }
+
+//sorts algoritms by AVG
+void Simulator::SortAlgorithms() 
+{
+	//map<int, vector<string>> _sortedAlgorithmsMap
+	map<double, vector<string>>::iterator sortedIt;
+	vector<string> algoNames = AlgorithmFactory::getInstance().GetAlgorithmNames();
+	vector<string>::iterator algoNamesIt;
+	for(algoNamesIt = algoNames.begin() ; algoNamesIt != algoNames.end(); algoNamesIt++) {
+    	string algoName = (*algoNamesIt);
+		vector<int> results = GetAlgoResults(algoName);  
+	  	vector<int>::iterator intIt;
+	  	int res = 0;   int sum = 0; 
+	  	for(intIt = results.begin() ; intIt != results.end(); intIt++) {
+			res = (*intIt);
+			sum = sum + res;
+		}
+		int houseNum = _houses.size();  //number of valid houses
+		double avg = double(sum)/ double(houseNum);
+		double scale = 0.01;  // i.e. round to nearest one-hundreth
+		avg = floor(avg / scale + 0.5) * scale;
+		sortedIt = _sortedAlgorithmsMap.find(avg);
+		if(sortedIt == _sortedAlgorithmsMap.end() ) {
+			vector<string> currentAlgoName;
+			currentAlgoName.push_back(algoName);
+			_sortedAlgorithmsMap.insert( pair<double, vector<string>>(avg, currentAlgoName) );
+		}
+		else {
+			//it -> second).insert ( pair<string,int>(trimmedHouseName ,score) );
+//     _scoresMap[algoName] = (it -> second);
+			(sortedIt -> second).push_back(algoName);
+			_sortedAlgorithmsMap[avg] = (sortedIt -> second);
+		}
+	  	
+	}
+	
+  
+//// map<string, map<string, int> > _scoresMap     map<algo name, map<house name, int result> >
+//  map< string, map<string, int> >::iterator it;
+//  it = _scoresMap.find(algoName);
+//  map<string, int> innerMap;
+//  if ( it == _scoresMap.end() ) { // not found
+//    innerMap.insert( pair<string, int>(trimmedHouseName ,score) );
+//    _scoresMap.insert ( pair< string, map<string, int> >(algoName ,innerMap) );
+//   
+//  }else {  // found
+//  
+//    (it -> second).insert ( pair<string,int>(trimmedHouseName ,score) );
+//     _scoresMap[algoName] = (it -> second);
+//     
+//     //cout << "algo = " << algoName << endl;
+//     //cout << "house = " << trimmedHouseName << endl;
+//  }
+  
+
+}
+
 
 void Simulator::printRow(string algoName)
 {

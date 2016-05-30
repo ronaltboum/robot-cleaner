@@ -28,7 +28,17 @@ int main(int argc, const char * argv[])
 		default:
 			break;
 	}
-	const string configFile = CommandLineInterpeter::getConfigFile();
+
+	
+	string configFile = CommandLineInterpeter::getConfigFile();
+	if(configFile != "config.ini") {
+		int len = configFile.length();
+		if(configFile.at(len - 1) != '/')
+			configFile = configFile + "/";
+
+	}
+	//cout << "after configFile = " << configFile << endl;  //delete !!!!
+
 	const string houseFolder = CommandLineInterpeter::getHousePath();
 	const string algorithmFolder = CommandLineInterpeter::getAlgorithmPath();
 	const string scoreFormulaFile = CommandLineInterpeter::getScoreFormulaFile();
@@ -73,6 +83,14 @@ int main(int argc, const char * argv[])
 	}
 	catch(int e){
 		printUsageMessage();
+		string *absolutePath = s.GetAbsPath(algorithmFolder);
+	    if(absolutePath == NULL) {
+	      cout << "​cannot find algorithm files in '" << algorithmFolder << "'" << endl;
+	    }
+	    else{
+		cout << "​cannot find algorithm files in '" << (*absolutePath) << "'" << endl;
+		delete absolutePath;
+	    }
 		return EXIT_FAILURE;
 	}
 	
@@ -106,8 +124,16 @@ int main(int argc, const char * argv[])
 	      throw 20;
 	    }
 	}
-	catch(int e) {
+	catch(int e){
 		printUsageMessage();
+		string *absolutePath = s.GetAbsPath(houseFolder);
+	    if(absolutePath == NULL) {
+	      cout << "​cannot find house files in '" << houseFolder << "'" << endl;
+	    }
+	    else{
+			cout << "​cannot find house files in '" << (*absolutePath) << "'" << endl;
+			delete absolutePath;
+	    }
 		return EXIT_FAILURE;
 	}
 	

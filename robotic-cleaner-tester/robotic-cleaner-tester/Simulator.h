@@ -44,7 +44,7 @@ private:
 	map<string, map<string, int> > _scoresMap;     //map<algo name, map<house name, int result> >
 	vector< SubSimulation *> _subSimulations;
 	vector<string> _hitWallErrorMessages;   //contains all the error messages of algorithms that hit walls
-
+	map<double, vector<string>, std::greater<int>> _sortedAlgorithmsMap;
 	bool debugSimulator = false;   //for debugging
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,6 +83,9 @@ public:
 	void PrintAlgoErrors();
 	string* GetAbsPath(string relativePath);  //returns absolute path or null in case of error
 	void PrintDirection(Direction chosen); //for debug
+
+	void SortAlgorithms(); //sorts algoritms by AVG
+
 private:
 	bool MoveAllOneStep(int & currentRankAlgorithmsCompetingOn, int houseIndex);
 	void CallAboutToFinish(int houseIndex);

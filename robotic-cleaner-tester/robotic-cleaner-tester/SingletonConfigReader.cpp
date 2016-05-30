@@ -10,6 +10,7 @@ using namespace std;
 SingletonConfigReader *SingletonConfigReader::s_instance = 0;
 const SingletonConfigReader::StringToIntMap SingletonConfigReader::defaultValues = initDefaultValues();
 SingletonConfigReader::StringToIntMap SingletonConfigReader::configMap = initConfigMap();
+vector<string> SingletonConfigReader::badValues = initBadValuesVector();
 
 SingletonConfigReader::SingletonConfigReader(const string & configFilePath)
 {
@@ -47,10 +48,17 @@ void SingletonConfigReader::processLine(const string& line)
 		return;
 	}
 	int parameterValue = 0;
-	if ( ! (istringstream(tokens[1]) >> parameterValue) )
+	if ( ! (istringstream(tokens[1]) >> parameterValue) ) {
+		//_existBadValues = true;
+		badValues.push_back(trim(tokens[0]));
+		//cout << "in SingletonConfigReader::processLine and can't parse paramter" << endl;
 		return;
+
+	}
 	
 	configMap[trim(tokens[0])] = parameterValue;
+	if(parameterValue <= 0)
+		badValues.push_back(trim(tokens[0]));
 }
 
 //vector<string> SingletonConfigReader::CheckMissingParameters(map<string, int> & configs)
@@ -90,6 +98,11 @@ bool SingletonConfigReader::ReadConfigFromFile()
 	}
 	myfile.close();
 
+	if(badValues.size() > 0){
+		PrintBadValues();
+		return false;
+	}
+			
 	return HandleMissingParameters();
 }
 	
@@ -112,13 +125,54 @@ void SingletonConfigReader::PrintMissingParameters(vector<string> missingParamet
   cout << endl;
 }
 
+void SingletonConfigReader::PrintBadValues()
+{
+	//example: config.ini having bad values for 1 parameter(s): BatteryCapacity
+	int size = badValues.size();
+	if(size == 0)
+		return;  //shouldn't get here
+	cout << "config.ini having bad values for " << size << " parameter(s): ";
+	vector<string>::iterator strIt;
+	strIt = badValues.begin();
+	cout << (*strIt);
+	if(size == 1){
+	  cout << endl;
+	  return;
+	}
+	++strIt;  //TODO:  should i advance here?
+	for( ; strIt != badValues.end();  strIt++) {
+	  cout << ", " << (*strIt);
+	}
+	cout << endl;
+}
+
+
 bool SingletonConfigReader::IsConfigValid ()
 {
+
+  //cout << "in SingletonConfigReader::IsConfigValid and _configFilePath before = " << _configFilePath << endl; //delet
+
+	string folder = _configFilePath;
+	if(_configFilePath != "config.ini")
+		_configFilePath = _configFilePath + "config.ini";
+
+	//cout << "in SingletonConfigReader::IsConfigValid and _configFilePath after = " << _configFilePath << endl; //delet
+
   struct stat buffer;   
   bool exists =  (stat (_configFilePath.c_str(), &buffer) == 0);
   if(exists == false) {
-      cout << "Usage: simulator [-config <config path>] [-house_path <house path>] [-algorithm_path <algorithm path>]" << endl;
-      return false;
+    cout << "Usage: simulator [-config <config path>] [-house_path <house path>] [-algorithm_path <algorithm path>]" << endl;
+		string *absolutePath = GetAbsolutePath(folder);  //returns null on error, or prints in success
+		if(absolutePath == NULL) {  //use relative path
+	  	cout << "cannot find config.ini file in '" << _configFilePath << "'" << endl;
+    }
+     
+	  //cout << "config.ini exists in '" << (*absolutePath) << "' but cannot be opened" << endl;
+	  else {
+    	cout << "cannot find config.ini file in '" << (*absolutePath) << "'" << endl;
+			delete absolutePath;
+		}
+    return false;
   }
   
   //cout << "config path = " << _configFilePath << endl;  //delte !!!!!!!!!!!!!!!!!!!!

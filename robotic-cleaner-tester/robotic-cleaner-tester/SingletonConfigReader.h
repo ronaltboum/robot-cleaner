@@ -34,6 +34,8 @@ private:
 	static const StringToIntMap defaultValues; // a static map of config names and their default values
 	static StringToIntMap configMap;  //the map that contains values from config file
 	static SingletonConfigReader * s_instance; // singleton instance
+	//bool _existBadValues = false;  //becomes true if there are bad values for the paramters
+	static vector<string> badValues;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 private:
@@ -60,8 +62,10 @@ private:
 	static vector<string> split(const string & line, char delim); //splitting line according to the delimiter delim
 	static StringToIntMap initDefaultValues(); // initiallize the map of default values
 	static StringToIntMap initConfigMap();
+	static vector<string> initBadValuesVector();
 	bool HandleMissingParameters();
 	void PrintMissingParameters(vector<string> missingParameters);
+	void PrintBadValues();
 };
 
 inline string SingletonConfigReader::GetFilePath()
@@ -106,6 +110,11 @@ inline SingletonConfigReader::StringToIntMap SingletonConfigReader::initConfigMa
 inline map<string,int> SingletonConfigReader::GetConfigMap()
 {
   return configMap;
+}
+
+inline vector<string> SingletonConfigReader::initBadValuesVector(){
+	vector<string> badValues = vector<string>();
+	return badValues;
 }
 
 
