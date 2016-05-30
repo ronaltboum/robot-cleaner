@@ -8,7 +8,7 @@
 		_iterationNum = 1;
 		_dynamicQueue = map<GeneralizedPoint, PointInfo>();
 		_dynamicQueue2 = map<GeneralizedPoint, PointInfo>();
-		map<HouseMap, vector<Path>> startingLocationMap = {{completeHouseMapping , {{startingLocation}}}};
+		map<HouseMap, Path> startingLocationMap = {{completeHouseMapping , {startingLocation}}};
 		PointInfo startingLocationInfo = {0, startingLocationMap};
 		_currentQueue[startingLocation] = startingLocationInfo;
 		if(_debug) cout << "requestedDistance: " << requestedDistance << endl;
@@ -21,7 +21,7 @@
 	// check all paths that leads to src if adding a step to dest could clean
 	bool DynamicPathFinder::MoveCleans(const GeneralizedPoint & src, const GeneralizedPoint & dest)
 	{
-		const map<HouseMap, vector<Path>> & HouseMapToPaths =  _currentQueue.at(src)._mapToPaths;
+		const map<HouseMap, Path> & HouseMapToPaths =  _currentQueue.at(src)._mapToPaths;
 		for(const auto& HouseMapPathsPair : HouseMapToPaths){
 			if(HouseMapPathsPair.first.at(dest).dirt > 0) // there's dirt in the current map in the current location 
 				return true;
@@ -44,11 +44,11 @@
 			return;
 		
 		auto houseMapFilter = 	//filter all the maps which doesn't clean if we could clean
-			[&moveCleans, &dest](const pair<HouseMap, vector<Path>> & pair) -> bool { 
+			[&moveCleans, &dest](const pair<HouseMap, Path> & pair) -> bool { 
 				return ((! moveCleans) || (pair.first.at(dest).dirt > 0)); 
 			};
 
-		map<HouseMap, vector<Path>> & HouseMapToPaths =  _currentQueue.at(src)._mapToPaths;
+		map<HouseMap, Path> & HouseMapToPaths =  _currentQueue.at(src)._mapToPaths;
 
 
 		if(_debug){
@@ -69,17 +69,13 @@
 			houseMapItr != HouseMapToPaths.end();
 			houseMapItr = find_if(++houseMapItr, HouseMapToPaths.end(), houseMapFilter))
 		{
-			vector<Path> & pathsFromSrc = houseMapItr->second;
-			// runing on all paths of the maps and adding the new paths with dest to _nextQueue
-			for( auto pathItr = pathsFromSrc.begin(); pathItr != pathsFromSrc.end() ; ++pathItr) {
-				//if(_debug) cout << "DynamicPathFinder::IteratorMoveUdate\tinside for for loop";
-				HouseMap newHouseMap = HouseMap(houseMapItr->first);
-				if(moveCleans) --newHouseMap[dest].dirt;
-				Path newPath = Path(*pathItr);
-				newPath.push_back(dest);
-				//add the new path in the currect map
-				_nextQueue[dest]._mapToPaths[newHouseMap].push_back(newPath);
-			}
+			Path & pathsFromSrc = houseMapItr->second;
+			HouseMap newHouseMap = HouseMap(houseMapItr->first);
+			if(moveCleans) --newHouseMap[dest].dirt;
+			Path newPath = Path(pathsFromSrc);
+			newPath.push_back(dest);
+			//add the new path in the currect map
+			_nextQueue[dest]._mapToPaths[newHouseMap] = newPath;
 		}
 	}
 
@@ -163,15 +159,15 @@
 	*/
 	const DynamicPathFinder::Path DynamicPathFinder::GetBestPathTo(const GeneralizedPoint & dest) const
 	{		
-		map<HouseMap, vector<Path>> mapToPaths = _currentQueue.at(dest)._mapToPaths;
-		vector<Path> relevantPaths = mapToPaths.cbegin()->second;
 		map<Path, int> scoringPathsMap = map<Path, int>();
-		if(_debug) cout << "GetBestPathTo: num of paths: " << relevantPaths.size() << endl;
-		if(relevantPaths.size() == 1)
-			return relevantPaths.front();
-		for(const auto & path : relevantPaths)
+		map<HouseMap, Path> & mapToPaths = _currentQueue.at(dest)._mapToPaths;
+		
+		if(_debug) cout << "GetBestPathTo: num of maps: " << mapToPaths.size() << endl;
+		if(mapToPaths.size() == 1)
+			return mapToPaths.cbegin()->second;
+		for(const auto & HouseMapPathsPair : mapToPaths)
 		{
-			scoringPathsMap[path] = GetPathScore(path);
+			scoringPathsMap[HouseMapPathsPair.second] = GetPathScore(HouseMapPathsPair.second);
 		}
 		int maxPoints = -1;
 		Path bestPath = scoringPathsMap.begin()->first;

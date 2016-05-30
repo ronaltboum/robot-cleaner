@@ -48,7 +48,7 @@ public:
 	struct PointInfo
 	{
 		int _amountCleaned = -1;				//nothing is known
-		map<HouseMap, vector<Path>> _mapToPaths; // a map of all the housemaps with the paths leading to them
+		map<HouseMap, Path> _mapToPaths; // a map of all the housemaps with one of the path leading to them
 	};
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 private:
