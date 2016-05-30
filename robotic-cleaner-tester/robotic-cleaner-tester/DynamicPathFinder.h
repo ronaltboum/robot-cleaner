@@ -3,6 +3,7 @@
 
 #include "Direction.h"
 #include "DirectionExt.h"
+#include "MakeUnique.h"
 #include "AlgorithmRegistration.h"
 #include "AbstractAlgorithm.h"
 #include "FactoryDefinition.h"  //header file where factory is defined
@@ -26,18 +27,27 @@ class DynamicPathFinder
 //~~~~~~~~~~~~~~~~~~~~` Macros and definitions ~~~~~~~~~~~~~~~~~~~~~~~~~
 public:
 	struct CellInfo {
-		int dirt = -1; // -1 represents "unknown"
-		int stepsToDocking = -1; // -1 represents "unknown" when it's wall
-		bool isWall = false;
-		vector<Direction> parents = vector<Direction>(); // directions where you can go from here to get to docking fastest
+		int dirt; // -1 represents "unknown"
+		int stepsToDocking; // -1 represents "unknown" when it's wall
+		bool isWall;
+		vector<Direction> parents; // directions where you can go from here to get to docking fastest
 		//directions of where we know we can go back. false might be unkown yet and change in the future.
-		vector<Direction> possibleKnownDirections = vector<Direction>();
+		vector<Direction> possibleKnownDirections;
 		bool isUnexplored() const { return (dirt == -1); }
 		bool isClean() const { return (dirt == 0); }
 
 	    bool operator<(const CellInfo& other)const {
 	        return (dirt < other.dirt); 
     	}
+
+    	CellInfo()
+    		: dirt(0), stepsToDocking(-1), isWall(true), parents(vector<Direction>()), possibleKnownDirections(vector<Direction>()){ }
+
+    	CellInfo(int dirt, int stepsToDocking, bool isWall)
+    		: dirt(dirt), stepsToDocking(stepsToDocking), isWall(isWall), parents(vector<Direction>()), possibleKnownDirections(vector<Direction>()){ }
+
+    	CellInfo(int dirt, int stepsToDocking, bool isWall, vector<Direction> & parents, vector<Direction> & possibleKnownDirections)
+    		: dirt(dirt), stepsToDocking(stepsToDocking), isWall(isWall), parents(parents), possibleKnownDirections(possibleKnownDirections){ }
 	};
 
 	typedef std::vector<GeneralizedPoint> Path;

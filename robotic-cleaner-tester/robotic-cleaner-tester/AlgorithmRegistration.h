@@ -3,7 +3,7 @@
 
 #include <functional>
 #include <memory>
-
+#include "MakeUnique.h"
 #include "AbstractAlgorithm.h"
 
 class AlgorithmRegistration {

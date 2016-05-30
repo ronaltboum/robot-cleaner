@@ -37,11 +37,11 @@ public:
 	// initialize the default parameters value
 	static map<string,string> initMap(){
 		map<string,string> CLAs;
-		CLAs["-config"]		 = "config.ini";
-		CLAs["-house_path"] 	 = "./";
-		CLAs["-algorithm_path"] = "./";
-		CLAs["-score_formula"]  = "./score_formula.so";
-		CLAs["-threads"] = "1";
+		CLAs[string("-config")]		 = string("config.ini");
+		CLAs[string("-house_path")] 	 = string("./");
+		CLAs[string("-algorithm_path")] = string("./");
+		CLAs[string("-score_formula")]  = string("./score_formula.so");
+		CLAs[string("-threads")] = string("1");
 		return CLAs;
 	}
 

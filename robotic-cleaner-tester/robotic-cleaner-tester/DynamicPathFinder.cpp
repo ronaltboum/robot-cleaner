@@ -8,8 +8,9 @@
 		_iterationNum = 1;
 		_dynamicQueue = map<GeneralizedPoint, PointInfo>();
 		_dynamicQueue2 = map<GeneralizedPoint, PointInfo>();
-		map<HouseMap, Path> startingLocationMap = {{completeHouseMapping , {startingLocation}}};
-		PointInfo startingLocationInfo = {0, startingLocationMap};
+		PointInfo startingLocationInfo;
+		startingLocationInfo._amountCleaned = 0;
+		startingLocationInfo._mapToPaths = {{completeHouseMapping , {startingLocation}}};
 		_currentQueue[startingLocation] = startingLocationInfo;
 		if(_debug) cout << "requestedDistance: " << requestedDistance << endl;
 	}
