@@ -154,7 +154,7 @@ bool _039563838_B::CheckUnexploredPointsReachability()
     {
     	if(pointInfoPair.second.isUnexplored())
     	{
-    		pointInfoPair.second = {0, -1, true, vector<Direction>(), vector<Direction>()}; // set it as a wall
+    		pointInfoPair.second = CellInfo(); // set it as a wall
     	}
     }
     _allExplored = true;

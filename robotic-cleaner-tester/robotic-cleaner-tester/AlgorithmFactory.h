@@ -15,7 +15,6 @@
 #include <string.h>
 #include "Direction.h"
 #include "AbstractSensor.h"
-#include "MakeUnique.h"
 #include "AbstractAlgorithm.h"
 #include "MakeUnique.h"
 #include "AlgorithmRegistration.h"

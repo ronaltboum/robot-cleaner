@@ -66,6 +66,11 @@ protected:
 			--steps_remaining;
 			return d;
 		}
+		PathCache(vector<GeneralizedPoint> savedPath = vector<GeneralizedPoint>(), size_t index = 0, size_t steps_remaining = 0, AlgorithmStatus status = AlgorithmStatus::FirstStep)
+			: savedPath(savedPath), index(index), steps_remaining(steps_remaining), status(status){}
+
+		PathCache(vector<GeneralizedPoint> & savedPath, size_t index, size_t steps_remaining, AlgorithmStatus status = AlgorithmStatus::FirstStep)
+			: savedPath(savedPath), index(index), steps_remaining(steps_remaining), status(status){}
 	};
 
 
