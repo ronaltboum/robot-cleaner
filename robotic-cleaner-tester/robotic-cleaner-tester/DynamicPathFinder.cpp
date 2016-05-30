@@ -86,7 +86,8 @@
 
 	void DynamicPathFinder::RunIterationStep()
 	{
-		if(_debug) cout << endl << "iteration " << _iterationNum << " start:" << endl;
+		if(_debug) 
+			cout  << endl << "iteration " << _iterationNum << " start:" << endl;
 
 		//runing on all GeneralizedPoint-PointInfo pair which are already set and adding new paths
 		int pointsIndex = 1;
@@ -191,20 +192,6 @@
 		}
 		return bestPath;
 	}
-	
-	// const DynamicPathFinder::Path DynamicPathFinder::GetBestPathTo2(const GeneralizedPoint & dest) const
-	// {		
-	// 	map<HouseMap, vector<Path>> mapToPaths = _currentQueue.at(dest)._mapToPaths;
-	// 	Path firstPath = mapToPaths.cbegin()->second.back();
-	// 	if(_debug){
-	// 		cout << "amount cleaned: " << _currentQueue.at(dest)._amountCleaned << " size of map: " << _currentQueue.at(dest)._mapToPaths.size() << endl;
-	// 		cout << "path: ";
-	// 		for(auto & p: firstPath)
-	// 			cout << p;
-	// 		cout << endl << "path len: " << firstPath.size() << endl;
-	// 	}
-	// 	return firstPath;
-	// }
 
 	const DynamicPathFinder::Path DynamicPathFinder::GetBestPathToAny() const
 	{

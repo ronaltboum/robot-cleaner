@@ -19,6 +19,8 @@
 
 using namespace std;
 
+typedef vector<GeneralizedPoint> Path;
+
 class _039563838_E :	public AbstractAlgorithm
 {
 	friend class DynamicPathFinder;
@@ -26,15 +28,28 @@ class _039563838_E :	public AbstractAlgorithm
 protected:
 	// a struct used to save the best cleaning path, and recalculate it only when needed 
 	// (= when the simulator chose to ignore our recommendations)
-	struct CleaningPathCache
+	enum class AlgorithmStatus {
+		FirstStep, 			// the algorithm didn't made any step yet
+		ChargingInDocking, 	// the algorithm is charging until battery is full
+		Exploring, 			// the algorithm is trying to reach all points in the house it has no information on
+		Cleaning,			// the algorithm is done exploring and now it's greedily cleans
+		Returning, 			// the algorithm battery is running out,  so it's returning to docking via the same path it travelled from docking to current position
+		Done 				// the algorithm is done cleaning the house
+	};	
+
+	struct PathCache
 	{
 		vector<GeneralizedPoint> savedPath;
 		size_t index = 0;
 		size_t steps_remaining = 0;
+		AlgorithmStatus status;
 
-		bool WasCorrectStepCommited(Direction lastStep, int remainingSteps){
-			if(steps_remaining != (size_t)remainingSteps)
+		bool StillCorrect(Direction lastStep, int remainingSteps, AlgorithmStatus currentStatus ){
+			if(currentStatus != status)
 				return false;
+			if(steps_remaining != (size_t)remainingSteps){
+				return false;
+			}
 			if(savedPath.empty() || ReachedEnd() || index == 0) //out of boundries
 				return false;
 			return savedPath[index - 1].GetDirection(savedPath[index]) == lastStep;
@@ -51,14 +66,6 @@ protected:
 		}
 	};
 
-	enum class AlgorithmStatus {
-		FirstStep, 			// the algorithm didn't made any step yet
-		ChargingInDocking, 	// the algorithm is charging until battery is full
-		Exploring, 			// the algorithm is trying to reach all points in the house it has no information on
-		Cleaning,			// the algorithm is done exploring and now it's greedily cleans
-		Returning, 			// the algorithm battery is running out,  so it's returning to docking via the same path it travelled from docking to current position
-		Done 				// the algorithm is done cleaning the house
-	};	
 
 	typedef DynamicPathFinder::CellInfo CellInfo;
 
@@ -77,7 +84,7 @@ protected:
 	int _stepsTillFinishing;  //_stepsTillFinishing == MaxStepsAfterWinner when aboutToFinish is called by the simulation
 								// otherwise it's -1
 	bool AboutToFinishWasCalled;  //equals true if aboutToFinish was called by the simulation
-	CleaningPathCache _cleaningPathCache; // used for saving cleaning path and reusing it
+	PathCache _pathCache; // used for saving cleaning path or returning path and reusing it
 	bool _debug = false;  //when _debug ==1 we uncomment the debug prints
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -99,7 +106,7 @@ protected:
 	virtual bool IsInDocking() const; //: check if the algorithm is in the docking station
 	virtual void UpdateState(); //: change the state
 	Direction Handle_Explore_State();
-	Direction Handle_Returning_State();
+	Direction Handle_Returning_State(Direction lastStep);
 	Direction Handle_Cleaning_State(Direction lastStep);
 	bool CheckAllCleaned();
 	bool isInMap(GeneralizedPoint pointToCheck);
@@ -108,11 +115,13 @@ protected:
 	bool CheckAllExplored();
 	void UpdateDirt(CellInfo & oldInfo, int newDirtLevel);
 	deque<vector<GeneralizedPoint>> GetSPToUnexplored(bool fromDocking = false);
-	deque<vector<GeneralizedPoint>> GetSPToDocking() const;
+	vector<GeneralizedPoint> GetSPToDocking();
 	bool CheckUnexploredPointsReachability();
 	void UpdateAlgorithmInfo(Direction lastStep);
 	void printDebugHouseMapping();
 	void PrintAlgorithmStatus();  //for debug
+	int GetPathTotalCleaning(const vector<GeneralizedPoint> & path) const;
+	vector<GeneralizedPoint> GetBestPathToDocking(const deque<vector<GeneralizedPoint>> & pathsToDocking);
 
 
 }; // end of class _039563838_E

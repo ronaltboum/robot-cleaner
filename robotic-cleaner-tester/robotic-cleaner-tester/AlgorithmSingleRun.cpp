@@ -83,22 +83,25 @@ bool AlgorithmSingleRun::HasWon() const
 //************************************
 Direction AlgorithmSingleRun::DoStep(Direction lastStep)
 {
+	if(debug_AlgorithmSingleRun)  {  //for debugging
+		_currentHouse->Print(*_currentPosition);
+	}
+
 	// charging and cleaning before the move
 	if(_currentHouse->IsDockingStation(*_currentPosition))
 		_robotBattery->Recharge();
 	else
 		_robotBattery->Consume();
 
-	//making the move and updating 
-	Direction chosenDirection = _currentAlgorithm->step(lastStep);
-
-	_currentPosition->Move(chosenDirection);
-
 	if( _currentHouse->IsDirty(*_currentPosition) ){
 		_currentHouse->Clean(*_currentPosition);
 		_dirtCollected++;
 	}
 
+	//making the move and updating 
+	_currentPosition->Move(lastStep);
+
+	Direction chosenDirection = _currentAlgorithm->step(lastStep);
 
 	//_currentPosition->Move(chosenDirection);
 	

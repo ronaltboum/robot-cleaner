@@ -117,7 +117,7 @@ void SingletonHouseIOManager::processRowFromFile(string & rowFromFile, int curre
 	}
 	else if (len > cols)
 	{
-		rowFromFile = rowFromFile.substr(len - cols);
+		rowFromFile = rowFromFile.substr(0, cols);
 	}
 	h.SetRow(rowFromFile,currentRowNumber);
 }
@@ -155,7 +155,6 @@ void SingletonHouseIOManager::fillLastRows(int rowsToFill, House & h)
 	{
 		h.SetRow(emptyWidthLine,row); 
 	}
-	//cout << "Warning: less rows than expected, filled " << rowsToFill << " last rows"  << endl;
 }
 
 //************************************

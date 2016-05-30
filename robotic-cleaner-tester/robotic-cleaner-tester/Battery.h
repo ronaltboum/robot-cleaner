@@ -50,6 +50,7 @@ public:
 	bool OneRechargeBeforeFullyRecharged() const; //: returns true if one more recharge will fill the battery
 	int GetOneWayDistanceFromDocking() const; // returns the maximal distance a robot can walk away from docking in order to make safe return; 
 	void printBatteryStats() const;
+	string ToString() const;
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ inline functions ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,9 +114,12 @@ inline bool Battery::OneRechargeBeforeFullyRecharged() const
 	return (_battery_capacity  <=  _battery_level + _recharge_rate  );
 }
 
+inline string Battery::ToString() const{
+	return string("curr level: ") + std::to_string(_battery_level) +  string(" con_rate: ") + std::to_string(_consumption_rate);
+}
+
 inline ostream& operator<<(ostream& out, const Battery & b) {
-	return out << "curr level: " << b._battery_level
-		<< " con_rate: " << b._consumption_rate << endl;
+	return out << b.ToString() << endl;
 }
 
 #endif //__BATTERY__H_
