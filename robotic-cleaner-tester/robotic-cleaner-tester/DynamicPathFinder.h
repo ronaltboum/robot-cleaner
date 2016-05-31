@@ -46,7 +46,7 @@ public:
     	CellInfo(int dirt, int stepsToDocking, bool isWall)
     		: dirt(dirt), stepsToDocking(stepsToDocking), isWall(isWall), parents(vector<Direction>()), possibleKnownDirections(vector<Direction>()){ }
 
-    	CellInfo(int dirt, int stepsToDocking, bool isWall, vector<Direction> & parents, vector<Direction> & possibleKnownDirections)
+    	CellInfo(int dirt, int stepsToDocking, bool isWall, vector<Direction> parents, vector<Direction> possibleKnownDirections)
     		: dirt(dirt), stepsToDocking(stepsToDocking), isWall(isWall), parents(parents), possibleKnownDirections(possibleKnownDirections){ }
 	};
 

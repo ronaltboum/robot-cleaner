@@ -13,6 +13,10 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h> /* PATH_MAX */
+#include <cstring>
+#include <sys/stat.h>
+
 
 using namespace std;
 
@@ -60,7 +64,7 @@ public:
 
     string ExtractFileName (string toSplit);
     string GetRidOfSuffix (string fileName);
-
+	string* GetAbsolutePath(string relativePath);
 };
 
 #endif //__SCOREREGISTRAR__H_

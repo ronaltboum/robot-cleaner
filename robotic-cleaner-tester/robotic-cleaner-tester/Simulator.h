@@ -45,6 +45,7 @@ private:
 	vector< SubSimulation *> _subSimulations;
 	vector<string> _hitWallErrorMessages;   //contains all the error messages of algorithms that hit walls
 	map<double, vector<string>, std::greater<int>> _sortedAlgorithmsMap;
+	bool _scoreFormulaProblem = false;  //becomes true if calc_score returns -1 for some algorithm
 	bool debugSimulator = false;   //for debugging
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,6 +59,7 @@ public:
 public:
 	map<string, string> GetBadHousesMap() const;
 	int GetMaxStepsAfterWinner() const;
+	bool GetScoreFormulaProblem() { return _scoreFormulaProblem; }
 	
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:

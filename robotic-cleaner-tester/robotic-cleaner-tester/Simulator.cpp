@@ -406,7 +406,8 @@ void Simulator::registerScores(int winner_num_steps, int houseIndex, int simulat
 
 		map<string, int> params= {{"actual_position_in_competition", actual_position}, {"simulation_steps", simulationSteps}, {"winner_num_steps", winner_num_steps}, {"this_num_steps", this_num_steps}, {"sum_dirt_in_house", sum_dirt_in_house}, {"dirt_collected", dirt_collected}, {"is_back_in_docking", is_back_in_docking}};
 		int score = ScoreRegistrar::getInstance().calc_score(params);
-
+		if(score == -1)
+			_scoreFormulaProblem = true;
 		//string trimmedHouseName = hNameNoSuffix.substr(0,9);
 		addScore(algoName, hNameNoSuffix, score);
 		
@@ -519,9 +520,19 @@ void Simulator::SortAlgorithms()
 
 void Simulator::printRow(string algoName)
 {
+
+	if(algoName.length() <= 0)
+		return;  //shouldn't get here
   //print algo name:
-  cout << '|';
-  string trimmedAlgoName = algoName.substr(0,13);
+  cout << '|';  string trimmedAlgoName;
+	if(algoName.at(0) == '/')
+		trimmedAlgoName = algoName.substr(2,15);
+	else
+		 trimmedAlgoName = algoName.substr(1,14);
+
+	//append _  :
+	trimmedAlgoName = trimmedAlgoName + "_";
+	
   cout << trimmedAlgoName;
   int algoNameLength = trimmedAlgoName.length();
   int quantity = 13- algoNameLength;
@@ -577,9 +588,9 @@ vector<int> Simulator::GetAlgoResults(string algoName)
   map< string, map<string, int> >::iterator it;
   it = _scoresMap.find(algoName);
   map<string, int> innerMap;
-  if ( it == _scoresMap.end() )  // not found
-    cout << "ERROR in Simulator::GetAlgoResults !!!" << endl;      // delete !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   
+  if ( it == _scoresMap.end() )   { // not found
+    //cout << "ERROR in Simulator::GetAlgoResults !!!" << endl;      // delete !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  }
   else {  // found
     innerMap = (it -> second);
     map<string, int>::iterator innerIt;

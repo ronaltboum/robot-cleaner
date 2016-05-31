@@ -181,32 +181,34 @@ Direction _039563838_A::Handle_Explore_State(vector<Direction> possibleDirection
 			//cout << "maxDirt ==0 , and minVisits direction is : ";   //delete later
 			//PrintDirection(Direction(minDirectionIndex));                    //delelte later !!!
 			
-			return Direction(minDirectionIndex);  //old algoX
+			//return Direction(minDirectionIndex);  //old algoX
+
+
 			//new technique is to choose the direction with the most dirt in the overall houseMapping:
-//			int maximalDirt = -1;      int temp = 0;  int dIndex = 0;  int naiveDistance = 0;  int min_d_Closest = 0;
-//			int currentBatteryLevel = _battery.GetBattery_level();
-//			int batteryHalfLife = (int)( _battery.GetBattery_capacity() / 2);
-//			//if(_battery.GetBattery_level() <= (  (int)( _battery.GetBattery_capacity() / 2) + 1  )  )
-//			for(Direction d: possibleDirections) { 
-//				temp = calcDirt(d);
-//				if( temp > maximalDirt){
-//					//naiveDistance = Find_Closest_Dirty_Point(d);
-//					//cout <<"naiveDistance = " << naiveDistance << endl;  //delete !!!!!
-//					//if( (currentBatteryLevel + naiveDistance * _battery.GetConsumption_rate()  ) <= batteryHalfLife ) {
-//						maximalDirt = temp;
-//						dIndex = ReturnDirectionIndex(d);
-//					//}
-//				}
-//			}
-//			//if(maximalDirt <= 0 || _chooseMinimalVisitations) {
-//			if(maximalDirt <= 0 ) {
-//				//_chooseMinimalVisitations = false;  //next time choose according to maximalDirt
-//				return Direction(minDirectionIndex);  //cell we visited the least number of times
-//			}
-//			else {
-//				//_chooseMinimalVisitations = true;  //next time choose according to minDirectionIndex
-//				return Direction(dIndex);
-//			}
+			int maximalDirt = -1;      int temp = 0;  int dIndex = 0;  int naiveDistance = 0;
+			int currentBatteryLevel = _battery.GetBattery_level();
+			int batteryHalfLife = (int)( _battery.GetBattery_capacity() / 2);
+			//if(_battery.GetBattery_level() <= (  (int)( _battery.GetBattery_capacity() / 2) + 1  )  )
+			for(Direction d: possibleDirections) { 
+				temp = calcDirt(d);
+				if( temp > maximalDirt){
+					naiveDistance = Find_Closest_Dirty_Point(d);
+					//cout <<"naiveDistance = " << naiveDistance << endl;  //delete !!!!!
+					if( ( (int)(currentBatteryLevel + naiveDistance * _battery.GetConsumption_rate())  ) <= batteryHalfLife ) {
+						maximalDirt = temp;
+						dIndex = ReturnDirectionIndex(d);
+					}
+				}
+			}
+			//if(maximalDirt <= 0 || _chooseMinimalVisitations) {
+			if(maximalDirt <= 0 ) {
+				//_chooseMinimalVisitations = false;  //next time choose according to maximalDirt
+				return Direction(minDirectionIndex);  //cell we visited the least number of times
+			}
+			else {
+				//_chooseMinimalVisitations = true;  //next time choose according to minDirectionIndex
+				return Direction(dIndex);
+			}
 		}
 		
 
@@ -461,7 +463,12 @@ void _039563838_A::updateAlgorithmInfo(Direction lastStep)
 	auto pointMe = houseMapping.find(position);
 		if(pointMe != houseMapping.end()) {
 			visits = (pointMe -> second.numOfVisitations) + 1;  //upadate the number of times we visited the cell
-			houseMapping[position] = {dlevel, stepsFromDocking, visits};
+			CellInfo cellInfo;
+			cellInfo.numOfVisitations =visits;
+			cellInfo.dirt = dlevel;
+			cellInfo.stepsToDocking = stepsFromDocking;
+			//houseMapping[position] = {dlevel, stepsFromDocking, visits};
+			houseMapping[position] = cellInfo;
 		}
 		else {
 			CellInfo cellInfo;

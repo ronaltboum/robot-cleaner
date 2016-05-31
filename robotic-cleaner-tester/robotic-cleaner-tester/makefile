@@ -1,6 +1,6 @@
 CC = g++
 LIBS = -ldl
-CFLAGS = -std=c++11 -g -Wall -O2 -pedantic -pthread
+CFLAGS = -std=c++11 -g -Wall -O2 -pedantic -pthread -g
 
 
 default:
@@ -60,7 +60,7 @@ CommandLineInterpeter.o: CommandLineInterpeter.cpp
 
 Battery.o: Battery.cpp
 	$(CC) -c -fPIC $(CFLAGS) $^
-#	g++-5 -c -fPIC -std=c++14 -g -Wall -O2 -pedantic -pthread Battery.cpp
+#	g++ -c -fPIC -std=c++11 -g -Wall -O2 -pedantic -pthread Battery.cpp
 
 DirectionExt.o: DirectionExt.cpp
 	$(CC) -c -fPIC $(CFLAGS) $^
@@ -71,19 +71,22 @@ GeneralizedPoint.o: GeneralizedPoint.cpp
 DynamicPathFinder.o: DynamicPathFinder.cpp
 	$(CC) -c -fPIC $(CFLAGS) $^
 
+DynamicAlgo.o: DynamicAlgo.cpp
+	$(CC) -c -fPIC $(CFLAGS) $^
+
 _039563838_A.so: Battery.o DirectionExt.o GeneralizedPoint.o _039563838_A.o
 	$(CC) -shared -Wl,-soname,$@ -o $@ $^
 
 _039563838_A.o: _039563838_A.cpp
 	$(CC) -c -fPIC $(CFLAGS) $^
 
-_039563838_B.so: Battery.o DirectionExt.o GeneralizedPoint.o DynamicPathFinder.o _039563838_B.o
+_039563838_B.so: Battery.o DirectionExt.o GeneralizedPoint.o DynamicPathFinder.o DynamicAlgo.o _039563838_B.o
 	$(CC) -shared -Wl,-soname,$@ -o $@ $^
 
 _039563838_B.o: _039563838_B.cpp
 	$(CC) -c -fPIC $(CFLAGS) $^
 
-_039563838_C.so: Battery.o DirectionExt.o GeneralizedPoint.o DynamicPathFinder.o _039563838_C.o
+_039563838_C.so: Battery.o DirectionExt.o GeneralizedPoint.o DynamicPathFinder.o DynamicAlgo.o _039563838_C.o
 	$(CC) -shared -Wl,-soname,$@ -o $@ $^
 
 _039563838_C.o: _039563838_C.cpp

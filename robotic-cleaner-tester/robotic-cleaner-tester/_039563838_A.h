@@ -3,6 +3,7 @@
 
 #include "Direction.h"
 #include "DirectionExt.h"
+#include "MakeUnique.h"
 #include "AlgorithmRegistration.h"
 #include "AbstractAlgorithm.h"
 #include "FactoryDefinition.h"  //header file where factory is defined

@@ -16,7 +16,6 @@ typedef std::map<std::string, std::string>::iterator it_type;
 
 int main(int argc, const char * argv[])
 {
-	srand((unsigned int)time(NULL));
 	CommandLineInterpeter::CommandLineProblems problemOccored =
 	 	CommandLineInterpeter::readCommandLineArguments(argc, argv);
 	switch(problemOccored){
@@ -59,7 +58,7 @@ int main(int argc, const char * argv[])
 	// loading score
 	string errorLoadingScore = ScoreRegistrar::getInstance().loadScoreFunc(scoreFormulaFile);
 	if(errorLoadingScore != "" ){
-		cout << errorLoadingScore;
+		//cout << errorLoadingScore;
 		return EXIT_FAILURE;
 	}
 
@@ -162,12 +161,14 @@ int main(int argc, const char * argv[])
 	
 	cout << endl;
 	 //(validHouses != 0)
-	if( (numHouseFiles > validHouses) || (numAlgoFiles > validAlgo) )
+	if( (numHouseFiles > validHouses) || (numAlgoFiles > validAlgo) || s.GetScoreFormulaProblem() == true )
 	   cout << "Errors:" << endl;  
-	s.PrintHouseErrors();
-	s.PrintAlgoErrors();
-	//getchar();
-	return EXIT_SUCCESS;
+		s.PrintHouseErrors();
+		s.PrintAlgoErrors();
+		if(s.GetScoreFormulaProblem() == true)
+			cout << "Score formula could not calculate some scores, see ­1 in the results table" << endl;
+		//getchar();
+		return EXIT_SUCCESS;
 }
 
 
