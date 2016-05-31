@@ -42,14 +42,19 @@ string ScoreRegistrar::loadScoreFunc(const std::string& fullPath) {
 
     // reset errors
     dlerror();
-    calc_score_func = (calc_score_t) dlsym(dl_file, "calc_score");
+
+    // calc_score_func = (calc_score_t) dlsym(dl_file, "calc_score");  // not working raising pointer-function error
+    // workaround
+    static_assert(sizeof(void *) == sizeof(calc_score_t *), "pointer cast impossible");
+    void   * vp = dlsym(dl_file, "calc_score");
     const char *dlsym_error = dlerror();
     if (dlsym_error) {
         if(_debug) cout << "cannot load score_func: " << dlsym_error << endl;
         dlclose(dl_file);
-	cout << "score_formula.so is a valid .so but it does not have a valid score formula" << endl;
+    cout << "score_formula.so is a valid .so but it does not have a valid score formula" << endl;
         return "invalid score formula case";
     }
+    *reinterpret_cast<void **>(&calc_score_func) = vp;
     return "";
 }
 

@@ -74,7 +74,7 @@ DynamicPathFinder.o: DynamicPathFinder.cpp
 DynamicAlgo.o: DynamicAlgo.cpp
 	$(CC) -c -fPIC $(CFLAGS) $^
 
-_039563838_A.so: Battery.o DirectionExt.o GeneralizedPoint.o _039563838_A.o
+_039563838_A.so: Battery.o DirectionExt.o GeneralizedPoint.o DynamicPathFinder.o DynamicAlgo.o _039563838_A.o
 	$(CC) -shared -Wl,-soname,$@ -o $@ $^
 
 _039563838_A.o: _039563838_A.cpp

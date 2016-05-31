@@ -14,7 +14,7 @@ using namespace std;
 // But you have the freedom to implement it as you wish!
 //========================================================================
 AlgorithmRegistration::AlgorithmRegistration(std::function<unique_ptr<AbstractAlgorithm>()> algorithmFactoryFunc) {
-    cout << "register!" << endl;
+    // cout << "register!" << endl;
     //cout  << algorithmFactory;
     AlgorithmFactory::getInstance().registerAlgorithm(algorithmFactoryFunc);
 }

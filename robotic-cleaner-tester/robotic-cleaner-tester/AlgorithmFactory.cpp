@@ -24,11 +24,11 @@ vector<AbstractAlgorithm *> AlgorithmFactory::CreateSetOfAllAlgorithms() const
 // return wheter the file was loaded successfully
 //----------------------------------------------------------------------------
 bool AlgorithmFactory::loadAlgorithm(const std::string& fullPath, const std::string& algoName) {
-	cout << "AlgorithmFactory::loadAlgorithm fullPath: " << fullPath << " algoName: " << algoName <<endl;
+	// cout << "AlgorithmFactory::loadAlgorithm fullPath: " << fullPath << " algoName: " << algoName <<endl;
     void *dlib;
     size_t size = instance.size();
     string errorMessage;
-    cout << "opening: " << fullPath << endl;
+    // cout << "opening: " << fullPath << endl;
     dlib = dlopen( fullPath.c_str(), RTLD_NOW);
     if(dlib == NULL){
         errorMessage = "file cannot be loaded or is not a valid .so";

@@ -41,7 +41,7 @@ private:
     void setNameForLastAlgorithm(const std::string& algorithmName) {
         assert(algorithmFactories.size()-1 == algorithmNames.size());
         algorithmNames.push_back(algorithmName);
-	cout << "AlgorithmFactory::setNameForLastAlgorithm " << algorithmName << " was added" << endl;
+    	// cout << "AlgorithmFactory::setNameForLastAlgorithm " << algorithmName << " was added" << endl;
     }
 
     bool loadAlgorithm(const string& fullPath, const string& algoName);

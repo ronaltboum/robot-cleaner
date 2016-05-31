@@ -411,10 +411,10 @@ void Simulator::registerScores(int winner_num_steps, int houseIndex, int simulat
 		//string trimmedHouseName = hNameNoSuffix.substr(0,9);
 		addScore(algoName, hNameNoSuffix, score);
 		
-		cout << algoName <<" on house "<< hNameNoSuffix << " returned to docking == " << is_back_in_docking << endl; //delete later !!
-		cout << algoName <<" on house "<< hNameNoSuffix << " :  sum_dirt_in_house = " << sum_dirt_in_house << "  , dirt_collected = " << dirt_collected << endl;    //delete later!!!  
+		// cout << algoName <<" on house "<< hNameNoSuffix << " returned to docking == " << is_back_in_docking << endl; //delete later !!
+		// cout << algoName <<" on house "<< hNameNoSuffix << " :  sum_dirt_in_house = " << sum_dirt_in_house << "  , dirt_collected = " << dirt_collected << endl;    //delete later!!!  
 
-		cout << algoName << "on house " << hNameNoSuffix << " this_num_steps = " << this_num_steps << endl;  //delete
+		// cout << algoName << "on house " << hNameNoSuffix << " this_num_steps = " << this_num_steps << endl;  //delete
 
 		if(debugSimulator || false) {
 				
