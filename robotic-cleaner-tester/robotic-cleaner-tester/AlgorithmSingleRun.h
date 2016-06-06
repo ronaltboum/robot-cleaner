@@ -25,6 +25,7 @@ private:
 	int _dirtCollected;
 	int _actual_position_in_copmetition; // see http://moodle.tau.ac.il/mod/page/view.php?id=374508. 
 	int _sumOfDirtBeforeCleaning;
+	bool _videoEnabled;
 	
 	string _algorithmFileName;
 	Direction _lastDirection;  //added because signature of step() changed.  keeps the direction of the lastStep actually performed by the simulation
@@ -51,10 +52,12 @@ public:
 	House * GetCurrentHouse() const { return _currentHouse; }
 	int GetDirtCollected() const { return _dirtCollected; }
 	int GetNumberOfStepsCommited() const { return _numberOfStepsCommited; }
-	
 	string GetAlgorithmFileName() { return _algorithmFileName; }
 	Direction GetLastDirection() { return _lastDirection; }
 	AbstractAlgorithm * GetCurrentAlgorithm() { return _currentAlgorithm; }
+	string GetAlgoHouseString() const;
+	void SetVideoEnabled(bool videoEnabled) {_videoEnabled = videoEnabled;}
+	bool GetVideoEnabled()const {return _videoEnabled;}
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 public:

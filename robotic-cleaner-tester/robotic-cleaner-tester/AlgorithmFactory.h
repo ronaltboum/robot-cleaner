@@ -1,6 +1,8 @@
 #ifndef __ALGORITHMFACTORY__H_
 #define __ALGORITHMFACTORY__H_
 
+#include <string>
+#include <sstream>
 #include <iostream>
 #include <functional>
 #include <map>
@@ -65,6 +67,8 @@ public:
     //void SetBadAlgoMap(map<string,string> errorMap);
     string ExtractFileName (string toSplit);
     string GetRidOfSuffix (string fileName);
+    string FixAlgoNameForPrint(string algoName);
+    vector<string> split(const string &s, char delim);
 private:
 
 };

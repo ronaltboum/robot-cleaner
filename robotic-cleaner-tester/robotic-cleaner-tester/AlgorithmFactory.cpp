@@ -25,20 +25,22 @@ vector<AbstractAlgorithm *> AlgorithmFactory::CreateSetOfAllAlgorithms() const
 //----------------------------------------------------------------------------
 bool AlgorithmFactory::loadAlgorithm(const std::string& fullPath, const std::string& algoName) {
 	// cout << "AlgorithmFactory::loadAlgorithm fullPath: " << fullPath << " algoName: " << algoName <<endl;
-    void *dlib;
+    string algoNameCopy = algoName;
+	string printVersion = FixAlgoNameForPrint(algoNameCopy);  //orig name: _039563838_E.so      should print:   331332334_C_.so
+	void *dlib;
     size_t size = instance.size();
     string errorMessage;
     // cout << "opening: " << fullPath << endl;
     dlib = dlopen( fullPath.c_str(), RTLD_NOW);
     if(dlib == NULL){
         errorMessage = "file cannot be loaded or is not a valid .so";
-        _badAlgoMap.insert( pair<string, string>(algoName, errorMessage) );
+        _badAlgoMap.insert( pair<string, string>(printVersion, errorMessage) );
         return false;
     }
     if(instance.size() == size) {
         dlclose(dlib);
-        errorMessage = ".so was loaded but no algorithm was registered";
-        _badAlgoMap.insert( pair<string, string>(algoName, errorMessage) );
+        errorMessage = "valid .so was loaded but no algorithm was registered";
+        _badAlgoMap.insert( pair<string, string>(printVersion, errorMessage) );
         return false;
     }
     dl_list.insert(dl_list.end(), dlib);
@@ -110,3 +112,48 @@ string AlgorithmFactory::GetRidOfSuffix (string filename)
     }
     return filename;
 }
+
+//orig name: _039563838_E.so      should print:   331332334_C_.so
+//   /_039563838_E.so: valid .so was loaded but no algorithm was registered
+//   /invalidAlgorithm.so
+string AlgorithmFactory::FixAlgoNameForPrint(string algoName)
+{
+	int len = algoName.length();
+	if(len <= 2)
+		return algoName;  //shouldn't happen
+	if(algoName.at(0) != '_')  {
+		if(algoName.at(0) != '/') {
+			return algoName;  //shouldn't happen
+		}
+		else {
+			if(algoName.at(1) == '_') {  //case  /_039563838_E.so
+				algoName = algoName.substr (2,len-2);
+				vector<string> splitted = split(algoName, '.');
+				algoName = splitted.at(0) + "_";
+				return algoName;
+			}
+			else {  // case    /invalidAlgorithm.so
+				algoName = algoName.substr (1,len-1);
+				vector<string> splitted = split(algoName, '.');
+				algoName = splitted.at(0);
+				return algoName;
+			}	
+		}
+	}
+	
+	algoName = algoName.substr (1,len-1);   //algoName is now 039563838_E.so
+	vector<string> splitted = split(algoName, '.');
+	algoName = splitted.at(0) + "_";
+	return algoName;
+}
+
+vector<string> AlgorithmFactory::split(const string &s, char delim) {
+	std::vector<std::string> elems;
+	std::stringstream ss(s);
+	std::string item;
+	while (std::getline(ss, item, delim)) {
+		elems.push_back(item);
+	}
+	return elems;
+}
+

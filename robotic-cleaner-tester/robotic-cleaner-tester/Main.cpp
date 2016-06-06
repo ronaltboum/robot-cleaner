@@ -154,9 +154,14 @@ int main(int argc, const char * argv[])
 	    return EXIT_FAILURE;
 	}
 	
- 	s.LoadRuns();
-	
+ 	
+ 	bool videoEnabled = true;
+ 	if(videoEnabled)
+ 		s.InitizalizeVideoCreation();
+	s.LoadRuns();
+
  	s.RunAllHouses(num_threads);
+ 	s.MakeVideos();
 	s.printScores();
 	
 	cout << endl;

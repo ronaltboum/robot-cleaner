@@ -8,7 +8,7 @@ default:
 	
 #simulator part
 	
-simulator: CommandLineInterpeter.o DirectionExt.o GeneralizedPoint.o FilesListerWithSuffix.o FilesLister.o Battery.o House.o SingletonHouseIOManager.o Sensor.o AlgorithmSingleRun.o SubSimulation.o SingletonConfigReader.o AlgorithmRegistration.o AlgorithmFactory.o ScoreRegistrar.o Simulator.o  Main.o
+simulator: Encoder.o Montage.o CommandLineInterpeter.o DirectionExt.o GeneralizedPoint.o FilesListerWithSuffix.o FilesLister.o Battery.o House.o SingletonHouseIOManager.o Sensor.o AlgorithmSingleRun.o SubSimulation.o SingletonConfigReader.o AlgorithmRegistration.o AlgorithmFactory.o ScoreRegistrar.o Simulator.o  Main.o
 	$(CC) -rdynamic -o simulator $^ $(LIBS) -pthread
 	
 Main.o: Main.cpp
@@ -20,7 +20,7 @@ Simulator.o: Simulator.cpp Simulator.h Direction.h
 ScoreRegistrar.o: ScoreRegistrar.cpp
 	$(CC) -c $(CFLAGS) $<
 
-AlgorithmFactory.o: AlgorithmFactory.cpp AlgorithmFactory.h $(LIBS)	
+AlgorithmFactory.o: AlgorithmFactory.cpp AlgorithmFactory.h
 	$(CC) -c $(CFLAGS) $<
 
 AlgorithmRegistration.o: AlgorithmRegistration.cpp	
@@ -54,7 +54,12 @@ FilesLister.o: FilesLister.cpp FilesLister.h
 CommandLineInterpeter.o: CommandLineInterpeter.cpp
 	$(CC) -c $(CFLAGS) $<
 
-	
+Encoder.o: Encoder.cpp
+	$(CC) -c $(CFLAGS) $<
+
+Montage.o: Montage.cpp
+	$(CC) -c $(CFLAGS) $<
+
 	
 #dynamic algorithms part
 

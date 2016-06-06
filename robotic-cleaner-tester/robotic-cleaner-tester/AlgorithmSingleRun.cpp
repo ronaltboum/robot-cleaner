@@ -14,6 +14,7 @@ AlgorithmSingleRun::AlgorithmSingleRun(const map<string, int> & configs, Abstrac
 	_sumOfDirtBeforeCleaning = _currentHouse->SumOfDirtInTheHouse();
 	_algorithmFileName = algorithmFileName;
 	_lastDirection = Direction::Stay;
+	_videoEnabled = false;
 }
 
 
@@ -75,6 +76,11 @@ bool AlgorithmSingleRun::HasWon() const
 	return IsBackInDocking() && IsHouseCleaned();
 } 
 
+string AlgorithmSingleRun::GetAlgoHouseString() const
+{
+	return _algorithmFileName + '_' + _currentHouse->GetShortName();
+}
+
 
 //************************************
 // Brief:		Moves one step and change the status of members according to the move committed
@@ -124,6 +130,11 @@ Direction AlgorithmSingleRun::DoStep(Direction lastStep)
 	
 	++_numberOfStepsCommited;
 	_lastDirection = chosenDirection;
+
+	if(_videoEnabled){
+		_currentHouse->Montage(*_currentPosition, GetAlgoHouseString(), _numberOfStepsCommited);
+	}
+
 	return chosenDirection;
 }
 

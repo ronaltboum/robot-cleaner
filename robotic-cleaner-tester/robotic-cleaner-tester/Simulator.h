@@ -25,6 +25,7 @@
 #include <fstream>
 #include "AlgorithmFactory.h"
 #include "ScoreRegistrar.h"
+#include "Encoder.h"
 
 using namespace std;
 
@@ -45,6 +46,7 @@ private:
 	vector< SubSimulation *> _subSimulations;
 	vector<string> _hitWallErrorMessages;   //contains all the error messages of algorithms that hit walls
 	map<double, vector<string>, std::greater<int>> _sortedAlgorithmsMap;
+	bool _videoEnabled;
 	bool _scoreFormulaProblem = false;  //becomes true if calc_score returns -1 for some algorithm
 	bool debugSimulator = false;   //for debugging
 
@@ -85,10 +87,14 @@ public:
 	void PrintAlgoErrors();
 	string* GetAbsPath(string relativePath);  //returns absolute path or null in case of error
 	void PrintDirection(Direction chosen); //for debug
-
+	void InitizalizeVideoCreation();
 	void SortAlgorithms(); //sorts algoritms by AVG
+	void MakeVideos();
+	string FixAlgoNameForPrint(string algoName);
+	vector<string> split(const string &s, char delim);
 
 private:
+	static bool CreateDirectoryIfNotExists(const string& dirPath);
 	bool MoveAllOneStep(int & currentRankAlgorithmsCompetingOn, int houseIndex);
 	void CallAboutToFinish(int houseIndex);
 

@@ -24,6 +24,7 @@ void Simulator::initiallize()
 	_scoresMap = map<string, map<string, int> >();
 	_subSimulations =  vector< SubSimulation *>();
 	_sortedAlgorithmsMap = map<double, vector<string>, std::greater<int>>();
+	_videoEnabled = false;
 	
 }
 
@@ -128,7 +129,11 @@ int Simulator::LoadAlgorithms(vector<string> algorithmFiles)
 	return validAlgorithms;
 }
 
-
+bool Simulator::CreateDirectoryIfNotExists(const string& dirPath)
+{
+  string cmd = "mkdir -p simulations/" + dirPath;
+  return (system(cmd.c_str()) != -1);
+}
 
 int Simulator::LoadRuns()
 {
@@ -149,7 +154,7 @@ int Simulator::LoadRuns()
 		for(_algoIterator=algorithms.begin() ; _algoIterator!=algorithms.end() ; _algoIterator++){
 			Point * startingPoint = _houses[houseIndex]->GetDockingStation(); //new is deallocated by AlgorithmSingleRun
 
-			if(debugSimulator || false) {
+			if(debugSimulator) {
 				int pRow = startingPoint -> GetRow();
  				int pCol = startingPoint -> GetCol();
  				cout<< "In Simulator:  startingPoint = " << pRow << " , " << pCol << endl << endl;  //delte !!!!!!!!!!
@@ -174,7 +179,9 @@ int Simulator::LoadRuns()
 			string algoName = (*algoNamesIterator);
 			
 			AlgorithmSingleRun * newRunCreated = new AlgorithmSingleRun(_configs, (*_algoIterator), *_defaultBattery, houseCopy ,algoSensor, startingPoint, algoName);
-			
+			if(_videoEnabled){
+				newRunCreated->SetVideoEnabled( CreateDirectoryIfNotExists(newRunCreated->GetAlgoHouseString()));
+			}
  			singleRuns.push_back(newRunCreated);  
  			++algoNamesIterator;
 		}
@@ -242,6 +249,29 @@ void Simulator::RunSingleSubSimulationThread()
                 RunAll(index); //runs all algorithms on the house in _houses[houseIndex]
         }
         return;
+}
+
+void Simulator::MakeVideos(){
+	if(! _videoEnabled)
+		return;
+	int houseNum = _houses.size();  //number of valid houses
+    for( int houseIndex = 0 ; houseIndex < houseNum; ++houseIndex)
+    {
+		SubSimulation * sub = _subSimulations[houseIndex]; 
+		vector< AlgorithmSingleRun *> singleRuns = sub -> GetSingleRuns();
+		int runNum = singleRuns.size(); 
+		for( int runIndex = 0 ; runIndex < runNum; ++runIndex)
+		{
+			AlgorithmSingleRun * runIterator = singleRuns[runIndex];
+			if(! runIterator->GetVideoEnabled())
+				continue;
+			// creating video
+			string simualtionDir = string("simulations/") + (runIterator->GetAlgoHouseString());
+			string imagesExpression = simualtionDir + "image%5d.jpg";
+			Encoder::encode(imagesExpression, runIterator->GetAlgoHouseString() + ".mpg");
+			//rm -rf simulations
+		}
+	}
 }
 
 //Brief: runs all algorithms on the house in _houses[houseIndex] in a round robin fashion
@@ -387,8 +417,15 @@ void Simulator::registerScores(int winner_num_steps, int houseIndex, int simulat
 
 		if(runIterator->HasMadeIllegalStep())  {   //algorithm hit a wall !
 			//http://moodle.tau.ac.il/mod/forum/discuss.php?d=57047
-			//Algorithm 331332334_E_ when running on House 003 went on a wall in step 7
-			string errorMessage = "Algorithm " + algoName + " when running on House " + hNameNoSuffix + " went on a wall in step " + to_string(this_num_steps);
+			
+
+
+
+			//should be:   Algorithm 331332334_E_ when running on House 003 went on a wall in step 7
+
+			//terminal:  _039563838_E    or  /_039563838_E
+			string printVersion = FixAlgoNameForPrint(algoName);
+			string errorMessage = "Algorithm " + printVersion + " when running on House " + hNameNoSuffix + " went on a wall in step " + to_string(this_num_steps);
 			_hitWallErrorMessages.push_back(errorMessage);
 			addScore(algoName, hNameNoSuffix, 0);
 			continue;
@@ -692,22 +729,16 @@ void Simulator::PrintHouseErrors()
 
 void Simulator::PrintAlgoErrors()
 {
-  map<string,string> m = (AlgorithmFactory::getInstance().GetBadAlgoMap() );
-  map<string, string>::iterator strIt;
-  for(strIt = m.begin(); strIt != m.end(); strIt++) {
-      string withSuffix = (strIt->first) + ".so";
-      cout << withSuffix << ": " << (strIt->second) << endl;
-      
-  }
-
-  int numHitWall = _hitWallErrorMessages.size();
-  if(numHitWall == 0)
-      return;
+	map<string,string> m = (AlgorithmFactory::getInstance().GetBadAlgoMap() );
+	map<string, string>::iterator strIt;
+	for(strIt = m.begin(); strIt != m.end(); strIt++) {
+		string withSuffix = (strIt->first) + ".so";
+		cout << withSuffix << ": " << (strIt->second) << endl;
+	}
   
-  for(vector<string>::const_iterator i = _hitWallErrorMessages.begin(); i != _hitWallErrorMessages.end(); ++i) {
-    // process i
-    cout << *i << endl; 
-}
+	for(vector<string>::const_iterator i = _hitWallErrorMessages.begin(); i != _hitWallErrorMessages.end(); ++i) {
+		cout << *i << endl; 
+	}
   
 }
 
@@ -734,6 +765,11 @@ string* Simulator::GetAbsPath(string relativePath)
 // }
 }
 
+void Simulator::InitizalizeVideoCreation()
+{
+	_videoEnabled = true;
+}
+
 
 //for debug
 void Simulator::PrintDirection(Direction chosen)
@@ -755,4 +791,45 @@ void Simulator::PrintDirection(Direction chosen)
 	default:
 		cout << "Stay" << endl;
 	}
+}
+
+string Simulator::FixAlgoNameForPrint(string algoName)
+{
+	int len = algoName.length();
+	if(len <= 2)
+		return algoName;  //shouldn't happen
+	if(algoName.at(0) != '_')  {
+		if(algoName.at(0) != '/') {
+			return algoName;  //shouldn't happen
+		}
+		else {
+			if(algoName.at(1) == '_') {  //case  /_039563838_E.so
+				algoName = algoName.substr (2,len-2);
+				vector<string> splitted = split(algoName, '.');
+				algoName = splitted.at(0) + "_";
+				return algoName;
+			}
+			else {  // case    /invalidAlgorithm.so
+				algoName = algoName.substr (1,len-1);
+				vector<string> splitted = split(algoName, '.');
+				algoName = splitted.at(0);
+				return algoName;
+			}	
+		}
+	}
+	
+	algoName = algoName.substr (1,len-1);   //algoName is now 039563838_E.so
+	vector<string> splitted = split(algoName, '.');
+	algoName = splitted.at(0) + "_";
+	return algoName;
+}
+
+vector<string> Simulator::split(const string &s, char delim) {
+	std::vector<std::string> elems;
+	std::stringstream ss(s);
+	std::string item;
+	while (std::getline(ss, item, delim)) {
+		elems.push_back(item);
+	}
+	return elems;
 }

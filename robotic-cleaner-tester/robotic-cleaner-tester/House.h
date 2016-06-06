@@ -8,6 +8,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include "Montage.h"
 
 class SingletonHouseIOManager;
 /*
@@ -74,6 +75,8 @@ public:
 	void Print(const Point & currentPosition) const; //: prints the house while the current position marked with '*'
 	unsigned int SumOfDirtInTheHouse() const; //: Sums how much dirt there is in the house
 	std::string isValid() const; //: check that the house is valid
+	//output the file to an image using monatge
+	void Montage(const Point & currentPosition, const string & imageDir, int stepNumber) const; 
 	friend std::ostream& operator << ( std::ostream& out, const House& houseToPrint ); //printing to stream
 	friend istream& operator>>(istream& in, House& h); // getting from stream
 private:
