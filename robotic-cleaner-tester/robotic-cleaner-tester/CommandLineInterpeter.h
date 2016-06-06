@@ -23,7 +23,7 @@ public:
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 private:
 	static map<string,string> CLAvalues; // map of all the CLA names to their values
-	bool _isVideo = false;   //becomes true if -video is one of the command line arguments
+	static bool _isVideo;   //becomes true if -video is one of the command line arguments
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 private:

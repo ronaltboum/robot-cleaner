@@ -93,9 +93,6 @@ public:
 	string FixAlgoNameForPrint(string algoName);
 	vector<string> split(const string &s, char delim);
 
-	string FixAlgoNameForPrint(string algoName);  //ron added !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	vector<string> split(const string &s, char delim);   //ron added !!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 private:
 	static bool CreateDirectoryIfNotExists(const string& dirPath);
 	bool MoveAllOneStep(int & currentRankAlgorithmsCompetingOn, int houseIndex);

@@ -1,6 +1,7 @@
 #include "CommandLineInterpeter.h"
 
 map<string,string> CommandLineInterpeter::CLAvalues = CommandLineInterpeter::initMap();
+bool CommandLineInterpeter::_isVideo = false;
 
 // brief: get an attribute name and value and check that is is a valid arguments
 // returns: CommandLineProblems where:
@@ -48,8 +49,10 @@ CommandLineInterpeter::CommandLineProblems CommandLineInterpeter::readCommandLin
 	CommandLineProblems problemOccored = CommandLineProblems::NoProblem;
 	for(int i=1 ; (i < argc) && (problemOccored == CommandLineProblems::NoProblem) ; i+=2)
 	{
-		if(argv[i] == "-video"){
+		string vid = "-video";
+		if(argv[i] == vid){
 			_isVideo = true;
+			i = i - 1;  //becasue in the for loop we have i+=2
 			continue;
 		}
 
