@@ -270,6 +270,6 @@ void House::Montage(const Point & currentPosition, const string & imageDir, int 
 		}
 	}
 	string indexStr = to_string(stepNumber);
-	string composedImage = "simulations/" + imageDir + "/image" + string (5-indexStr.length(), 0) + indexStr + ".jpg";
+	string composedImage = "simulations/" + imageDir + "/image" + string(5-indexStr.length(), '0') + indexStr + ".jpg";
 	Montage::compose(houseImages, cols, rows, composedImage);
 }

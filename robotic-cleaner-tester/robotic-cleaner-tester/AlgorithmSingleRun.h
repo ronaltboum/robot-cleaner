@@ -6,6 +6,7 @@
 #include "AbstractAlgorithm.h"
 #include "House.h"
 #include "Point.h"
+#include "Encoder.h"
 
 using namespace std;
 
@@ -68,6 +69,7 @@ public:
 	bool HasWon() const;
 	bool HasMadeIllegalStep() const;
 	bool IsAlgorithmBatteryEmpty() const;
+	void MakeVideo(); //finalize the video and delete the image folder
 };
 
 #endif // AlgorithmSingleRun_h__

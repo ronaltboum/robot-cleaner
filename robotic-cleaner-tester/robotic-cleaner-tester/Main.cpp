@@ -162,7 +162,6 @@ int main(int argc, const char * argv[])
 	s.LoadRuns();
 
  	s.RunAllHouses(num_threads);
- 	s.MakeVideos();
 	s.printScores();
 	
 	cout << endl;

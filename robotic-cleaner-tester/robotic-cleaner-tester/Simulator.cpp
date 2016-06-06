@@ -242,36 +242,12 @@ void Simulator::RunSingleSubSimulationThread()
         // if no task is available, thread is done
         for(size_t index = _indexOfHouse++; // fetch old value, then add. equivalent to: fetch_add(1)
             index < _houses.size();
-            index = _indexOfHouse++) {
-	  
-	  
-		cout << std::this_thread::get_id() << ": " << "is assigned to house at index: " << index << endl;  //delete !!!!!!!!!!!!!!!!!!
-                RunAll(index); //runs all algorithms on the house in _houses[houseIndex]
+            index = _indexOfHouse++) 
+        {
+		//cout << std::this_thread::get_id() << ": " << "is assigned to house at index: " << index << endl;  //delete !!!!!!!!!!!!!!!!!!
+        	RunAll(index); //runs all algorithms on the house in _houses[houseIndex]
         }
         return;
-}
-
-void Simulator::MakeVideos(){
-	if(! _videoEnabled)
-		return;
-	int houseNum = _houses.size();  //number of valid houses
-    for( int houseIndex = 0 ; houseIndex < houseNum; ++houseIndex)
-    {
-		SubSimulation * sub = _subSimulations[houseIndex]; 
-		vector< AlgorithmSingleRun *> singleRuns = sub -> GetSingleRuns();
-		int runNum = singleRuns.size(); 
-		for( int runIndex = 0 ; runIndex < runNum; ++runIndex)
-		{
-			AlgorithmSingleRun * runIterator = singleRuns[runIndex];
-			if(! runIterator->GetVideoEnabled())
-				continue;
-			// creating video
-			string simualtionDir = string("simulations/") + (runIterator->GetAlgoHouseString());
-			string imagesExpression = simualtionDir + "image%5d.jpg";
-			Encoder::encode(imagesExpression, runIterator->GetAlgoHouseString() + ".mpg");
-			//rm -rf simulations
-		}
-	}
 }
 
 //Brief: runs all algorithms on the house in _houses[houseIndex] in a round robin fashion
@@ -311,7 +287,23 @@ void Simulator::RunAll(int houseIndex)
 	//cout << "printing scores for house index: " << houseIndex << endl;
 	simulationSteps = currentStep;
 	registerScores(winnerStepsNumber, houseIndex, simulationSteps);
-		
+	MakeVideos();		
+}
+
+void Simulator::MakeVideos(){
+	if(! _videoEnabled)
+		return;
+	int houseNum = _houses.size();  //number of valid houses
+    for( int houseIndex = 0 ; houseIndex < houseNum; ++houseIndex)
+    {
+		SubSimulation * sub = _subSimulations[houseIndex]; 
+		vector< AlgorithmSingleRun *> singleRuns = sub -> GetSingleRuns();
+		int runNum = singleRuns.size(); 
+		for( int runIndex = 0 ; runIndex < runNum; ++runIndex)
+		{
+			singleRuns[runIndex]->MakeVideo();
+		}
+	}
 }
 
 bool Simulator::MoveAllOneStep(int & currentRankAlgorithmsCompetingOn, int houseIndex)
@@ -338,6 +330,7 @@ bool Simulator::MoveAllOneStep(int & currentRankAlgorithmsCompetingOn, int house
 			//PrintDirection(lastSteps[runIndex]); //delete!!!!!!!!!!!!!!!!!!!!!
 	
 			if(runIterator->HasWon()){
+				runIterator->MakeVideo();
 				runIterator->SetActualPosition(currentRankAlgorithmsCompetingOn);
 				++numAlgorithmWon;
 				sub -> SetDoesWinnerExist(true);

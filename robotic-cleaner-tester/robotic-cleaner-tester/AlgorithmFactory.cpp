@@ -92,7 +92,7 @@ string AlgorithmFactory::ExtractFileName (string filename)
     size_t idx = cuttedString.rfind('/');
     if(idx != std::string::npos)
     {
-        cuttedString = cuttedString.substr(idx);
+        cuttedString = cuttedString.substr(idx+1);
     }
     idx = cuttedString.rfind('\\');
     if(idx != std::string::npos)

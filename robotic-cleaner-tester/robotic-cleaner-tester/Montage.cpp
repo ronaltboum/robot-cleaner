@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 #include <string>
-//#include <iostream>
+#include <iostream>
 
 void Montage::compose(const vector<string> &images, int cols, int rows, const string& composedImagePath)
 {
@@ -11,7 +11,7 @@ void Montage::compose(const vector<string> &images, int cols, int rows, const st
   {
     montageCmd += path + " ";
   }
-  montageCmd += composedImagePath;
+  montageCmd += string(composedImagePath);
   int ret = system(montageCmd.c_str());
   if (ret == -1)
   {

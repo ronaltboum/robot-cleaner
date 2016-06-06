@@ -108,4 +108,4 @@ score_formula.o: score_formula.cpp
 all:  _039563838_A.so _039563838_B.so _039563838_C.so score_formula.so simulator
 
 clean:
-	rm -f *.so *.o simulator *~
+	rm -f *.so *.o simulator *~ *.mpg

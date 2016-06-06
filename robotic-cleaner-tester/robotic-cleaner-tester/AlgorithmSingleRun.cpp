@@ -78,7 +78,23 @@ bool AlgorithmSingleRun::HasWon() const
 
 string AlgorithmSingleRun::GetAlgoHouseString() const
 {
-	return _algorithmFileName + '_' + _currentHouse->GetShortName();
+	return _algorithmFileName + '_' + _currentHouse->GetHouseFileName();
+}
+
+void AlgorithmSingleRun::MakeVideo()
+{
+	if(! _videoEnabled)
+		return;
+	// creating video
+	string simualtionDir = string("simulations/") + GetAlgoHouseString() +string("/");
+	string imagesExpression = simualtionDir + "image%5d.jpg";
+	Encoder::encode(imagesExpression, GetAlgoHouseString() + ".mpg");
+	string deleteFolderCmd = "rm -rf simulations/" + GetAlgoHouseString();
+	int ret = system(deleteFolderCmd.c_str());
+	if(ret == -1)
+		cout << "problem deleting. string: " << deleteFolderCmd << endl;
+	_videoEnabled = false;
+	return;
 }
 
 
@@ -133,6 +149,8 @@ Direction AlgorithmSingleRun::DoStep(Direction lastStep)
 
 	if(_videoEnabled){
 		_currentHouse->Montage(*_currentPosition, GetAlgoHouseString(), _numberOfStepsCommited);
+		if(! _canStillRun)
+			MakeVideo();
 	}
 
 	return chosenDirection;
