@@ -1,0 +1,1 @@
+-fix error handling in algorithms.  worked in ex2, but disappeared in ex3

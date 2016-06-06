@@ -8,31 +8,75 @@ using std::cerr;
 // create the static field
 ScoreRegistrar ScoreRegistrar::instance;
 
+vector<string> ScoreRegistrar::split(const string &s, char delim) {
+	std::vector<std::string> elems;
+	std::stringstream ss(s);
+	std::string item;
+	while (std::getline(ss, item, delim)) {
+		elems.push_back(item);
+	}
+	return elems;
+}
+
+//returns the score formula folder.  for example:  for input invalidScore/score_formula.so : returns invalidScore.
+string ScoreRegistrar::ExtractScoreFolder(string scoreFilePath)
+{
+	char delim = '/';
+	vector<string> nameSplit = split(scoreFilePath, delim);
+	int len = nameSplit.size();
+	if(len <= 1)
+		return scoreFilePath;   //TODO:  handle this case.  Probably can't happen
+	string scoreFolder = nameSplit.at(len-2);
+	cout << "in ScoreRegistrar::ExtractScoreFolder and scoreFolder = " << scoreFolder << endl;   //delete !!!!
+	return scoreFolder;
+}
+
+
 //----------------------------------------------------------------------------
 // ScoreRegistrar::loadScoreFunc
 // Load the score so library
 // return wheter the file was loaded successfully
 //----------------------------------------------------------------------------
-string ScoreRegistrar::loadScoreFunc(const std::string& fullPath) {
-    if(_debug) cout << "ScoreRegistrar::loadScoreFunc fullPath: " << fullPath <<endl;
-
-    // open the library
-    //cout << "opening: " << fullPath << endl; 
+string ScoreRegistrar::loadScoreFunc(const std::string& folderPath) {
+	//_debug = true;  //delete !!!!!!!!!!!!!!!!!!!!!!
+	string folderPathCopy = folderPath;
+	string suffix = "score_formula.so";
+	string fullPath = folderPath;
+	bool isNotDefault = false;
+	if(folderPath != "./score_formula.so") {
+		fullPath = folderPath + suffix;
+		isNotDefault = true;
+	}
+	if(isNotDefault == false)
+			folderPathCopy = "./";
+	if(_debug) cout << "ScoreRegistrar::loadScoreFunc fullPath: " << fullPath <<endl;
 
 	struct stat buffer;   
 	bool exists =  (stat (fullPath.c_str(), &buffer) == 0);
 	if(exists == false) {
-		//cout << "i'm here" << endl; //delete !!!!
-		cout << "cannot find score_formula.so file in '" << fullPath << "'" << endl;
+		string *absolutePath = GetAbsolutePath(folderPathCopy);  //returns null on error, or prints in success
+		if(absolutePath == NULL) {  //use relative path
+			cout << "cannot find score_formula.so file in '" << folderPath << "'" << endl;
+   		}		
+		else {
+			cout << "cannot find score_formula.so file in '" << (*absolutePath) << "'" << endl;
+			delete absolutePath;
+		}
 		return "cannot find case";
 	}
 
     dl_file = dlopen( fullPath.c_str(), RTLD_LAZY);
     
     if (!dl_file) {
-        //cout << NOT_VALID_SO << endl;
-		//cout << "in ScoreRegistrar::loadScoreFunc in case NOT_VALID_SO" << endl; //delete !!!!!!!
-		cout << "score_formula.so exists in '" << fullPath << "' but cannot be opened or is not a valid .so" << endl;
+        string *absolutePath = GetAbsolutePath(folderPathCopy);  //returns null on error, or prints in success
+		if(absolutePath == NULL) {  //use relative path
+			cout << "score_formula.so exists in '" << folderPath << "' but cannot be opened or is not a valid .so" << endl;
+   		}		
+		else {
+			cout << "score_formula.so exists in '"  << (*absolutePath) << "' but cannot be opened or is not a valid .so" << endl;
+			delete absolutePath;
+		}
+		//cout << "score_formula.so exists in '" << fullPath << "' but cannot be opened or is not a valid .so" << endl;
         return "invalid so";
     }
     

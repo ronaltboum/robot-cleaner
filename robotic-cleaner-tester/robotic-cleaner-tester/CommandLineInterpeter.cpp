@@ -29,7 +29,8 @@ void CommandLineInterpeter::ValidateScoreFile (){
 	if (formulaPath.find(suffix) != string::npos)
 		return;
 	bool endsWithSlash = (formulaPath[formulaPath.length() - 1] == '/');
-	formulaPath = formulaPath + (endsWithSlash ? "" : "/") + suffix;
+	//formulaPath = formulaPath + (endsWithSlash ? "" : "/") + suffix;
+	formulaPath = formulaPath + (endsWithSlash ? "" : "/");
 	CLAvalues["-score_formula"] = formulaPath;
 
 }

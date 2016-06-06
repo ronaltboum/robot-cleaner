@@ -153,9 +153,13 @@ bool SingletonConfigReader::IsConfigValid ()
   //cout << "in SingletonConfigReader::IsConfigValid and _configFilePath before = " << _configFilePath << endl; //delet
 
 	string folder = _configFilePath;
-	if(_configFilePath != "config.ini")
+	bool isNotDefault = false;
+	if(_configFilePath != "config.ini") {
 		_configFilePath = _configFilePath + "config.ini";
-
+		isNotDefault = true;
+	}
+	if(isNotDefault == false)
+			folder = "./";
 	//cout << "in SingletonConfigReader::IsConfigValid and _configFilePath after = " << _configFilePath << endl; //delet
 
   struct stat buffer;   
@@ -167,9 +171,9 @@ bool SingletonConfigReader::IsConfigValid ()
 	  	cout << "cannot find config.ini file in '" << _configFilePath << "'" << endl;
     }
      
-	  //cout << "config.ini exists in '" << (*absolutePath) << "' but cannot be opened" << endl;
-	  else {
-    	cout << "cannot find config.ini file in '" << (*absolutePath) << "'" << endl;
+		//cout << "config.ini exists in '" << (*absolutePath) << "' but cannot be opened" << endl;
+		else {
+			cout << "cannot find config.ini file in '" << (*absolutePath) << "'" << endl;
 			delete absolutePath;
 		}
     return false;

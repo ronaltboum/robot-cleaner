@@ -16,6 +16,7 @@
 #include <limits.h> /* PATH_MAX */
 #include <cstring>
 #include <sys/stat.h>
+#include <sstream>
 
 
 using namespace std;
@@ -62,6 +63,8 @@ public:
 		}
 	}
 
+    vector<string> split(const string &s, char delim);
+    string ExtractScoreFolder(string scoreFilePath);
     string ExtractFileName (string toSplit);
     string GetRidOfSuffix (string fileName);
 	string* GetAbsolutePath(string relativePath);

@@ -253,6 +253,50 @@ std::istream& operator>>(istream& in, House& h)
 	return in;
 }
 
+void House::output() const
+{
+	int x = currentPosition->getX()
+	int y = currentPosition->getY();
+	vector<string> houseImages;
+	for(unsigned int row = 0; row < rows; ++row) 
+	{
+		for(unsigned int col = 0; col < cols; ++col) 
+		{   
+			out << houseToPrint._floor(row,col);
+		}   
+		out << endl; 
+	}	
+}
 
 
 
+void House::OutputToVid(const Point & currentPosition, string houseName, string algorithmName) const
+{
+	unsigned int rows = GetHeight();
+	unsigned int cols = GetWidth();
+	vector<string> houseImages;
+	for(unsigned int row = 0; row < rows; ++row) {
+		for(unsigned int col = 0; col < cols; ++col) {
+			if(currentPosition == Point(row,col))
+				houseImages.push_back("R");
+			else if (_floor(row,col) == " ")
+				houseImages.push_back("0");
+			else
+				houseImages.push_back(string() + _floor(row,col) ) << ;
+		}
+		cout << endl;
+	}
+	// rm -rf simulations
+	//creating images dir should be in simualtion file
+	int coutner=0;
+	string imageDir = algorithmName + "_" + houseName;
+	createDirectoryIfNotExist(imgDir);
+	string indexStr = to_string(counter);
+	string composedImage = imageDir + "/image" + string (5-indexStr.length(), 0) + indexStr + ".jpg";
+
+	//creating video. should be after simulation
+	string simualtionDir = "simulations/" + imageDir;
+	string imagesExpression = simualtionDir + "image%5d.jpg";3
+	Montage::compose(houseImages, cols, rows, composedImage);
+	Encoder::encode(imagesExpression, algorithmName + "_" + houseName + ".mpg");
+}
