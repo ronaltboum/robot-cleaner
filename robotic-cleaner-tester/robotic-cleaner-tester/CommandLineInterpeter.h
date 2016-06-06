@@ -18,12 +18,12 @@ class CommandLineInterpeter
 public:
 	typedef map<string,string>::iterator it_type;
 	typedef map<string,string>::const_iterator const_it_type;
-	enum class CommandLineProblems {OddCLA, UnknownCLA, ThreadIsntNum, NoProblem};	
+	enum class CommandLineProblems {UnknownCLA, ThreadIsntNum, NoProblem};	
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Members ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 private:
 	static map<string,string> CLAvalues; // map of all the CLA names to their values
-
+	bool _isVideo = false;   //becomes true if -video is one of the command line arguments
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ctor/Dtor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 private:
@@ -78,6 +78,10 @@ public:
 			return -1;
 		}
 		return (int) converted ;
+	}
+
+	static bool getIsVideo(){
+		return _isVideo;
 	}
 };
 

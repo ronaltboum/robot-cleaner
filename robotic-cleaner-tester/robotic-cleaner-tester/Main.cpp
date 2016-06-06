@@ -20,7 +20,7 @@ int main(int argc, const char * argv[])
 	 	CommandLineInterpeter::readCommandLineArguments(argc, argv);
 	switch(problemOccored){
 		case CommandLineInterpeter::CommandLineProblems::ThreadIsntNum:
-		case CommandLineInterpeter::CommandLineProblems::OddCLA:
+		//case CommandLineInterpeter::CommandLineProblems::OddCLA:
 		case CommandLineInterpeter::CommandLineProblems::UnknownCLA:
 			printUsageMessage();
 			return EXIT_FAILURE;
@@ -155,7 +155,8 @@ int main(int argc, const char * argv[])
 	}
 	
  	
- 	bool videoEnabled = true;
+ 	//bool videoEnabled = true;
+	bool videoEnabled = CommandLineInterpeter::getIsVideo();    //videoEnabled == true iff -video was one of the args
  	if(videoEnabled)
  		s.InitizalizeVideoCreation();
 	s.LoadRuns();

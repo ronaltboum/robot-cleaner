@@ -42,12 +42,17 @@ void CommandLineInterpeter::ValidateScoreFile (){
 //				ThreadIsntNum - the attributeName is for threads number, but attributeValue isn't a num
 // @post: CLAvalues
 CommandLineInterpeter::CommandLineProblems CommandLineInterpeter::readCommandLineArguments(int argc, const char * argv[]){
-	if(argc%2 != 1)
-		return CommandLineProblems::OddCLA;
+//	if(argc%2 != 1)
+//		return CommandLineProblems::OddCLA;
 	//reading each pair of argument-value
 	CommandLineProblems problemOccored = CommandLineProblems::NoProblem;
 	for(int i=1 ; (i < argc) && (problemOccored == CommandLineProblems::NoProblem) ; i+=2)
 	{
+		if(argv[i] == "-video"){
+			_isVideo = true;
+			continue;
+		}
+
 		problemOccored = ReadAttributeValuePair(argv[i], argv[i+1]);
 	}
 	//check if thread is a number
