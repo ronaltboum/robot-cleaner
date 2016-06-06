@@ -387,8 +387,15 @@ void Simulator::registerScores(int winner_num_steps, int houseIndex, int simulat
 
 		if(runIterator->HasMadeIllegalStep())  {   //algorithm hit a wall !
 			//http://moodle.tau.ac.il/mod/forum/discuss.php?d=57047
-			//Algorithm 331332334_E_ when running on House 003 went on a wall in step 7
-			string errorMessage = "Algorithm " + algoName + " when running on House " + hNameNoSuffix + " went on a wall in step " + to_string(this_num_steps);
+			
+
+
+
+			//should be:   Algorithm 331332334_E_ when running on House 003 went on a wall in step 7
+
+			//terminal:  _039563838_E    or  /_039563838_E
+			string printVersion = FixAlgoNameForPrint(algoName);
+			string errorMessage = "Algorithm " + printVersion + " when running on House " + hNameNoSuffix + " went on a wall in step " + to_string(this_num_steps);
 			_hitWallErrorMessages.push_back(errorMessage);
 			addScore(algoName, hNameNoSuffix, 0);
 			continue;
@@ -755,4 +762,45 @@ void Simulator::PrintDirection(Direction chosen)
 	default:
 		cout << "Stay" << endl;
 	}
+}
+
+string Simulator::FixAlgoNameForPrint(string algoName)
+{
+	int len = algoName.length();
+	if(len <= 2)
+		return algoName;  //shouldn't happen
+	if(algoName.at(0) != '_')  {
+		if(algoName.at(0) != '/') {
+			return algoName;  //shouldn't happen
+		}
+		else {
+			if(algoName.at(1) == '_') {  //case  /_039563838_E.so
+				algoName = algoName.substr (2,len-2);
+				vector<string> splitted = split(algoName, '.');
+				algoName = splitted.at(0) + "_";
+				return algoName;
+			}
+			else {  // case    /invalidAlgorithm.so
+				algoName = algoName.substr (1,len-1);
+				vector<string> splitted = split(algoName, '.');
+				algoName = splitted.at(0);
+				return algoName;
+			}	
+		}
+	}
+	
+	algoName = algoName.substr (1,len-1);   //algoName is now 039563838_E.so
+	vector<string> splitted = split(algoName, '.');
+	algoName = splitted.at(0) + "_";
+	return algoName;
+}
+
+vector<string> Simulator::split(const string &s, char delim) {
+	std::vector<std::string> elems;
+	std::stringstream ss(s);
+	std::string item;
+	while (std::getline(ss, item, delim)) {
+		elems.push_back(item);
+	}
+	return elems;
 }

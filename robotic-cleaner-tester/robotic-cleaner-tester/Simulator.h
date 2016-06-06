@@ -88,6 +88,9 @@ public:
 
 	void SortAlgorithms(); //sorts algoritms by AVG
 
+	string FixAlgoNameForPrint(string algoName);  //ron added !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	vector<string> split(const string &s, char delim);   //ron added !!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 private:
 	bool MoveAllOneStep(int & currentRankAlgorithmsCompetingOn, int houseIndex);
 	void CallAboutToFinish(int houseIndex);
