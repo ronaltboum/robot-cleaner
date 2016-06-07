@@ -91,8 +91,9 @@ void AlgorithmSingleRun::MakeVideo()
 	Encoder::encode(imagesExpression, GetAlgoHouseString() + ".mpg");
 	string deleteFolderCmd = "rm -rf simulations/" + GetAlgoHouseString();
 	int ret = system(deleteFolderCmd.c_str());
-	if(ret == -1)
-		cout << "problem deleting. string: " << deleteFolderCmd << endl;
+	if(ret == -1){
+		//cout << "problem deleting. string: " << deleteFolderCmd << endl;
+	}
 	_videoEnabled = false;
 	return;
 }
@@ -149,8 +150,10 @@ Direction AlgorithmSingleRun::DoStep(Direction lastStep)
 
 	if(_videoEnabled){
 		_currentHouse->Montage(*_currentPosition, GetAlgoHouseString(), _numberOfStepsCommited);
-		if(! _canStillRun)
+		if(! _canStillRun){
+			cout << GetAlgoHouseString() << _numberOfStepsCommited << " can't run. make video!" << endl;
 			MakeVideo();
+		}
 	}
 
 	return chosenDirection;

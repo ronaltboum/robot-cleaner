@@ -200,7 +200,8 @@ void Simulator::RunAllHouses(size_t num_threads)
     for( int houseIndex = 0 ; houseIndex < houseNum; ++houseIndex)
     {
       RunAll(houseIndex);
-    }
+      MakeVideos(houseIndex);
+    }    		
   }
   else {   //num_threads > 1
     
@@ -229,7 +230,7 @@ void Simulator::RunAllHouses(size_t num_threads)
     for( size_t thNum = 0 ; thNum < num_threads; ++thNum)
     {
       vecThread.at(thNum).join();
-    }
+    }		
       
   }
   
@@ -246,6 +247,7 @@ void Simulator::RunSingleSubSimulationThread()
         {
 		//cout << std::this_thread::get_id() << ": " << "is assigned to house at index: " << index << endl;  //delete !!!!!!!!!!!!!!!!!!
         	RunAll(index); //runs all algorithms on the house in _houses[houseIndex]
+        	MakeVideos(index);
         }
         return;
 }
@@ -287,22 +289,18 @@ void Simulator::RunAll(int houseIndex)
 	//cout << "printing scores for house index: " << houseIndex << endl;
 	simulationSteps = currentStep;
 	registerScores(winnerStepsNumber, houseIndex, simulationSteps);
-	MakeVideos();		
 }
 
-void Simulator::MakeVideos(){
+// called after finishing cleaning a house +  max step after winner to make videos of the remaining algorithms (which haven't finished)
+void Simulator::MakeVideos(int houseIndex){
 	if(! _videoEnabled)
 		return;
-	int houseNum = _houses.size();  //number of valid houses
-    for( int houseIndex = 0 ; houseIndex < houseNum; ++houseIndex)
-    {
-		SubSimulation * sub = _subSimulations[houseIndex]; 
-		vector< AlgorithmSingleRun *> singleRuns = sub -> GetSingleRuns();
-		int runNum = singleRuns.size(); 
-		for( int runIndex = 0 ; runIndex < runNum; ++runIndex)
-		{
-			singleRuns[runIndex]->MakeVideo();
-		}
+	SubSimulation * sub = _subSimulations[houseIndex]; 
+	vector< AlgorithmSingleRun *> singleRuns = sub -> GetSingleRuns();
+	int runNum = singleRuns.size(); 
+	for( int runIndex = 0 ; runIndex < runNum; ++runIndex)
+	{
+		singleRuns[runIndex]->MakeVideo();
 	}
 }
 
@@ -330,6 +328,7 @@ bool Simulator::MoveAllOneStep(int & currentRankAlgorithmsCompetingOn, int house
 			//PrintDirection(lastSteps[runIndex]); //delete!!!!!!!!!!!!!!!!!!!!!
 	
 			if(runIterator->HasWon()){
+				cout << runIterator->GetAlgoHouseString() << " has won. make video!" << endl;
 				runIterator->MakeVideo();
 				runIterator->SetActualPosition(currentRankAlgorithmsCompetingOn);
 				++numAlgorithmWon;

@@ -89,7 +89,7 @@ public:
 	void PrintDirection(Direction chosen); //for debug
 	void InitizalizeVideoCreation();
 	void SortAlgorithms(); //sorts algoritms by AVG
-	void MakeVideos();
+	void MakeVideos(int houseIndex);
 	string FixAlgoNameForPrint(string algoName);
 	vector<string> split(const string &s, char delim);
 
